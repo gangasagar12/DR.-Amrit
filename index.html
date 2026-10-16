@@ -53,10 +53,11 @@
         <a href="#services" class="nav-link">Services</a>
         <a href="#education" class="nav-link">Education</a>
         <a href="#gallery" class="nav-link">Gallery</a>
+        <a href="#videos" class="nav-link">Videos</a>
         <a href="#blog" class="nav-link">Blog</a>
         <a href="#research" class="nav-link">Research</a>
         <a href="#clinics" class="nav-link">Clinics</a>
-        <a href="#contact" class="nav-link">Contact</a>
+       
       </nav>
 
       <!-- Small Contact Header CTA -->
@@ -602,6 +603,146 @@
     </section>
 
     <!-- ====================================================================
+         6.5 Dental Video Gallery Section
+         ==================================================================== -->
+    <section class="section section-videos" id="videos">
+      <div class="container">
+        <div class="section-title-wrap text-center">
+          <span class="section-kicker">Patient Education & Clinical Walkthroughs</span>
+          <h2 class="section-heading">Video Gallery</h2>
+          <p class="section-subtext">Informative dental videos, oral health guides, and procedure demonstrations presented by Dr. Amrit Jaishi.</p>
+        </div>
+
+        <!-- Video Category Filters -->
+        <div class="video-filters" role="tablist" aria-label="Video category filter">
+          <button type="button" class="video-filter-btn active" data-filter="all" role="tab" aria-selected="true">All Videos</button>
+          <button type="button" class="video-filter-btn" data-filter="oral-health-education" role="tab" aria-selected="false">Oral Health Education</button>
+          <button type="button" class="video-filter-btn" data-filter="dental-treatment-awareness" role="tab" aria-selected="false">Treatment Awareness</button>
+          <button type="button" class="video-filter-btn" data-filter="preventive-dentistry" role="tab" aria-selected="false">Preventive Dentistry</button>
+          <button type="button" class="video-filter-btn" data-filter="clinical-practice" role="tab" aria-selected="false">Clinical Practice</button>
+          <button type="button" class="video-filter-btn" data-filter="patient-faqs" role="tab" aria-selected="false">Patient FAQs</button>
+        </div>
+
+        <!-- 3-Column Responsive Video Grid -->
+        <div class="videos-grid" id="videosGrid">
+          <!-- Video 1 -->
+          <article class="video-card" data-category="oral-health-education" data-video-url="https://www.youtube.com/watch?v=xm9c5HAUBpY" data-video-type="youtube" tabindex="0" role="button" aria-label="Watch video: Proper Tooth Brushing & Flossing Technique">
+            <div class="video-media">
+              <img src="img/services/teeth_cleaning.jpg" alt="Proper Tooth Brushing & Flossing Technique thumbnail" class="video-thumb" loading="lazy">
+              <div class="video-play-btn" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              </div>
+              <span class="video-duration">03:45</span>
+            </div>
+            <div class="video-body">
+              <div class="video-meta">
+                <span class="video-cat-badge">Oral Health Education</span>
+                <span class="video-date">Aug 2026</span>
+              </div>
+              <h3 class="video-title">Proper Tooth Brushing &amp; Flossing Technique for Healthy Gums</h3>
+              <p class="video-desc">Dr. Amrit Jaishi demonstrates the modified Bass brushing method and correct flossing habits to prevent plaque accumulation and gingivitis.</p>
+            </div>
+          </article>
+
+          <!-- Video 2 -->
+          <article class="video-card" data-category="dental-treatment-awareness" data-video-url="https://www.youtube.com/watch?v=jww7r7H5rF0" data-video-type="youtube" tabindex="0" role="button" aria-label="Watch video: What to Expect During Root Canal Treatment">
+            <div class="video-media">
+              <img src="img/services/rct.jpg" alt="Root canal treatment procedure thumbnail" class="video-thumb" loading="lazy">
+              <div class="video-play-btn" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              </div>
+              <span class="video-duration">05:20</span>
+            </div>
+            <div class="video-body">
+              <div class="video-meta">
+                <span class="video-cat-badge">Treatment Awareness</span>
+                <span class="video-date">Aug 2026</span>
+              </div>
+              <h3 class="video-title">What to Expect During a Single-Visit Root Canal Treatment</h3>
+              <p class="video-desc">A step-by-step patient walkthrough explaining modern painless rotary endodontic therapy, rubber dam isolation, and crown restoration.</p>
+            </div>
+          </article>
+
+          <!-- Video 3 -->
+          <article class="video-card" data-category="preventive-dentistry" data-video-url="https://www.youtube.com/watch?v=l_aQ5yXh4lU" data-video-type="youtube" tabindex="0" role="button" aria-label="Watch video: Understanding Ultrasonic Scaling">
+            <div class="video-media">
+              <img src="img/services/gum_care.jpg" alt="Tartar removal and periodontal cleaning thumbnail" class="video-thumb" loading="lazy">
+              <div class="video-play-btn" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              </div>
+              <span class="video-duration">04:12</span>
+            </div>
+            <div class="video-body">
+              <div class="video-meta">
+                <span class="video-cat-badge">Preventive Dentistry</span>
+                <span class="video-date">Sep 2026</span>
+              </div>
+              <h3 class="video-title">Understanding Ultrasonic Scaling &amp; Tartar Removal</h3>
+              <p class="video-desc">Learn why routine professional scaling does not weaken your enamel, and how it protects supportive bone from periodontitis.</p>
+            </div>
+          </article>
+
+          <!-- Video 4 -->
+          <article class="video-card" data-category="clinical-practice" data-video-url="https://www.youtube.com/watch?v=kYJv_QkF4Jg" data-video-type="youtube" tabindex="0" role="button" aria-label="Watch video: Wisdom Tooth Management">
+            <div class="video-media">
+              <img src="img/services/wisdom_tooth.jpg" alt="Wisdom tooth surgical treatment thumbnail" class="video-thumb" loading="lazy">
+              <div class="video-play-btn" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              </div>
+              <span class="video-duration">06:05</span>
+            </div>
+            <div class="video-body">
+              <div class="video-meta">
+                <span class="video-cat-badge">Clinical Practice</span>
+                <span class="video-date">Sep 2026</span>
+              </div>
+              <h3 class="video-title">Atraumatic Wisdom Tooth Management &amp; Surgical Care</h3>
+              <p class="video-desc">Clinical insights into diagnostic evaluation of impacted third molars, gentle surgical sectioning, and post-operative healing instructions.</p>
+            </div>
+          </article>
+
+          <!-- Video 5 -->
+          <article class="video-card" data-category="dental-treatment-awareness" data-video-url="https://www.youtube.com/watch?v=4d3L8jK1aU8" data-video-type="youtube" tabindex="0" role="button" aria-label="Watch video: Crown & Bridge Restorations">
+            <div class="video-media">
+              <img src="img/services/dental_crown.jpg" alt="Dental crown restoration guide thumbnail" class="video-thumb" loading="lazy">
+              <div class="video-play-btn" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              </div>
+              <span class="video-duration">04:30</span>
+            </div>
+            <div class="video-body">
+              <div class="video-meta">
+                <span class="video-cat-badge">Treatment Awareness</span>
+                <span class="video-date">Oct 2026</span>
+              </div>
+              <h3 class="video-title">Crown &amp; Bridge Restorations: Ceramic vs. Zirconia</h3>
+              <p class="video-desc">Dr. Jaishi explains the differences in durability, aesthetics, and biocompatibility when choosing dental crowns after root canal treatment.</p>
+            </div>
+          </article>
+
+          <!-- Video 6 -->
+          <article class="video-card" data-category="patient-faqs" data-video-url="https://www.youtube.com/watch?v=2f3qY_0eU9I" data-video-type="youtube" tabindex="0" role="button" aria-label="Watch video: Emergency Dental Care">
+            <div class="video-media">
+              <img src="img/services/emergency.jpg" alt="Emergency toothache consultation thumbnail" class="video-thumb" loading="lazy">
+              <div class="video-play-btn" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              </div>
+              <span class="video-duration">03:55</span>
+            </div>
+            <div class="video-body">
+              <div class="video-meta">
+                <span class="video-cat-badge">Patient FAQs</span>
+                <span class="video-date">Oct 2026</span>
+              </div>
+              <h3 class="video-title">Emergency Dental Care: What to Do in Acute Toothache</h3>
+              <p class="video-desc">Practical emergency guidelines for knocked-out teeth, cracked enamel, severe swelling, and immediate first-aid before reaching the clinic.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
          7. Dental Health Blog Section
          ==================================================================== -->
     <section class="section section-blog" id="blog">
@@ -997,9 +1138,27 @@
         </div>
       </div>
     </div>
+  <!-- ======================================================================
+       Video Player Modal
+       ====================================================================== -->
+  <div class="video-modal-overlay" id="videoModal" role="dialog" aria-modal="true" aria-hidden="true" tabindex="-1">
+    <div class="video-modal-dialog">
+      <button type="button" class="video-modal-close" id="closeVideoModal" aria-label="Close video player">&times;</button>
+      <div class="video-modal-player-wrap" id="videoModalPlayer">
+        <!-- Dynamically injected iframe or HTML5 video tag -->
+      </div>
+      <div class="video-modal-content">
+        <div class="video-modal-meta">
+          <span class="video-modal-cat" id="videoModalCategory"></span>
+          <span class="video-modal-duration" id="videoModalDuration"></span>
+        </div>
+        <h3 class="video-modal-title" id="videoModalTitle"></h3>
+        <p class="video-modal-desc" id="videoModalDesc"></p>
+      </div>
+    </div>
   </div>
 
   <!-- Main JavaScript File -->
-  <script src="script.js?v=2.0"></script>
+  <script src="script.js?v=2.1"></script>
 </body>
 </html>
