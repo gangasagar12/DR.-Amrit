@@ -19,6 +19,7 @@ $router->get('/contact', 'PublicController@contact');
 // Public Form Submissions
 $router->post('/appointment/book', 'PublicController@bookAppointment');
 $router->post('/contact/submit', 'PublicController@submitContact');
+$router->get('/api/portfolio-data', 'PublicController@apiPortfolioData');
 
 // SEO Feeds
 $router->get('/sitemap.xml', 'PublicController@sitemap');

@@ -358,16 +358,34 @@ class PublicController {
         exit;
     }
 
-    public function robots(Request $request): void {
-        $config = require dirname(__DIR__, 2) . '/config/app.php';
-        $baseUrl = $config['base_url'];
+    public function apiPortfolioData(Request $request): void {
+        $doctor = DoctorProfile::get();
+        $clinics = Clinic::allActive();
+        $services = Service::allActive();
+        $qualifications = Qualification::all();
+        $gallery = Gallery::allActive();
+        $blogs = Blog::latest(6);
 
-        header('Content-Type: text/plain; charset=utf-8');
-        echo "User-agent: *\n";
-        echo "Disallow: /admin/\n";
-        echo "Disallow: /storage/\n";
-        echo "Allow: /\n\n";
-        echo "Sitemap: {$baseUrl}/sitemap.xml\n";
-        exit;
+        $pdo = \App\Core\Database::getConnection();
+        $researches = [];
+        $galleryCategories = [];
+        try {
+            $researches = $pdo->query("SELECT * FROM researches WHERE status = 'published' ORDER BY display_order ASC, publication_year DESC")->fetchAll();
+            $galleryCategories = $pdo->query("SELECT * FROM gallery_categories ORDER BY display_order ASC, id ASC")->fetchAll();
+        } catch (\Exception $e) {
+            // gracefully fallback
+        }
+
+        Response::json([
+            'success' => true,
+            'doctor' => $doctor,
+            'clinics' => $clinics,
+            'services' => $services,
+            'qualifications' => $qualifications,
+            'gallery' => $gallery,
+            'gallery_categories' => $galleryCategories,
+            'blogs' => $blogs,
+            'researches' => $researches
+        ]);
     }
 }

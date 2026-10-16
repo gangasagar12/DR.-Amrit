@@ -277,7 +277,12 @@
 
     <div style="max-width:850px;margin:0 auto;">
       <?php foreach ($clinics as $clinic): ?>
-        <div class="clinic-card" style="box-shadow:var(--shadow-lg);border:2px solid #e0f2fe;">
+        <div class="clinic-card" style="box-shadow:var(--shadow-lg);border:2px solid #e0f2fe;overflow:hidden;border-radius:12px;margin-bottom:2rem;">
+          <?php if (!empty($clinic['image'])): ?>
+            <div style="width:100%;height:220px;overflow:hidden;background-color:#f1f5f9;">
+              <img src="<?= $asset($clinic['image']) ?>" alt="<?= $e($clinic['clinic_name']) ?>" style="width:100%;height:100%;object-fit:cover;">
+            </div>
+          <?php endif; ?>
           <div class="clinic-card-header">
             <div>
               <span class="clinic-type-badge clinic-type-permanent">
