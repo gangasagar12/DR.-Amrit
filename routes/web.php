@@ -97,6 +97,24 @@ $router->post('/admin/blogs/edit', 'AdminBlogController@update');
 $router->any('/admin/blogs/delete', 'AdminBlogController@delete');
 $router->post('/admin/blogs/upload-image', 'AdminBlogController@uploadEditorImage');
 
+// Video Gallery
+$router->get('/admin/videos', 'AdminVideoController@index');
+$router->get('/admin/videos/create', 'AdminVideoController@create');
+$router->post('/admin/videos/create', 'AdminVideoController@store');
+$router->post('/admin/videos', 'AdminVideoController@store');
+$router->get('/admin/videos/{id}/edit', 'AdminVideoController@edit');
+$router->get('/admin/videos/edit', 'AdminVideoController@edit');
+$router->post('/admin/videos/{id}/update', 'AdminVideoController@update');
+$router->post('/admin/videos/edit', 'AdminVideoController@update');
+$router->post('/admin/videos/{id}/delete', 'AdminVideoController@delete');
+$router->any('/admin/videos/delete', 'AdminVideoController@delete');
+
+// Video Categories
+$router->get('/admin/video-categories', 'AdminVideoCategoryController@index');
+$router->post('/admin/video-categories/create', 'AdminVideoCategoryController@store');
+$router->post('/admin/video-categories/update', 'AdminVideoCategoryController@update');
+$router->any('/admin/video-categories/delete', 'AdminVideoCategoryController@delete');
+
 // Blog Categories
 $router->get('/admin/categories', 'AdminCategoryController@index');
 $router->post('/admin/categories/create', 'AdminCategoryController@store');

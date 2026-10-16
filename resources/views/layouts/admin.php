@@ -105,6 +105,18 @@
           <span>Article Categories</span>
         </a>
       </li>
+      <li>
+        <a href="<?= $url('/admin/videos') ?>" class="sidebar-link <?= ($activeAdmin ?? '') === 'videos' ? 'active' : '' ?>">
+          <i data-lucide="video" style="width:18px;height:18px;"></i>
+          <span>Dental Video Gallery</span>
+        </a>
+      </li>
+      <li>
+        <a href="<?= $url('/admin/video-categories') ?>" class="sidebar-link <?= ($activeAdmin ?? '') === 'video_categories' ? 'active' : '' ?>">
+          <i data-lucide="tag" style="width:18px;height:18px;"></i>
+          <span>Video Categories</span>
+        </a>
+      </li>
 
       <li class="menu-category-title">Patient Interactions</li>
       <li>
