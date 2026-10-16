@@ -369,9 +369,13 @@ class PublicController {
         $pdo = \App\Core\Database::getConnection();
         $researches = [];
         $galleryCategories = [];
+        $videos = [];
+        $videoCategories = [];
         try {
             $researches = $pdo->query("SELECT * FROM researches WHERE status = 'published' ORDER BY display_order ASC, publication_year DESC")->fetchAll();
             $galleryCategories = $pdo->query("SELECT * FROM gallery_categories ORDER BY display_order ASC, id ASC")->fetchAll();
+            $videos = \App\Models\Video::allPublished();
+            $videoCategories = \App\Models\VideoCategory::all();
         } catch (\Exception $e) {
             // gracefully fallback
         }
@@ -385,7 +389,9 @@ class PublicController {
             'gallery' => $gallery,
             'gallery_categories' => $galleryCategories,
             'blogs' => $blogs,
-            'researches' => $researches
+            'researches' => $researches,
+            'videos' => $videos,
+            'video_categories' => $videoCategories
         ]);
     }
 }
