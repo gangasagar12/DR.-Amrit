@@ -1,0 +1,19 @@
+# Environment secrets
+.env
+.env.local
+
+# Logs and runtime caches
+/storage/logs/*.log
+/storage/cache/*
+/storage/*.sqlite
+!/storage/logs/.gitkeep
+!/storage/cache/.gitkeep
+
+# IDE and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Vendor dependencies (if using composer)
+/vendor/

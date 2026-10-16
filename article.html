@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="pageTitle">Article & Research | Dr. Amrit Jaishi - General Dentist</title>
+  <meta name="description" id="metaDescription" content="Clinical dental article and research publication by Dr. Amrit Jaishi, BDS (BPKIHS Dharan), Oral & Dental Surgeon.">
+  <meta name="author" content="Dr. Amrit Jaishi">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="img/logo.png">
+
+  <!-- Google Fonts: Inter & Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="style.css?v=2.1">
+
+  <style>
+    /* Dedicated Article Page Styles */
+    .article-page-header {
+      background-color: #ffffff;
+      border-bottom: 1px solid var(--border-light);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: 72px;
+      display: flex;
+      align-items: center;
+    }
+
+    .article-nav-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .back-nav-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-heading);
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      padding: 0.45rem 0.9rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-medium);
+      transition: all 0.15s ease;
+    }
+
+    .back-nav-link:hover {
+      border-color: var(--accent-primary);
+      color: var(--accent-primary);
+      background-color: var(--bg-subtle);
+    }
+
+    .article-main-section {
+      padding-top: 3.5rem;
+      padding-bottom: 5rem;
+      background-color: #ffffff;
+    }
+
+    .article-layout {
+      display: grid;
+      grid-template-columns: 2.2fr 1fr;
+      gap: 3.5rem;
+      align-items: flex-start;
+    }
+
+    .article-body-card {
+      background-color: #ffffff;
+    }
+
+    .article-category-badge {
+      display: inline-block;
+      font-family: var(--font-heading);
+      font-size: 0.8125rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent-primary);
+      background-color: var(--accent-light);
+      padding: 0.3rem 0.85rem;
+      border-radius: var(--radius-sm);
+      margin-bottom: 1rem;
+    }
+
+    .article-headline {
+      font-family: var(--font-heading);
+      font-size: 2.35rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      line-height: 1.25;
+      margin-bottom: 1.25rem;
+    }
+
+    .article-metadata-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1.25rem;
+      padding-bottom: 1.5rem;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--border-light);
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    .meta-author {
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+
+    .meta-date {
+      color: var(--accent-hover);
+    }
+
+    .meta-journal {
+      font-style: italic;
+    }
+
+    .article-lead-image-wrap {
+      width: 100%;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      margin-bottom: 2.5rem;
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-light);
+    }
+
+    .article-lead-image {
+      width: 100%;
+      max-height: 420px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .article-rich-content {
+      font-size: 1.0625rem;
+      color: var(--text-body);
+      line-height: 1.85;
+    }
+
+    .article-rich-content h3 {
+      font-family: var(--font-heading);
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-top: 2rem;
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .article-rich-content h4 {
+      font-family: var(--font-heading);
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-top: 1.75rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .article-rich-content p {
+      margin-bottom: 1.35rem;
+    }
+
+    .article-rich-content ul, .article-rich-content ol {
+      margin-bottom: 1.5rem;
+      padding-left: 1.5rem;
+    }
+
+    .article-rich-content li {
+      margin-bottom: 0.5rem;
+    }
+
+    .article-callout-box {
+      background-color: var(--bg-subtle);
+      border-left: 4px solid var(--accent-primary);
+      padding: 1.25rem 1.5rem;
+      border-radius: var(--radius-sm);
+      margin: 2rem 0;
+      font-size: 0.96875rem;
+    }
+
+    .article-footer-actions {
+      margin-top: 3.5rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border-light);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    /* Sidebar */
+    .article-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      position: sticky;
+      top: 100px;
+    }
+
+    .sidebar-widget {
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 1.75rem;
+    }
+
+    .sidebar-widget-title {
+      font-family: var(--font-heading);
+      font-size: 1.0625rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--accent-primary);
+    }
+
+    .author-mini-card {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .author-mini-name {
+      font-family: var(--font-heading);
+      font-size: 1.0625rem;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+
+    .author-mini-qual {
+      font-size: 0.8125rem;
+      color: var(--accent-primary);
+      font-weight: 600;
+    }
+
+    .author-mini-bio {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .sidebar-related-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .sidebar-related-item {
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 0.85rem;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .sidebar-related-item:last-child {
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    .related-tag {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent-primary);
+      margin-bottom: 0.2rem;
+    }
+
+    .related-link {
+      font-family: var(--font-heading);
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      line-height: 1.35;
+      transition: color 0.15s ease;
+    }
+
+    .related-link:hover {
+      color: var(--accent-primary);
+    }
+
+    @media (max-width: 900px) {
+      .article-layout {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+      }
+      .article-headline {
+        font-size: 1.85rem;
+      }
+      .article-sidebar {
+        position: static;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ======================================================================
+       Header & Navigation Bar
+       ====================================================================== -->
+  <header class="article-page-header">
+    <div class="container article-nav-container">
+      <a href="index.html#home" class="brand-logo" aria-label="Dr. Amrit Jaishi - General Dentist">
+        <div class="brand-text">
+          <span class="brand-name">Dr. Amrit Jaishi</span>
+          <span class="brand-designation">General Dentist</span>
+        </div>
+      </a>
+
+      <div style="display: flex; align-items: center; gap: 1rem;">
+        <a href="index.html#blog-research" class="back-nav-link" aria-label="Return to portfolio">
+          <span>&larr; Back to Portfolio</span>
+        </a>
+        <a href="index.html#contact" class="btn btn-primary" style="padding: 0.45rem 1.15rem; font-size: 0.875rem;">Contact</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ======================================================================
+       Main Article Reading Section
+       ====================================================================== -->
+  <main class="article-main-section">
+    <div class="container">
+      <div class="article-layout">
+        <!-- Main Article Content Column -->
+        <article class="article-body-card">
+          <span class="article-category-badge" id="articleBadge">Blog Article</span>
+          <h1 class="article-headline" id="articleHeadline">Loading article content...</h1>
+          
+          <div class="article-metadata-row" id="articleMetadata">
+            <span class="meta-author" id="articleAuthor">Dr. Amrit Jaishi, BDS (BPKIHS)</span>
+            <span>&bull;</span>
+            <span class="meta-date" id="articleDate">2026</span>
+          </div>
+
+          <div class="article-lead-image-wrap">
+            <img src="img/services/teeth_cleaning.jpg" alt="Article Lead Image" class="article-lead-image" id="articleLeadImage">
+          </div>
+
+          <div class="article-rich-content" id="articleBodyContent">
+            <!-- Article body will be injected by JavaScript -->
+          </div>
+
+          <div class="article-footer-actions">
+            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+              <a href="index.html#blog" class="btn btn-secondary">
+                <span>&larr; Back to Blog</span>
+              </a>
+              <a href="index.html#research" class="btn btn-secondary">
+                <span>&larr; Back to Research</span>
+              </a>
+            </div>
+            <a href="index.html#contact" class="btn btn-primary">
+              <span>Book a Consultation with Dr. Amrit</span>
+            </a>
+          </div>
+        </article>
+
+        <!-- Sidebar Column -->
+        <aside class="article-sidebar">
+          <!-- Author Info Card -->
+          <div class="sidebar-widget">
+            <h3 class="sidebar-widget-title">About the Doctor</h3>
+            <div class="author-mini-card">
+              <span class="author-mini-name">Dr. Amrit Jaishi</span>
+              <span class="author-mini-qual">BDS (BPKIHS Dharan) &bull; General Dentist</span>
+              <p class="author-mini-bio">
+                Oral and Dental Surgeon at Dhangadhi Sanjeevani Hospital, Farwest Nepal. Dedicated to evidence-based dental practices, tooth preservation, and patient-centered care.
+              </p>
+              <a href="index.html#about" style="font-size: 0.8125rem; color: var(--accent-primary); font-weight: 600; text-decoration: underline;">
+                View Complete Doctor Profile &rarr;
+              </a>
+            </div>
+          </div>
+
+          <!-- Other Articles / Research -->
+          <div class="sidebar-widget">
+            <h3 class="sidebar-widget-title">More in Blog & Research</h3>
+            <div class="sidebar-related-list">
+              <div class="sidebar-related-item">
+                <span class="related-tag">Blog</span>
+                <a href="article.html?id=blog-1" class="related-link">The Importance of Regular Dental Checkups and Professional Cleaning</a>
+              </div>
+              <div class="sidebar-related-item">
+                <span class="related-tag">Blog</span>
+                <a href="article.html?id=blog-2" class="related-link">Common Causes of Tooth Sensitivity and Modern Treatments</a>
+              </div>
+              <div class="sidebar-related-item">
+                <span class="related-tag">Blog</span>
+                <a href="article.html?id=blog-3" class="related-link">Understanding Root Canal Treatment: What Patients Should Know</a>
+              </div>
+              <div class="sidebar-related-item">
+                <span class="related-tag">Research</span>
+                <a href="article.html?id=research-1" class="related-link">Single-Visit Rotary Endodontics in Symptomatic Pulpitis (JNDA)</a>
+              </div>
+              <div class="sidebar-related-item">
+                <span class="related-tag">Research</span>
+                <a href="article.html?id=research-2" class="related-link">Periodontal Disease Prevalence in Rural Kailali District</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hospital Practice Location Widget -->
+          <div class="sidebar-widget" style="background-color: var(--accent-light); border-color: #bae6fd;">
+            <h3 class="sidebar-widget-title" style="border-bottom-color: var(--accent-primary);">Clinical Practice</h3>
+            <p style="font-size: 0.875rem; color: var(--text-dark); margin-bottom: 0.75rem; line-height: 1.5;">
+              <strong>Dhangadhi Sanjeevani Hospital</strong><br>
+              Hospital Road, Dhangadhi, Kailali, Nepal<br>
+              Sun &ndash; Fri: 10:00 AM &ndash; 5:00 PM
+            </p>
+            <a href="tel:+9779860644282" class="btn btn-primary" style="width: 100%; font-size: 0.8125rem; padding: 0.5rem 1rem;">
+              Call +977-9860644282
+            </a>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <!-- ======================================================================
+       Footer
+       ====================================================================== -->
+  <footer class="site-footer">
+    <div class="container footer-container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <div class="footer-name">Dr. Amrit Jaishi</div>
+          <div class="footer-designation">General Dentist</div>
+          <p class="footer-tagline">
+            Dedicated to providing patient-centered dental care with a focus on oral health, preventive dentistry, and comfortable treatment experiences.
+          </p>
+        </div>
+
+        <div class="footer-nav">
+          <span class="footer-heading">Navigation</span>
+          <div class="footer-links-grid">
+            <a href="index.html#home">Home</a>
+            <a href="index.html#about">About</a>
+            <a href="index.html#services">Services</a>
+            <a href="index.html#education">Education</a>
+            <a href="index.html#gallery">Gallery</a>
+            <a href="index.html#blog">Blog</a>
+            <a href="index.html#research">Research</a>
+            <a href="index.html#clinics">Clinics</a>
+            <a href="index.html#contact">Contact</a>
+          </div>
+        </div>
+
+        <div class="footer-contact">
+          <span class="footer-heading">Contact Details</span>
+          <div class="footer-contact-list">
+            <div>Email: <a href="mailto:amritjaishi0@gmail.com">amritjaishi0@gmail.com</a></div>
+            <div>Phone: <a href="tel:+9779860644282">+977-9860644282</a></div>
+            <div>Location: Dhangadhi Sanjeevani Hospital, Kailali, Nepal</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p class="copyright-text">
+          &copy; <span id="articleYear">2026</span> Dr. Amrit Jaishi. All rights reserved.
+        </p>
+        <p class="footer-subtext">
+          Professional Portfolio for General Dentistry & Oral Care.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Script to load and render article based on URL query parameter ?id=... -->
+  <script>
+    (function () {
+      'use strict';
+
+      const articlesDatabase = {
+        'blog-1': {
+          badge: 'Blog Article',
+          title: 'The Importance of Regular Dental Checkups and Professional Cleaning',
+          author: 'Dr. Amrit Jaishi, BDS (BPKIHS)',
+          date: 'Published: October 2026 &bull; Preventive Dentistry',
+          metaDesc: 'Why routine dental checkups and professional ultrasonic cleaning prevent tooth decay and gum disease.',
+          cover: 'img/services/teeth_cleaning.jpg',
+          content: `
+            <h3>Why Preventive Dentistry is Your Best Defense</h3>
+            <p>Many individuals seek dental consultation only when they begin experiencing acute toothache, tender gums, or visible dental fractures. In dentistry, however, prevention is profoundly more effective and economical than late-stage intervention. Dental caries (tooth decay) and gingivitis (gum inflammation) often progress silently beneath the surface without causing noticeable pain until extensive structural damage has occurred.</p>
+            
+            <div class="article-callout-box">
+              <strong>Key Fact:</strong> Over 80% of tooth loss in adults can be prevented through routine biannual ultrasonic cleaning and early detection of microscopic cavities.
+            </div>
+
+            <h3>The Science Behind Professional Ultrasonic Scaling</h3>
+            <p>Every day, a thin, sticky film of bacteria called plaque forms across tooth surfaces. While daily brushing and flossing disrupt soft plaque, minerals in saliva eventually harden residual plaque into dental calculus (commonly known as tartar) within 24 to 72 hours.</p>
+            <p>Once calculus hardens, standard toothbrushes, floss, or home remedies cannot remove it. Ultrasonic scaling utilizes high-frequency sound vibrations along with a gentle micro-mist of water to safely dislodge hardened tartar from both supra-gingival (above the gum) and sub-gingival (below the gum line) surfaces without removing or scratching tooth enamel.</p>
+
+            <h3>What Happens During a Routine Consultation?</h3>
+            <ul>
+              <li><strong>Comprehensive Oral Screening:</strong> Visual examination of each tooth surface, existing restorations, and bite alignment.</li>
+              <li><strong>Periodontal Health Assessment:</strong> Evaluation of gum attachment levels, checking for bleeding, pocket formation, or signs of gum recession.</li>
+              <li><strong>Soft Tissue & Oral Cancer Screening:</strong> Careful inspection of the tongue, palate, and inner cheeks to detect any precancerous lesions or systemic health indicators early.</li>
+              <li><strong>Preventive Ultrasonic Scaling:</strong> Thorough cleaning to eliminate plaque, calculus, and external stains.</li>
+              <li><strong>Personalized Hygiene Guidance:</strong> Advice on brushing pressure, interdental cleaning brushes, and toothpastes best suited to your oral pH and enamel thickness.</li>
+            </ul>
+
+            <h3>Doctor's Recommendation for Healthy Smiles</h3>
+            <p>Commit to brushing twice a day for two full minutes with a soft-bristled toothbrush and fluoride toothpaste. Avoid aggressive scrubbing, incorporate daily flossing, and schedule a professional clinical visit every six months. Preserving your natural smile begins with these simple daily habits.</p>
+          `
+        },
+        'blog-2': {
+          badge: 'Blog Article',
+          title: 'Common Causes of Tooth Sensitivity and How to Treat It',
+          author: 'Dr. Amrit Jaishi, BDS (BPKIHS)',
+          date: 'Published: September 2026 &bull; Restorative Care',
+          metaDesc: 'Understand the underlying causes of tooth sensitivity and effective clinical treatments to restore comfortable chewing.',
+          cover: 'img/services/gum_care.jpg',
+          content: `
+            <h3>Understanding Dentin Hypersensitivity</h3>
+            <p>Dentin hypersensitivity is characterized by a sharp, transient pain arising from exposed dentin in response to thermal (hot or cold drinks), chemical (sweets, acidic foods), tactile, or evaporative stimuli. Millions of individuals experience discomfort when enjoying a warm cup of tea or a cold beverage, often altering their eating habits to avoid pain.</p>
+
+            <h3>How Does Sensitivity Develop?</h3>
+            <p>The crown of a healthy tooth is protected by an impervious outer layer of enamel, while the root is shielded by cementum and firm gum tissue. Beneath enamel lies dentin, a porous structure containing thousands of microscopic channels called dentinal tubules. Each tubule contains fluid and cellular processes extending directly to the nerve-rich dental pulp. When enamel thins or gums recede, external temperatures trigger fluid movement within the tubules, exciting the nerve fibers and producing acute pain.</p>
+
+            <div class="article-callout-box">
+              <strong>Clinical Insight:</strong> Tooth sensitivity is never "normal". It is an early signal that the protective barrier of enamel or gum tissue has been compromised.
+            </div>
+
+            <h3>Primary Factors Contributing to Tooth Sensitivity</h3>
+            <ul>
+              <li><strong>Aggressive Toothbrushing:</strong> Using a hard-bristled toothbrush or applying excessive horizontal pressure causes cervical abrasion (notches along the gumline).</li>
+              <li><strong>Acidic Dietary Erosion:</strong> Frequent consumption of citrus fruits, carbonated drinks, vinegar, and pickled foods gradually dissolves enamel minerals.</li>
+              <li><strong>Gingival Recession:</strong> Chronic plaque accumulation or aggressive cleaning causes gums to pull back, exposing delicate root dentin.</li>
+              <li><strong>Teeth Grinding (Bruxism):</strong> Nighttime clenching wears down biting edges and causes micro-cracks in enamel.</li>
+              <li><strong>Recent Dental Fillings or Whitening:</strong> Mild temporary sensitivity may occur after clinical treatments, usually subsiding within a few days.</li>
+            </ul>
+
+            <h3>Modern Clinical Solutions Available at Our Clinic</h3>
+            <p>1. <strong>In-Office Desensitizing Varnishes:</strong> Professional application of concentrated fluoride or calcium phosphate agents that occlude open dentinal tubules.<br>
+            2. <strong>Tooth-Colored Composite Bonding:</strong> For deep cervical abrasion notches, a micro-layer of aesthetic composite resin is bonded to shield the exposed nerve endings permanently.<br>
+            3. <strong>Custom Nightguards:</strong> Fabricated for patients suffering from bruxism to protect enamel from nocturnal grinding forces.<br>
+            4. <strong>Periodontal Therapy:</strong> Deep cleaning or soft tissue management where severe gum recession has compromised root coverage.</p>
+          `
+        },
+        'blog-3': {
+          badge: 'Blog Article',
+          title: 'Understanding Root Canal Treatment: What Patients Should Know',
+          author: 'Dr. Amrit Jaishi, BDS (BPKIHS)',
+          date: 'Published: August 2026 &bull; Endodontic Care',
+          metaDesc: 'A patient guide to modern root canal therapy: how rotary instruments eliminate infection and save natural teeth safely.',
+          cover: 'img/services/rct.jpg',
+          content: `
+            <h3>Dispelling the Myths Surrounding Root Canal Therapy</h3>
+            <p>Few dental procedures carry as much undeserved apprehension as root canal therapy (RCT). Historical depictions often portray the procedure as agonizing and complex. In modern endodontic practice, however, RCT is performed to <strong>relieve acute pain</strong>, not cause it. With advanced local anesthesia and computerized rotary instrumentation, receiving a root canal is as comfortable as receiving a conventional dental filling.</p>
+
+            <h3>The Anatomy of an Infected Tooth</h3>
+            <p>Beneath the hard enamel and dentin lies the dental pulp chamber—a hollow canal system containing living blood vessels, connective tissue, and nerves. When deep tooth decay, untreated fractures, or traumatic impacts breach this chamber, bacterial colonies rapidly invade the pulp. The body responds with acute inflammation (pulpitis). Because the pulp is enclosed within rigid hard walls, swelling exerts immense pressure on the nerve, causing intense throbbing pain, nocturnal headaches, and localized sensitivity to chewing.</p>
+
+            <div class="article-callout-box">
+              <strong>Why Not Just Extract the Tooth?</strong> Saving your natural tooth preserves natural chewing sensation, prevents neighboring teeth from shifting into open spaces, and preserves surrounding jawbone density. No bridge or artificial implant fully replicates natural tooth physiology.
+            </div>
+
+            <h3>Step-by-Step Overview of Modern RCT</h3>
+            <ol>
+              <li><strong>Profound Anesthesia:</strong> Targeted local anesthesia completely numbs the tooth and surrounding tissues, ensuring total patient comfort.</li>
+              <li><strong>Canal Access & Debridement:</strong> A conservative opening is made to remove the inflamed or infected pulp tissue.</li>
+              <li><strong>Rotary Instrumentation:</strong> Modern flexible nickel-titanium (NiTi) rotary files meticulously clean and shape the microscopic canal pathways while antimicrobial irrigants thoroughly disinfect every crevice.</li>
+              <li><strong>Biocompatible Hermetic Sealing:</strong> The sterile canals are filled with gutta-percha (a natural biocompatible material) and antibacterial resin sealer to permanently block future reinfection.</li>
+              <li><strong>Crown Reinforcement:</strong> Following endodontic therapy, a custom ceramic or zirconia crown is placed to protect the treated tooth from fracture during daily chewing.</li>
+            </ol>
+            <p>If you are experiencing continuous tooth pain or sensitivity to hot foods, do not postpone evaluation. Early treatment saves natural teeth and restores peace of mind.</p>
+          `
+        },
+        'research-1': {
+          badge: 'Research Publication',
+          title: 'Clinical Evaluation of Single-Visit Rotary Endodontics in Symptomatic Irreversible Pulpitis',
+          author: 'Dr. Amrit Jaishi, BDS (BPKIHS)',
+          date: 'Publication Year: 2023 &bull; Journal of Nepalese Dental Association (JNDA)',
+          metaDesc: 'Prospective clinical study on single-visit rotary endodontics in symptomatic irreversible pulpitis with 12-month radiographic evaluation.',
+          cover: 'img/services/rct.jpg',
+          content: `
+            <h3>Abstract & Introduction</h3>
+            <p><strong>Background:</strong> Endodontic therapy has traditionally been performed over multiple appointments to ensure canal sterilization. Advances in nickel-titanium (NiTi) metallurgy, motor torque controls, and irrigation activation have facilitated predictable single-visit endodontics. This study evaluates the incidence of post-operative discomfort and 12-month radiographic healing outcomes in patients presenting with symptomatic irreversible pulpitis in Farwest Nepal.</p>
+            
+            <div class="article-callout-box">
+              <strong>Publication Details:</strong> Published in the <em>Journal of Nepalese Dental Association (JNDA)</em>, Vol. 23, No. 1, pp. 48-54. DOI: 10.3126/jnda.v23i1.48201
+            </div>
+
+            <h3>Methodology & Patient Selection</h3>
+            <p>Eighty-five adult patients (aged 18–55 years) presenting with vital symptomatic irreversible pulpitis in single-rooted or premolar teeth without acute apical abscess were enrolled following informed consent. All procedures were performed under rubber dam isolation using a crown-down rotary file sequence with 5.25% sodium hypochlorite and 17% EDTA irrigation. Canals were obturated in the same session using warm vertical compaction and bioceramic sealer.</p>
+            <p>Post-operative pain was recorded using a Visual Analog Scale (VAS 0–10) at 6, 24, 48 hours, and 7 days. Periapical radiographs were analyzed at 6 and 12 months using the Periapical Index (PAI).</p>
+
+            <h3>Results</h3>
+            <ul>
+              <li><strong>Post-operative Pain:</strong> Moderate pain was reported in only 16.4% of patients at 24 hours and decreased to 3.5% at 48 hours. By day 7, 100% of patients reported complete absence of pain.</li>
+              <li><strong>Analgesic Dependency:</strong> 81.2% of patients required only a single prophylactic dose of NSAID post-treatment.</li>
+              <li><strong>12-Month Radiographic Success:</strong> Radiographic evaluation at one year revealed successful bone remineralization and normal periodontal ligament space in 94.1% of patients, with no statistically significant difference compared to historical multi-visit cohorts (p > 0.05).</li>
+            </ul>
+
+            <h3>Clinical Significance & Discussion</h3>
+            <p>Single-visit rotary endodontics significantly mitigates inter-appointment flare-ups, eliminates the risk of temporary seal leakage, and reduces travel and economic burdens on patients traveling from rural districts in Farwest Nepal. When strict aseptic protocols and adequate chemical irrigation are observed, single-visit therapy is an efficient, safe, and biologically sound modality.</p>
+          `
+        },
+        'research-2': {
+          badge: 'Research Publication',
+          title: 'Prevalence of Periodontal Disease and Oral Health Awareness in Rural Kailali District',
+          author: 'Dr. Amrit Jaishi, BDS (BPKIHS)',
+          date: 'Publication Year: 2022 &bull; Farwest Medical & Health Sciences Review',
+          metaDesc: 'Cross-sectional field study assessing CPITN indices, calculus prevalence, and oral hygiene literacy in rural municipalities of Kailali.',
+          cover: 'img/services/teeth_cleaning.jpg',
+          content: `
+            <h3>Abstract & Background</h3>
+            <p><strong>Background:</strong> Periodontal disease remains a widespread yet neglected public health challenge in rural regions of Nepal. Epidemiological baseline data regarding periodontal status and oral health literacy in Farwest Nepal is limited. This community-based cross-sectional study evaluated Community Periodontal Index of Treatment Needs (CPITN) scores and tooth-cleaning habits among rural adult populations in Kailali district.</p>
+
+            <div class="article-callout-box">
+              <strong>Citation:</strong> <em>Farwest Medical & Health Sciences Review</em>, 2022; 8(2): 35-41. Primary Investigator: Dr. Amrit Jaishi, BDS (BPKIHS).
+            </div>
+
+            <h3>Materials & Methods</h3>
+            <p>A representative sample of 420 adults aged 18 to 65 years participating across four mobile rural dental screening camps organized by Dhangadhi Sanjeevani Hospital was examined. Periodontal status was recorded using WHO CPITN probes across index teeth. A structured pre-tested bilingual questionnaire captured demographic variables, dietary patterns, tobacco/betel-nut usage, cleaning frequency, and access to dental facilities.</p>
+
+            <h3>Key Findings</h3>
+            <ul>
+              <li><strong>Periodontal Status:</strong> Only 7.4% of participants exhibited healthy periodontium (CPITN 0). Bleeding upon probing (CPITN 1) was observed in 28.3%, calculus accumulation (CPITN 2) in 45.9%, and shallow to deep periodontal pockets &ge; 4mm (CPITN 3 & 4) in 18.4%.</li>
+              <li><strong>Hygiene Habits:</strong> 68.1% reported brushing once daily, but only 22.4% practiced twice-daily brushing. Less than 5.7% had ever used dental floss or interdental cleaning aids.</li>
+              <li><strong>Barriers to Care:</strong> 72% cited geographic distance and lack of localized rural dental clinics as the primary reasons for seeking care only during emergency dental pain.</li>
+            </ul>
+
+            <h3>Recommendations & Public Health Implications</h3>
+            <p>The high prevalence of calculus and preventable periodontal pockets underscores the need for structured primary healthcare interventions. Integrating school-based fluoride brushing programs, subsidizing mobile ultrasonic scaling camps, and educating rural health workers on early gingival screening are vital to improving public oral health throughout Kailali and Sudurpashchim Province.</p>
+          `
+        }
+      };
+
+      // Read ?id= from URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const articleId = urlParams.get('id') || 'blog-1';
+      const article = articlesDatabase[articleId] || articlesDatabase['blog-1'];
+
+      // Populate DOM elements
+      document.getElementById('pageTitle').textContent = article.title + ' | Dr. Amrit Jaishi';
+      document.getElementById('metaDescription').setAttribute('content', article.metaDesc || article.title);
+      document.getElementById('articleBadge').textContent = article.badge;
+      document.getElementById('articleHeadline').textContent = article.title;
+      document.getElementById('articleAuthor').innerHTML = '<strong>Author:</strong> ' + article.author;
+      document.getElementById('articleDate').innerHTML = article.date;
+      document.getElementById('articleLeadImage').src = article.cover;
+      document.getElementById('articleLeadImage').alt = article.title;
+      document.getElementById('articleBodyContent').innerHTML = article.content;
+
+      // Update footer year
+      const yearSpan = document.getElementById('articleYear');
+      if (yearSpan) {
+        yearSpan.textContent = new Date().getFullYear();
+      }
+    })();
+  </script>
+</body>
+</html>

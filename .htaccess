@@ -1,0 +1,60 @@
+# Protect private application directories and files from direct HTTP access
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # 1. Allow Let's Encrypt / cPanel AutoSSL verification challenges
+    RewriteCond %{REQUEST_URI} ^/\.well-known/ [NC]
+    RewriteRule ^ - [L]
+
+    # 2. Automatically remove www prefix (www.jaishiamrit.com.np -> jaishiamrit.com.np)
+    RewriteCond %{HTTP_HOST} ^www\.jaishiamrit\.com\.np$ [NC]
+    RewriteCond %{HTTPS} on [OR]
+    RewriteCond %{HTTP:X-Forwarded-Proto} https
+    RewriteRule ^(.*)$ https://jaishiamrit.com.np/$1 [L,R=301]
+
+    RewriteCond %{HTTP_HOST} ^www\.jaishiamrit\.com\.np$ [NC]
+    RewriteRule ^(.*)$ http://jaishiamrit.com.np/$1 [L,R=301]
+
+    # 3. Block access to hidden files and folders (.env, .git, etc.)
+    RewriteRule ^(\.env|\.git|\.htaccess) - [F,L]
+
+    # 4. Block direct access to private folders
+    RewriteRule ^(app|config|database|resources|storage|routes)/ - [F,L]
+
+    # 5. Stop processing if already targeting public folder
+    RewriteRule ^public/ - [L]
+
+    # 6. If requested file exists directly on disk, serve it immediately
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteRule ^ - [L]
+
+    # 7. Map static folders (assets, uploads, img) directly to public directory
+    RewriteRule ^(assets|uploads|img)(/.*)?$ public/$1$2 [L]
+
+    # 8. Forward all other application routes to public/index.php
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ public/index.php [L,QSA]
+</IfModule>
+
+# Disable directory browsing
+Options -Indexes 
+
+# Enable GZIP compression for faster loading on shared hosting
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/plain text/html text/xml text/css application/xml application/xhtml+xml application/rss+xml application/javascript application/x-javascript image/svg+xml
+</IfModule>
+
+# Browser caching for static assets
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpg "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/gif "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/webp "access plus 1 month"
+    ExpiresByType image/svg+xml "access plus 1 month"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType image/x-icon "access plus 1 year"
+</IfModule>

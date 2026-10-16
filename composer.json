@@ -1,0 +1,14 @@
+{
+  "name": "dental/doctor-portfolio",
+  "description": "Dynamic Dental Doctor Portfolio and Clinical Practice Website",
+  "type": "project",
+  "license": "proprietary",
+  "require": {
+    "php": ">=8.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "app/"
+    }
+  }
+}
