@@ -62,6 +62,12 @@
         </a>
       </li>
       <li>
+        <a href="<?= $url('/admin/qualifications') ?>" class="sidebar-link <?= ($activeAdmin ?? '') === 'qualifications' ? 'active' : '' ?>">
+          <i data-lucide="graduation-cap" style="width:18px;height:18px;"></i>
+          <span>Academic Qualifications</span>
+        </a>
+      </li>
+      <li>
         <a href="<?= $url('/admin/services') ?>" class="sidebar-link <?= ($activeAdmin ?? '') === 'services' ? 'active' : '' ?>">
           <i data-lucide="activity" style="width:18px;height:18px;"></i>
           <span>Dental Services</span>

@@ -57,6 +57,16 @@ $router->get('/admin/services/edit', 'AdminServiceController@edit');
 $router->post('/admin/services/edit', 'AdminServiceController@update');
 $router->any('/admin/services/delete', 'AdminServiceController@delete');
 
+// Academic Qualifications & Education
+$router->get('/admin/qualifications', 'AdminQualificationController@index');
+$router->get('/admin/qualifications/create', 'AdminQualificationController@create');
+$router->post('/admin/qualifications', 'AdminQualificationController@store');
+$router->post('/admin/qualifications/create', 'AdminQualificationController@store');
+$router->get('/admin/qualifications/{id}/edit', 'AdminQualificationController@edit');
+$router->post('/admin/qualifications/{id}/update', 'AdminQualificationController@update');
+$router->post('/admin/qualifications/{id}/delete', 'AdminQualificationController@delete');
+$router->any('/admin/qualifications/delete', 'AdminQualificationController@delete');
+
 // Achievements & Certifications
 $router->get('/admin/achievements', 'AdminAchievementController@index');
 $router->get('/admin/achievements/create', 'AdminAchievementController@create');

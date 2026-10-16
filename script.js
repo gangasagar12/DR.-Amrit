@@ -379,29 +379,50 @@ document.addEventListener('DOMContentLoaded', function () {
           }
         }
 
-        // 3. Dynamic Qualifications / Education Timeline (if expanded via Admin)
-        if (Array.isArray(data.qualifications) && data.qualifications.length > 2) {
+        // 3. Dynamic Qualifications / Education Timeline (Loaded directly from MySQL database)
+        if (Array.isArray(data.qualifications) && data.qualifications.length > 0) {
           const timelineContainer = document.querySelector('.education-timeline');
           if (timelineContainer) {
-            const icons = [
-              '<path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path>',
-              '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline>',
-              '<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path><path d="M12 5v14M5 12h14"></path>',
-              '<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>',
-              '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path>',
-              '<rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line>'
-            ];
-            const badges = ['badge-degree', 'badge-licensure', 'badge-safety', 'badge-workshop', 'badge-outreach', 'badge-practice'];
-            const badgeLabels = ['University Degree', 'National Licensure', 'Clinical Governance', 'Specialized Workshop', 'Community Health', 'Clinical Practice'];
+            const iconSvgGrad = '<path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path>';
+            const iconSvgShield = '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline>';
+            const iconSvgCross = '<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path><path d="M12 5v14M5 12h14"></path>';
+            const iconSvgPulse = '<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>';
+            const iconSvgPeople = '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path>';
+            const iconSvgClinic = '<rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line>';
 
             let html = '<div class="timeline-center-line" aria-hidden="true"></div>';
             data.qualifications.forEach(function (q, idx) {
               const isLeft = idx % 2 === 0;
               const sideClass = isLeft ? 'timeline-left' : 'timeline-right';
               const stepNumber = String(idx + 1).padStart(2, '0');
-              const iconSvg = icons[idx % icons.length];
-              const badgeClass = badges[idx % badges.length];
-              const badgeLabel = badgeLabels[idx % badgeLabels.length];
+              const dLower = (q.degree || '').toLowerCase();
+              
+              let badgeClass = 'badge-degree';
+              let badgeLabel = 'University Degree';
+              let iconSvg = iconSvgGrad;
+
+              if (dLower.includes('license') || dLower.includes('council') || dLower.includes('nmc') || dLower.includes('registered')) {
+                badgeClass = 'badge-licensure';
+                badgeLabel = 'National Licensure';
+                iconSvg = iconSvgShield;
+              } else if (dLower.includes('sterilization') || dLower.includes('safety') || dLower.includes('infection') || dLower.includes('governance')) {
+                badgeClass = 'badge-safety';
+                badgeLabel = 'Clinical Governance';
+                iconSvg = iconSvgCross;
+              } else if (dLower.includes('rotary') || dLower.includes('endodontic') || dLower.includes('workshop') || dLower.includes('restoration')) {
+                badgeClass = 'badge-workshop';
+                badgeLabel = 'Specialized Workshop';
+                iconSvg = iconSvgPulse;
+              } else if (dLower.includes('outreach') || dLower.includes('screening') || dLower.includes('community')) {
+                badgeClass = 'badge-outreach';
+                badgeLabel = 'Community Health';
+                iconSvg = iconSvgPeople;
+              } else if (dLower.includes('consultant') || dLower.includes('hospital') || dLower.includes('practice')) {
+                badgeClass = 'badge-practice';
+                badgeLabel = 'Clinical Practice';
+                iconSvg = iconSvgClinic;
+              }
+
               const yearText = q.completion_year ? (q.start_year ? (q.start_year + ' \u2013 ' + q.completion_year) : q.completion_year) : 'Certified';
 
               html += `
