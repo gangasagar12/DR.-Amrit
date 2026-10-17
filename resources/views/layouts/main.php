@@ -15,8 +15,8 @@
   <meta property="og:site_name" content="Dr. Amrit Jaishi Dental Care">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="<?= $asset('img/logo.png') ?>">
-  <link rel="apple-touch-icon" href="<?= $asset('img/logo.png') ?>">
+  <link rel="icon" type="image/png" href="<?= $asset('img/doctor-favicon.png') ?>">
+  <link rel="apple-touch-icon" href="<?= $asset('img/doctor-favicon.png') ?>">
 
   <!-- Google Fonts: Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -43,23 +43,36 @@
   <div class="top-bar">
     <div class="container top-bar-inner">
       <div class="top-bar-socials">
-        <a href="<?= $e($setting('facebook_url', 'https://facebook.com/amrit.jaishi')) ?>" target="_blank" rel="noopener" aria-label="Facebook">
+        <?php if (!empty($setting('facebook_url', $setting('social_facebook', '')))): ?>
+        <a href="<?= $e($setting('facebook_url', $setting('social_facebook', 'https://facebook.com/amrit.jaishi'))) ?>" target="_blank" rel="noopener" aria-label="Facebook">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
         </a>
-        <a href="<?= $e($setting('linkedin_url', 'https://linkedin.com/in/amrit-jaishi')) ?>" target="_blank" rel="noopener" aria-label="LinkedIn">
+        <?php endif; ?>
+        <?php if (!empty($setting('instagram_url', $setting('social_instagram', '')))): ?>
+        <a href="<?= $e($setting('instagram_url', $setting('social_instagram', ''))) ?>" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        </a>
+        <?php endif; ?>
+        <?php if (!empty($setting('linkedin_url', $setting('social_linkedin', '')))): ?>
+        <a href="<?= $e($setting('linkedin_url', $setting('social_linkedin', 'https://linkedin.com/in/amrit-jaishi'))) ?>" target="_blank" rel="noopener" aria-label="LinkedIn">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
         </a>
-        <a href="<?= $e($setting('youtube_url', 'https://youtube.com/@amritjaishi')) ?>" target="_blank" rel="noopener" aria-label="YouTube">
+        <?php endif; ?>
+        <?php if (!empty($setting('youtube_url', $setting('social_youtube', '')))): ?>
+        <a href="<?= $e($setting('youtube_url', $setting('social_youtube', 'https://youtube.com/@amritjaishi'))) ?>" target="_blank" rel="noopener" aria-label="YouTube">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
         </a>
-        <a href="<?= $e($setting('twitter_url', 'https://twitter.com/')) ?>" target="_blank" rel="noopener" aria-label="X (Twitter)">
+        <?php endif; ?>
+        <?php if (!empty($setting('twitter_url', $setting('social_twitter', '')))): ?>
+        <a href="<?= $e($setting('twitter_url', $setting('social_twitter', 'https://twitter.com/'))) ?>" target="_blank" rel="noopener" aria-label="X (Twitter)">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
         </a>
+        <?php endif; ?>
       </div>
       <div class="top-bar-contacts">
         <a href="tel:<?= $e($setting('hospital_phone', '091-590328')) ?>" class="top-bar-phone">
           <i data-lucide="phone" style="width:12px;height:12px;"></i>
-          <span>(091) 590328</span><span class="phone-secondary"> / <?= $e($setting('contact_phone', '+977-9860644282')) ?></span>
+          <span><?= $e($setting('hospital_phone', '(091) 590328')) ?></span><span class="phone-secondary"> / <?= $e($setting('contact_phone', '+977-9860644282')) ?></span>
         </a>
         <span class="top-bar-divider">|</span>
         <a href="mailto:<?= $e($setting('contact_email', 'amritjaishi0@gmail.com')) ?>" class="top-bar-email"><i data-lucide="mail" style="width:12px;height:12px;"></i> <?= $e($setting('contact_email', 'amritjaishi0@gmail.com')) ?></a>
@@ -71,7 +84,7 @@
   <header class="site-header">
     <div class="container header-main">
       <a href="<?= $url('/') ?>" class="site-logo">
-        <img src="<?= $asset('img/logo.png') ?>" alt="<?= $e($doctor_profile()['doctor_name'] ?? 'Dr. Amrit Jaishi') ?> Logo" class="site-logo-img">
+        <img src="<?= $asset('img/doctor-favicon.png') ?>" alt="<?= $e($doctor_profile()['doctor_name'] ?? 'Dr. Amrit Jaishi') ?> Logo" class="site-logo-img">
         <div class="logo-text">
           <span class="logo-name"><?= $e($doctor_profile()['doctor_name'] ?? 'Dr. Amrit Jaishi') ?></span>
           <span class="logo-sub"><?= $e($doctor_profile()['professional_title'] ?? 'BDS (BPKIHS) - Oral & Dental Surgeon') ?></span>
@@ -229,26 +242,39 @@
       <!-- Col 1: Identity & Bio -->
       <div class="footer-col">
         <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;">
-          <img src="<?= $asset('img/logo.png') ?>" alt="Dr. Amrit Jaishi Logo" style="width:40px;height:40px;object-fit:contain;border-radius:8px;background:#ffffff;padding:2px;box-shadow:0 2px 8px rgba(0,0,0,0.2);">
+          <img src="<?= $asset('img/doctor-favicon.png') ?>" alt="<?= $e($doctor_profile()['doctor_name'] ?? 'Dr. Amrit Jaishi') ?> Logo" style="width:40px;height:40px;object-fit:cover;border-radius:50%;background:#ffffff;padding:2px;border:2px solid var(--primary-teal);box-shadow:0 2px 8px rgba(0,0,0,0.2);">
           <div>
             <h3 style="margin:0;font-size:1.2rem;color:#ffffff;"><?= $e($doctor_profile()['doctor_name'] ?? 'Dr. Amrit Jaishi') ?></h3>
             <span style="color:#93d5dc;font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;display:block;margin-top:2px;"><?= $e($doctor_profile()['professional_title'] ?? 'BDS (BPKIHS) - Oral & Dental Surgeon') ?></span>
           </div>
         </div>
-        <p><?= $e($doctor_profile()['tagline'] ?? 'PERSONALISED SPECIALIST CARE FOR YOUR SMILE') ?></p>
+        <p><?= $e($doctor_profile()['tagline'] ?? 'Dedicated to providing patient-centered dental care with a focus on oral health, preventive dentistry, and comfortable treatment experiences.') ?></p>
         <div class="social-icons-row">
-          <a href="<?= $e($setting('facebook_url', 'https://facebook.com/amrit.jaishi')) ?>" class="social-icon-btn" target="_blank" rel="noopener" aria-label="Facebook">
+          <?php if (!empty($setting('facebook_url', $setting('social_facebook', '')))): ?>
+          <a href="<?= $e($setting('facebook_url', $setting('social_facebook', 'https://facebook.com/amrit.jaishi'))) ?>" class="social-icon-btn" target="_blank" rel="noopener" aria-label="Facebook">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
           </a>
-          <a href="<?= $e($setting('linkedin_url', 'https://linkedin.com/in/amrit-jaishi')) ?>" class="social-icon-btn" target="_blank" rel="noopener" aria-label="LinkedIn">
+          <?php endif; ?>
+          <?php if (!empty($setting('instagram_url', $setting('social_instagram', '')))): ?>
+          <a href="<?= $e($setting('instagram_url', $setting('social_instagram', ''))) ?>" class="social-icon-btn" target="_blank" rel="noopener" aria-label="Instagram">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
+          <?php endif; ?>
+          <?php if (!empty($setting('linkedin_url', $setting('social_linkedin', '')))): ?>
+          <a href="<?= $e($setting('linkedin_url', $setting('social_linkedin', 'https://linkedin.com/in/amrit-jaishi'))) ?>" class="social-icon-btn" target="_blank" rel="noopener" aria-label="LinkedIn">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
           </a>
-          <a href="<?= $e($setting('youtube_url', 'https://youtube.com/@amritjaishi')) ?>" class="social-icon-btn" target="_blank" rel="noopener" aria-label="YouTube">
+          <?php endif; ?>
+          <?php if (!empty($setting('youtube_url', $setting('social_youtube', '')))): ?>
+          <a href="<?= $e($setting('youtube_url', $setting('social_youtube', 'https://youtube.com/@amritjaishi'))) ?>" class="social-icon-btn" target="_blank" rel="noopener" aria-label="YouTube">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
           </a>
-          <a href="<?= $e($setting('twitter_url', 'https://twitter.com/')) ?>" class="social-icon-btn" target="_blank" rel="noopener" aria-label="X (Twitter)">
+          <?php endif; ?>
+          <?php if (!empty($setting('twitter_url', $setting('social_twitter', '')))): ?>
+          <a href="<?= $e($setting('twitter_url', $setting('social_twitter', 'https://twitter.com/'))) ?>" class="social-icon-btn" target="_blank" rel="noopener" aria-label="X (Twitter)">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
           </a>
+          <?php endif; ?>
         </div>
       </div>
 
@@ -300,8 +326,7 @@
         &copy; <?= date('Y') ?> Dr. Amrit Jaishi. All rights reserved.
       </div>
       <div style="display:flex;gap:1.5rem;align-items:center;">
-        <a href="https://dipeshbham.com.np/" style="color:#94a3b8;font-size:0.8rem;">Made with ❤️ Dipesh Bham</a>
-        <!-- <a href="<?= $url('/admin/login') ?>" style="color:#94a3b8;font-size:0.8rem;"><i data-lucide="lock" style="width:12px;height:12px;display:inline;"></i> Doctor Portal</a> -->
+        <a href="https://stra.com" style="color:#94a3b8;font-size:0.8rem;">Developed by Stratraflow Technologies</a>
       </div>
     </div>
   </footer>

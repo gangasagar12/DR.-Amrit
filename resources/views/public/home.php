@@ -11,7 +11,7 @@
 <!-- 1. HERO SECTION (CANVA TEMPLATE DESIGN) -->
 <section class="hero-canva-section" id="heroSection" style="padding: 0; margin: 0; background-color: #ffffff; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: center; align-items: center; width: 100%;">
   <div style="width: 100%; max-width: 900px; margin: 0 auto;">
-    <img src="<?= $asset('img/doctor-image.png') ?>" alt="Dr. Amrit Jaisi - General Dentist" style="width: 100%; height: auto; display: block;">
+    <img src="<?= $asset(!empty($doctor['hero_image']) ? $doctor['hero_image'] : 'img/doctor-image.png') ?>" alt="<?= $e($doctor['doctor_name'] ?? 'Dr. Amrit Jaishi - General Dentist') ?>" style="width: 100%; height: auto; display: block;">
   </div>
 </section>
 
@@ -26,24 +26,27 @@
           <span class="exp-label">Years of<br>Experience</span>
         </div>
         <div class="about-img-card">
-          <img src="<?= $asset('uploads/profile/amrit_portrait.jpg') ?>" alt="Dr. Amrit Jaishi BDS (BPKIHS) Dental Surgeon">
+          <img src="<?= $asset(!empty($doctor['about_image']) ? $doctor['about_image'] : (!empty($doctor['profile_image']) ? $doctor['profile_image'] : 'img/doctor-clinic.jpg')) ?>" alt="<?= $e($doctor['doctor_name'] ?? 'Dr. Amrit Jaishi') ?> BDS (BPKIHS) Dental Surgeon">
         </div>
       </div>
 
       <!-- Right Bio & Mini Cards -->
       <div class="about-theme-content">
         <div class="section-tag">
-          <i data-lucide="award" style="width:14px;height:14px;"></i> About Dr. Amrit Jaishi
+          <i data-lucide="award" style="width:14px;height:14px;"></i> <?= $e($doctor['about_kicker'] ?? 'About Dr. Amrit Jaishi') ?>
         </div>
         <h2 style="font-size:clamp(1.85rem, 3.2vw, 2.5rem);margin-bottom:1.25rem;line-height:1.2;">
-          SPECIALIST DENTAL CARE & RESTORATIVE DENTISTRY
+          <?= $e($doctor['about_subheading'] ?? 'SPECIALIST DENTAL CARE & RESTORATIVE DENTISTRY') ?>
         </h2>
-        <p style="font-size:1.025rem;line-height:1.75;margin-bottom:1.15rem;color:var(--text-muted);">
-          Dr. Amrit Raj Jaishi has been serving as an Oral and Dental Surgeon in Farwest Province, Nepal, for over four years. Currently based at Dhangadhi Sanjeevani Hospital, Dr. Jaishi graduated with a Bachelor of Dental Surgery (BDS) from <strong>B.P. Koirala Institute of Health Sciences (BPKIHS, Dharan)</strong> — one of Nepal's leading autonomous medical and dental universities.
-        </p>
-        <p style="font-size:0.975rem;line-height:1.75;margin-bottom:1.5rem;color:var(--text-muted);">
-          Dedicated to patient comfort, gentle technique, and clinical excellence, Dr. Jaishi provides comprehensive restorative dentistry, pain-free root canals (RCT), dental crowns, and emergency surgical care.
-        </p>
+        <?php if (!empty($doctor['biography'])): ?>
+          <div style="font-size:1.025rem;line-height:1.75;margin-bottom:1.5rem;color:var(--text-muted);display:flex;flex-direction:column;gap:1rem;">
+            <?= nl2br($e($doctor['biography'])) ?>
+          </div>
+        <?php else: ?>
+          <p style="font-size:1.025rem;line-height:1.75;margin-bottom:1.15rem;color:var(--text-muted);">
+            Dr. Amrit Raj Jaishi has been serving as an Oral and Dental Surgeon in Farwest Province, Nepal, for over four years. Currently based at Dhangadhi Sanjeevani Hospital, Dr. Jaishi graduated with a Bachelor of Dental Surgery (BDS) from <strong>B.P. Koirala Institute of Health Sciences (BPKIHS, Dharan)</strong> — one of Nepal's leading autonomous medical and dental universities.
+          </p>
+        <?php endif; ?>
 
         <!-- 3 Feature Mini Cards from theme.webp -->
         <div class="about-mini-cards">
@@ -83,76 +86,46 @@
       </p>
     </div>
 
+    <?php
+      $srvList = !empty($featuredServices) ? $featuredServices : [];
+      $srvLeft = array_slice($srvList, 0, 3);
+      $srvRight = array_slice($srvList, 3, 3);
+      $centerDoctorImg = !empty($doctor['about_image']) ? $doctor['about_image'] : (!empty($doctor['profile_image']) ? $doctor['profile_image'] : 'img/doctor-clinic.jpg');
+    ?>
     <div class="services-theme-wrapper">
       <!-- Left 3 Services -->
       <div class="services-theme-col">
-        <a href="<?= $url('/services/emergency-dental-care') ?>" class="service-theme-item">
-          <div class="service-theme-icon">
-            <i data-lucide="shield-alert" style="width:24px;height:24px;"></i>
-          </div>
-          <div class="service-theme-info">
-            <h3>Emergency Dental Care</h3>
-            <p>Immediate diagnosis and pain-relieving care for acute toothache and oral trauma.</p>
-          </div>
-        </a>
-
-        <a href="<?= $url('/services/dental-crown-and-bridge') ?>" class="service-theme-item">
-          <div class="service-theme-icon">
-            <i data-lucide="crown" style="width:24px;height:24px;"></i>
-          </div>
-          <div class="service-theme-info">
-            <h3>Dental Crown & Bridge</h3>
-            <p>Durable, precision porcelain restorations that protect damaged teeth and restore bite power.</p>
-          </div>
-        </a>
-
-        <a href="<?= $url('/services/root-canal-treatment-rct') ?>" class="service-theme-item">
-          <div class="service-theme-icon">
-            <i data-lucide="activity" style="width:24px;height:24px;"></i>
-          </div>
-          <div class="service-theme-info">
-            <h3>Root Canal Treatment (RCT)</h3>
-            <p>Painless modern endodontic therapy saving deeply decayed and infected natural teeth.</p>
-          </div>
-        </a>
+        <?php foreach ($srvLeft as $srv): ?>
+          <a href="<?= $url('/services/' . $srv['slug']) ?>" class="service-theme-item">
+            <div class="service-theme-icon">
+              <i data-lucide="shield-check" style="width:24px;height:24px;"></i>
+            </div>
+            <div class="service-theme-info">
+              <h3><?= $e($srv['name']) ?></h3>
+              <p><?= $e($srv['short_description']) ?></p>
+            </div>
+          </a>
+        <?php endforeach; ?>
       </div>
 
       <!-- Center Doctor Showcase -->
       <div class="services-center-img-box">
-        <img src="<?= $asset('uploads/profile/1b64f5b99865374ab47e4c740246eefd.png') ?>" alt="Dr. Amrit Jaishi in Consultation">
+        <img src="<?= $asset($centerDoctorImg) ?>" alt="<?= $e($doctor['doctor_name'] ?? 'Dr. Amrit Jaishi') ?> in Consultation">
       </div>
 
       <!-- Right 3 Services -->
       <div class="services-theme-col">
-        <a href="<?= $url('/services/periodontal-gum-care') ?>" class="service-theme-item">
-          <div class="service-theme-icon">
-            <i data-lucide="heart-pulse" style="width:24px;height:24px;"></i>
-          </div>
-          <div class="service-theme-info">
-            <h3>Periodontal & Gum Care</h3>
-            <p>Specialized treatments for bleeding gums, gingivitis, and periodontal health.</p>
-          </div>
-        </a>
-
-        <a href="<?= $url('/services/teeth-cleaning-and-scaling') ?>" class="service-theme-item">
-          <div class="service-theme-icon">
-            <i data-lucide="sparkles" style="width:24px;height:24px;"></i>
-          </div>
-          <div class="service-theme-info">
-            <h3>Teeth Cleaning & Scaling</h3>
-            <p>Ultrasonic plaque and tartar removal for healthy gums and radiant fresh breath.</p>
-          </div>
-        </a>
-
-        <a href="<?= $url('/services/tooth-extraction-minor-surgery') ?>" class="service-theme-item">
-          <div class="service-theme-icon">
-            <i data-lucide="wrench" style="width:24px;height:24px;"></i>
-          </div>
-          <div class="service-theme-info">
-            <h3>Wisdom Tooth & Surgery</h3>
-            <p>Gentle minor oral surgery and atraumatic extractions with rapid clinical healing.</p>
-          </div>
-        </a>
+        <?php foreach ($srvRight as $srv): ?>
+          <a href="<?= $url('/services/' . $srv['slug']) ?>" class="service-theme-item">
+            <div class="service-theme-icon">
+              <i data-lucide="sparkles" style="width:24px;height:24px;"></i>
+            </div>
+            <div class="service-theme-info">
+              <h3><?= $e($srv['name']) ?></h3>
+              <p><?= $e($srv['short_description']) ?></p>
+            </div>
+          </a>
+        <?php endforeach; ?>
       </div>
     </div>
 

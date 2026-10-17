@@ -398,6 +398,8 @@ class PublicController {
             // gracefully fallback
         }
 
+        $settings = Setting::all();
+
         Response::json([
             'success' => true,
             'doctor' => $doctor,
@@ -410,11 +412,14 @@ class PublicController {
             'researches' => $researches,
             'videos' => $videos,
             'video_categories' => $videoCategories,
+            'settings' => $settings,
             'contact' => [
-                'email' => $doctor['contact_email'] ?? 'amritjaishi0@gmail.com',
-                'phone' => $doctor['phone'] ?? '+977-9860644282',
-                'whatsapp' => $doctor['whatsapp'] ?? '+9779860644282',
-                'emergency_contact' => $doctor['emergency_contact'] ?? '091-590328 / 091-590348 (Hospital Lines)'
+                'email' => $doctor['contact_email'] ?? ($settings['contact_email'] ?? 'amritjaishi0@gmail.com'),
+                'phone' => $doctor['phone'] ?? ($settings['contact_phone'] ?? '+977-9860644282'),
+                'whatsapp' => $doctor['whatsapp'] ?? ($settings['whatsapp_number'] ?? '+9779860644282'),
+                'emergency_contact' => $doctor['emergency_contact'] ?? ($settings['emergency_guidance'] ?? ($settings['hospital_phone'] ?? '091-590328 / 091-590348 (Hospital Lines)')),
+                'address' => $settings['clinic_address'] ?? ($clinics[0]['full_address'] ?? 'Dhangadhi Sanjeevani Hospital, Hospital Road, Dhangadhi, Kailali, Nepal'),
+                'working_hours' => $settings['working_hours'] ?? ($clinics[0]['working_days'] ? ($clinics[0]['working_days'] . ': ' . $clinics[0]['working_hours']) : 'Sun - Fri: 10:00 AM - 5:00 PM')
             ]
         ]);
     }

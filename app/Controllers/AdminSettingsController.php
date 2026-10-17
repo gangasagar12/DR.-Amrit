@@ -39,7 +39,7 @@ class AdminSettingsController {
             'site_name', 'site_tagline', 'meta_title', 'meta_description',
             'contact_email', 'contact_phone', 'whatsapp_number', 'clinic_address',
             'working_hours', 'emergency_guidance', 'social_facebook', 'social_instagram',
-            'social_linkedin', 'social_youtube', 'footer_copyright_text',
+            'social_linkedin', 'social_youtube', 'social_twitter', 'footer_copyright_text',
             'smtp_enabled', 'smtp_host', 'smtp_port', 'smtp_username',
             'smtp_encryption', 'smtp_from_email', 'smtp_from_name', 'notification_email'
         ];
@@ -53,6 +53,13 @@ class AdminSettingsController {
                 $updates[$field] = Sanitizer::cleanString($val);
             }
         }
+
+        // Mirror social keys for backwards and template compatibility
+        if (isset($updates['social_facebook'])) $updates['facebook_url'] = $updates['social_facebook'];
+        if (isset($updates['social_instagram'])) $updates['instagram_url'] = $updates['social_instagram'];
+        if (isset($updates['social_linkedin'])) $updates['linkedin_url'] = $updates['social_linkedin'];
+        if (isset($updates['social_youtube'])) $updates['youtube_url'] = $updates['social_youtube'];
+        if (isset($updates['social_twitter'])) $updates['twitter_url'] = $updates['social_twitter'];
 
         // Only update SMTP password if a new value is submitted
         $smtpPass = $request->post('smtp_password');

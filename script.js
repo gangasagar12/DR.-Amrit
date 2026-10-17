@@ -548,6 +548,19 @@ document.addEventListener('DOMContentLoaded', function () {
             const aboutImg = document.querySelector('.about-portrait');
             if (aboutImg) aboutImg.src = doc.about_image;
           }
+          if (doc.about_badge_title) {
+            const bt = document.querySelector('.about-badge-title');
+            if (bt) bt.textContent = doc.about_badge_title;
+          }
+          if (doc.about_badge_subtitle) {
+            const bs = document.querySelector('.about-badge-subtitle');
+            if (bs) bs.textContent = doc.about_badge_subtitle;
+          }
+          if (doc.tagline) {
+            document.querySelectorAll('.footer-tagline').forEach(function (el) {
+              el.textContent = doc.tagline;
+            });
+          }
           if (doc.biography) {
             const bioCol = document.querySelector('.about-content-column');
             if (bioCol) {
@@ -569,6 +582,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // 3. Dynamic Qualifications / Education Timeline (Loaded directly from MySQL database)
         if (Array.isArray(data.qualifications) && data.qualifications.length > 0) {
+          // Dynamic Education Highlights Subsection in About Section
+          const highlightsGrid = document.getElementById('aboutHighlightsGrid');
+          if (highlightsGrid) {
+            const top3 = data.qualifications.slice(0, 3);
+            highlightsGrid.innerHTML = top3.map(function (q) {
+              const yr = q.completion_year ? (q.start_year ? (q.start_year + ' \u2013 ' + q.completion_year) : q.completion_year) : 'Certified';
+              return `
+                <div class="highlight-item">
+                  <span class="highlight-degree">${q.degree}</span>
+                  <span class="highlight-institution">${q.institution}${q.location ? ', ' + q.location : ''}</span>
+                  <span class="highlight-year">${yr}</span>
+                </div>
+              `;
+            }).join('');
+          }
+
           const timelineContainer = document.querySelector('.education-timeline');
           if (timelineContainer) {
             const iconSvgGrad = '<path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path>';
@@ -852,35 +881,111 @@ document.addEventListener('DOMContentLoaded', function () {
           }
         }
 
-        // 9. Dynamic Contact & Footer Details
+        // 9. Dynamic Social Links (loaded from settings / doctor)
+        const footerSocial = document.getElementById('footerSocial');
+        if (footerSocial) {
+          const s = data.settings || {};
+          const doc = data.doctor || {};
+          const fb = s.social_facebook || s.facebook_url;
+          const ig = s.social_instagram || s.instagram_url;
+          const li = s.social_linkedin || s.linkedin_url;
+          const yt = s.social_youtube || s.youtube_url;
+          const tw = s.social_twitter || s.twitter_url;
+          const wa = s.whatsapp_number || doc.whatsapp;
+
+          let socialHtml = '';
+          if (fb) {
+            socialHtml += `<a href="${fb}" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>`;
+          }
+          if (ig) {
+            socialHtml += `<a href="${ig}" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a>`;
+          }
+          if (li) {
+            socialHtml += `<a href="${li}" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>`;
+          }
+          if (yt) {
+            socialHtml += `<a href="${yt}" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="YouTube"><svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>`;
+          }
+          if (tw) {
+            socialHtml += `<a href="${tw}" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="X (Twitter)"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>`;
+          }
+          if (wa) {
+            const cleanWa = wa.replace(/[^0-9]/g, '');
+            socialHtml += `<a href="https://wa.me/${cleanWa}" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="WhatsApp"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.301-.15-1.782-.879-2.058-.979-.276-.1-.477-.15-.678.15-.201.3-.777.979-.953 1.18-.176.201-.351.226-.652.075-.301-.15-1.272-.469-2.423-1.496-.896-.799-1.501-1.786-1.677-2.087-.176-.301-.019-.464.132-.614.136-.135.301-.351.452-.527.15-.176.201-.301.301-.502.101-.201.05-.377-.025-.527-.075-.15-.678-1.634-.929-2.238-.244-.589-.493-.509-.678-.518-.176-.009-.377-.009-.578-.009s-.527.075-.803.377c-.276.301-1.054 1.03-1.054 2.511 0 1.481 1.079 2.911 1.23 3.112.15.201 2.123 3.242 5.143 4.547.718.311 1.279.497 1.716.636.721.23 1.377.197 1.896.12.578-.087 1.782-.728 2.033-1.431.251-.703.251-1.305.176-1.431-.076-.126-.277-.201-.578-.351zM12 21.82a9.77 9.77 0 0 1-4.99-1.365l-.358-.213-3.708.973.99-3.615-.233-.371A9.8 9.8 0 1 1 21.8 12c0 5.414-4.404 9.82-9.8 9.82z"/></svg></a>`;
+          }
+
+          footerSocial.innerHTML = socialHtml;
+        }
+
+        // 10. Dynamic Contact & Footer Details
         if (data.contact) {
           const c = data.contact;
+          const s = data.settings || {};
+
+          // Emails
           if (c.email) {
-            document.querySelectorAll('a[href^="mailto:"]').forEach(function (a) {
+            document.querySelectorAll('a[href^="mailto:"], #contactEmailVal, .footer-email-link').forEach(function (a) {
               a.href = 'mailto:' + c.email;
               a.textContent = c.email;
             });
           }
+
+          // Phones
           if (c.phone) {
             const cleanPhone = c.phone.replace(/[^0-9+]/g, '');
-            document.querySelectorAll('a[href^="tel:"], .btn-call-clinic').forEach(function (a) {
+            document.querySelectorAll('a[href^="tel:"], .btn-call-clinic, #contactPhoneVal, .footer-phone-link').forEach(function (a) {
               a.href = 'tel:' + cleanPhone;
-              if (!a.classList.contains('btn')) {
+              if (!a.classList.contains('btn') || a.id === 'contactPhoneVal') {
                 a.textContent = c.phone;
               }
             });
+            const qCall = document.getElementById('quickCallBtn');
+            if (qCall) qCall.href = 'tel:' + cleanPhone;
           }
+
+          // WhatsApp
           if (c.whatsapp) {
             const cleanWa = c.whatsapp.replace(/[^0-9]/g, '');
             document.querySelectorAll('a[href*="wa.me"]').forEach(function (a) {
               a.href = 'https://wa.me/' + cleanWa;
             });
+            const qWa = document.getElementById('quickWhatsappBtn');
+            if (qWa) qWa.href = 'https://wa.me/' + cleanWa;
           }
+
+          // Emergency guidance / Hospital lines
           if (c.emergency_contact) {
-            const subEl = document.querySelector('.contact-entry .entry-sub');
-            if (subEl) {
-              subEl.textContent = 'Hospital Lines: ' + c.emergency_contact;
+            const emEl = document.getElementById('contactEmergencyVal');
+            if (emEl) {
+              emEl.textContent = 'Hospital Lines: ' + c.emergency_contact;
+            } else {
+              const subEl = document.querySelector('.contact-entry .entry-sub');
+              if (subEl) subEl.textContent = 'Hospital Lines: ' + c.emergency_contact;
             }
+          }
+
+          // Location / Address
+          const fullAddress = c.address || s.clinic_address;
+          if (fullAddress) {
+            const fLoc = document.getElementById('footerLocationVal');
+            if (fLoc) fLoc.textContent = fullAddress;
+
+            const cLoc = document.getElementById('contactAddressSub');
+            if (cLoc) cLoc.textContent = fullAddress;
+          }
+
+          // Working hours
+          const hours = c.working_hours || s.working_hours;
+          if (hours) {
+            const cHours = document.getElementById('contactHoursVal');
+            if (cHours) cHours.textContent = hours;
+          }
+
+          // Copyright doctor name
+          if (data.doctor && data.doctor.doctor_name) {
+            document.querySelectorAll('.footer-copy-name').forEach(function (el) {
+              el.textContent = data.doctor.doctor_name;
+            });
           }
         }
       })

@@ -74,19 +74,23 @@
       <div class="form-grid">
         <div class="form-group">
           <label class="form-label">Facebook Profile / Page</label>
-          <input type="url" name="social_facebook" class="form-control" value="<?= $e($settings['social_facebook'] ?? '') ?>">
+          <input type="url" name="social_facebook" class="form-control" value="<?= $e($settings['social_facebook'] ?? ($settings['facebook_url'] ?? '')) ?>">
         </div>
         <div class="form-group">
           <label class="form-label">Instagram Profile</label>
-          <input type="url" name="social_instagram" class="form-control" value="<?= $e($settings['social_instagram'] ?? '') ?>">
+          <input type="url" name="social_instagram" class="form-control" value="<?= $e($settings['social_instagram'] ?? ($settings['instagram_url'] ?? '')) ?>">
         </div>
         <div class="form-group">
           <label class="form-label">LinkedIn Profile</label>
-          <input type="url" name="social_linkedin" class="form-control" value="<?= $e($settings['social_linkedin'] ?? '') ?>">
+          <input type="url" name="social_linkedin" class="form-control" value="<?= $e($settings['social_linkedin'] ?? ($settings['linkedin_url'] ?? '')) ?>">
         </div>
         <div class="form-group">
           <label class="form-label">YouTube Educational Channel</label>
-          <input type="url" name="social_youtube" class="form-control" value="<?= $e($settings['social_youtube'] ?? '') ?>">
+          <input type="url" name="social_youtube" class="form-control" value="<?= $e($settings['social_youtube'] ?? ($settings['youtube_url'] ?? '')) ?>">
+        </div>
+        <div class="form-group">
+          <label class="form-label">X / Twitter Profile</label>
+          <input type="url" name="social_twitter" class="form-control" value="<?= $e($settings['social_twitter'] ?? ($settings['twitter_url'] ?? '')) ?>">
         </div>
       </div>
 

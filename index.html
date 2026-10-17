@@ -128,7 +128,15 @@
                 width="480"
                 height="600"
               >
-             
+              <div class="about-photo-badge">
+                <div class="about-badge-icon">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                </div>
+                <div class="about-badge-text">
+                  <strong class="about-badge-title">4+ Years Clinical Care</strong>
+                  <span class="about-badge-subtitle">Oral &amp; Dental Surgery</span>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -148,7 +156,7 @@
             <!-- Short Education Highlights Subsection -->
             <div class="education-highlights-block">
               <h4 class="highlights-title">Education Highlights</h4>
-              <div class="highlights-grid">
+              <div class="highlights-grid" id="aboutHighlightsGrid">
                 <div class="highlight-item">
                   <span class="highlight-degree">Bachelor of Dental Surgery (BDS)</span>
                   <span class="highlight-institution">B.P. Koirala Institute of Health Sciences (BPKIHS), Dharan</span>
@@ -1188,32 +1196,32 @@
             <div class="contact-list">
               <div class="contact-entry">
                 <span class="entry-label">Professional Email</span>
-                <a href="mailto:amritjaishi0@gmail.com" class="entry-val">amritjaishi0@gmail.com</a>
+                <a href="mailto:amritjaishi0@gmail.com" class="entry-val" id="contactEmailVal">amritjaishi0@gmail.com</a>
               </div>
 
               <div class="contact-entry">
                 <span class="entry-label">Contact Number</span>
-                <a href="tel:+9779860644282" class="entry-val">+977-9860644282</a>
-                <span class="entry-sub">Hospital Lines: (091) 590328 / (091) 590348</span>
+                <a href="tel:+9779860644282" class="entry-val" id="contactPhoneVal">+977-9860644282</a>
+                <span class="entry-sub" id="contactEmergencyVal">Hospital Lines: (091) 590328 / (091) 590348</span>
               </div>
 
               <div class="contact-entry">
                 <span class="entry-label">Primary Clinic Location</span>
-                <span class="entry-val">Dhangadhi Sanjeevani Hospital</span>
-                <span class="entry-sub">Hospital Road, Dhangadhi, Kailali, Nepal</span>
+                <span class="entry-val" id="contactLocationVal">Dhangadhi Sanjeevani Hospital</span>
+                <span class="entry-sub" id="contactAddressSub">Hospital Road, Dhangadhi, Kailali, Nepal</span>
               </div>
 
               <div class="contact-entry">
                 <span class="entry-label">Consultation Hours</span>
-                <span class="entry-val">Sunday &ndash; Friday: 10:00 AM &ndash; 5:00 PM</span>
-                <span class="entry-sub">Saturday: Emergency & On-Call Procedures</span>
+                <span class="entry-val" id="contactHoursVal">Sunday &ndash; Friday: 10:00 AM &ndash; 5:00 PM</span>
+                <span class="entry-sub" id="contactHoursSub">Emergency & On-Call Procedures Available</span>
               </div>
             </div>
 
             <!-- Direct Quick Buttons -->
             <div class="contact-quick-buttons">
-              <a href="tel:+9779860644282" class="btn btn-primary">Call Directly</a>
-              <a href="https://wa.me/9779860644282" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">Message on WhatsApp</a>
+              <a href="tel:+9779860644282" class="btn btn-primary" id="quickCallBtn">Call Directly</a>
+              <a href="https://wa.me/9779860644282" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" id="quickWhatsappBtn">Message on WhatsApp</a>
             </div>
           </div>
 
@@ -1274,6 +1282,9 @@
           <p class="footer-tagline">
             Dedicated to providing patient-centered dental care with a focus on oral health, preventive dentistry, and comfortable treatment experiences.
           </p>
+          <div class="footer-social" id="footerSocial" aria-label="Social Media Profiles">
+            <!-- Dynamically populated from admin settings -->
+          </div>
         </div>
 
         <div class="footer-nav">
@@ -1294,16 +1305,16 @@
         <div class="footer-contact">
           <span class="footer-heading">Contact Details</span>
           <div class="footer-contact-list">
-            <div>Email: <a href="mailto:amritjaishi0@gmail.com">amritjaishi0@gmail.com</a></div>
-            <div>Phone: <a href="tel:+9779860644282">+977-9860644282</a></div>
-            <div>Location: Dhangadhi Sanjeevani Hospital, Kailali, Nepal</div>
+            <div>Email: <a href="mailto:amritjaishi0@gmail.com" class="footer-email-link">amritjaishi0@gmail.com</a></div>
+            <div>Phone: <a href="tel:+9779860644282" class="footer-phone-link">+977-9860644282</a></div>
+            <div>Location: <span id="footerLocationVal">Dhangadhi Sanjeevani Hospital, Kailali, Nepal</span></div>
           </div>
         </div>
       </div>
 
       <div class="footer-bottom">
         <p class="copyright-text">
-          &copy; <span id="currentYear">2026</span> Dr. Amrit Jaishi. All rights reserved.
+          &copy; <span id="currentYear">2026</span> <span class="footer-copy-name">Dr. Amrit Jaishi</span>. All rights reserved.
         </p>
         <p class="footer-subtext">
           Developed by <a href="https://stra.com">Stratraflow Technologies</a>.
