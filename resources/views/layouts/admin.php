@@ -54,11 +54,11 @@
         </a>
       </li>
 
-      <li class="menu-category-title">Professional Identity</li>
+      <li class="menu-category-title">Homepage Content</li>
       <li>
         <a href="<?= $url('/admin/profile') ?>" class="sidebar-link <?= ($activeAdmin ?? '') === 'profile' ? 'active' : '' ?>">
-          <i data-lucide="user-check" style="width:18px;height:18px;"></i>
-          <span>Doctor Profile & Bio</span>
+          <i data-lucide="sparkles" style="width:18px;height:18px;"></i>
+          <span>Hero & About Sections</span>
         </a>
       </li>
       <li>
@@ -74,35 +74,17 @@
         </a>
       </li>
       <li>
-        <a href="<?= $url('/admin/achievements') ?>" class="sidebar-link <?= ($activeAdmin ?? '') === 'achievements' ? 'active' : '' ?>">
-          <i data-lucide="award" style="width:18px;height:18px;"></i>
-          <span>Certifications & Honors</span>
-        </a>
-      </li>
-      <li>
         <a href="<?= $url('/admin/clinics') ?>" class="sidebar-link <?= ($activeAdmin ?? '') === 'clinics' ? 'active' : '' ?>">
           <i data-lucide="building-2" style="width:18px;height:18px;"></i>
-          <span>Clinic Affiliations</span>
-        </a>
-      </li>
-      <li>
-        <a href="<?= $url('/admin/gallery') ?>" class="sidebar-link <?= ($activeAdmin ?? '') === 'gallery' ? 'active' : '' ?>">
-          <i data-lucide="image" style="width:18px;height:18px;"></i>
-          <span>Clinic & Work Gallery</span>
+          <span>Clinic Locations</span>
         </a>
       </li>
 
-      <li class="menu-category-title">Education & Publications</li>
+      <li class="menu-category-title">Media & Gallery</li>
       <li>
-        <a href="<?= $url('/admin/blogs') ?>" class="sidebar-link <?= ($activeAdmin ?? '') === 'blogs' ? 'active' : '' ?>">
-          <i data-lucide="book-open" style="width:18px;height:18px;"></i>
-          <span>Blog & Research</span>
-        </a>
-      </li>
-      <li>
-        <a href="<?= $url('/admin/categories') ?>" class="sidebar-link <?= ($activeAdmin ?? '') === 'categories' ? 'active' : '' ?>">
-          <i data-lucide="folder-tree" style="width:18px;height:18px;"></i>
-          <span>Article Categories</span>
+        <a href="<?= $url('/admin/gallery') ?>" class="sidebar-link <?= ($activeAdmin ?? '') === 'gallery' ? 'active' : '' ?>">
+          <i data-lucide="image" style="width:18px;height:18px;"></i>
+          <span>Photo Gallery</span>
         </a>
       </li>
       <li>
@@ -118,23 +100,31 @@
         </a>
       </li>
 
-      <li class="menu-category-title">Patient Interactions</li>
+      <li class="menu-category-title">Education & Science</li>
       <li>
-        <a href="<?= $url('/admin/appointments') ?>" class="sidebar-link <?= ($activeAdmin ?? '') === 'appointments' ? 'active' : '' ?>">
-          <i data-lucide="calendar" style="width:18px;height:18px;"></i>
-          <span>Appointments</span>
-          <?php 
-            $pendingCount = \App\Models\Appointment::countPending();
-            if ($pendingCount > 0): 
-          ?>
-            <span class="sidebar-badge"><?= $pendingCount ?></span>
-          <?php endif; ?>
+        <a href="<?= $url('/admin/blogs') ?>" class="sidebar-link <?= ($activeAdmin ?? '') === 'blogs' ? 'active' : '' ?>">
+          <i data-lucide="book-open" style="width:18px;height:18px;"></i>
+          <span>Patient Health Blog</span>
         </a>
       </li>
       <li>
+        <a href="<?= $url('/admin/categories') ?>" class="sidebar-link <?= ($activeAdmin ?? '') === 'categories' ? 'active' : '' ?>">
+          <i data-lucide="folder-tree" style="width:18px;height:18px;"></i>
+          <span>Blog Categories</span>
+        </a>
+      </li>
+      <li>
+        <a href="<?= $url('/admin/research') ?>" class="sidebar-link <?= ($activeAdmin ?? '') === 'research' ? 'active' : '' ?>">
+          <i data-lucide="microscope" style="width:18px;height:18px;"></i>
+          <span>Research & Publications</span>
+        </a>
+      </li>
+
+      <li class="menu-category-title">Patient Interactions</li>
+      <li>
         <a href="<?= $url('/admin/messages') ?>" class="sidebar-link <?= ($activeAdmin ?? '') === 'messages' ? 'active' : '' ?>">
           <i data-lucide="mail" style="width:18px;height:18px;"></i>
-          <span>Inquiries</span>
+          <span>Patient Inquiries</span>
           <?php 
             $unreadCount = \App\Models\Message::countUnread();
             if ($unreadCount > 0): 
@@ -143,14 +133,8 @@
           <?php endif; ?>
         </a>
       </li>
-      <li>
-        <a href="<?= $url('/admin/testimonials') ?>" class="sidebar-link <?= ($activeAdmin ?? '') === 'testimonials' ? 'active' : '' ?>">
-          <i data-lucide="message-square" style="width:18px;height:18px;"></i>
-          <span>Testimonials</span>
-        </a>
-      </li>
 
-      <li class="menu-category-title">System & Settings</li>
+      <li class="menu-category-title">System & Security</li>
       <li>
         <a href="<?= $url('/admin/settings') ?>" class="sidebar-link <?= ($activeAdmin ?? '') === 'settings' ? 'active' : '' ?>">
           <i data-lucide="settings" style="width:18px;height:18px;"></i>

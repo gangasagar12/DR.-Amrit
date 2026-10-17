@@ -8,7 +8,9 @@ use App\Models\Blog;
 use App\Models\Service;
 use App\Models\Clinic;
 use App\Models\Gallery;
-use App\Models\Appointment;
+use App\Models\Video;
+use App\Models\Research;
+use App\Models\Qualification;
 use App\Models\Message;
 
 class AdminDashboardController {
@@ -21,18 +23,18 @@ class AdminDashboardController {
             'services' => Service::count(),
             'clinics' => Clinic::count(),
             'gallery_images' => Gallery::count(),
-            'pending_appointments' => Appointment::countPending(),
-            'total_appointments' => Appointment::countTotal(),
-            'unread_messages' => Message::countUnread()
+            'videos' => Video::count(),
+            'researches' => Research::countPublished(),
+            'qualifications' => Qualification::count(),
+            'unread_messages' => Message::countUnread(),
+            'total_messages' => Message::countTotal()
         ];
 
-        $recentAppointments = Appointment::recent(5);
-        $recentMessages = Message::recent(5);
+        $recentMessages = Message::recent(8);
 
         View::render('admin/dashboard', [
-            'title' => 'Clinical Administration Dashboard',
+            'title' => 'Doctor Management Portal Dashboard',
             'stats' => $stats,
-            'recentAppointments' => $recentAppointments,
             'recentMessages' => $recentMessages,
             'activeAdmin' => 'dashboard'
         ], 'layouts/admin');
