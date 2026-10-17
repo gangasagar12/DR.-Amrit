@@ -62,4 +62,9 @@ class Message {
         $stmt->execute();
         return $stmt->fetchAll();
     }
+
+    public static function countTotal(): int {
+        $pdo = Database::getConnection();
+        return (int)$pdo->query("SELECT COUNT(*) FROM contact_messages")->fetchColumn();
+    }
 }

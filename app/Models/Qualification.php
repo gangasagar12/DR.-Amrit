@@ -61,5 +61,10 @@ class Qualification {
         $stmt = $pdo->prepare("DELETE FROM qualifications WHERE id = ?");
         return $stmt->execute([$id]);
     }
+
+    public static function count(): int {
+        $pdo = Database::getConnection();
+        return (int)$pdo->query("SELECT COUNT(*) FROM qualifications")->fetchColumn();
+    }
 }
 
