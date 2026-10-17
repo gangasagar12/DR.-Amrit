@@ -89,7 +89,7 @@ $router->get('/admin/clinics/edit', 'AdminClinicController@edit');
 $router->post('/admin/clinics/edit', 'AdminClinicController@update');
 $router->any('/admin/clinics/delete', 'AdminClinicController@delete');
 
-// Blogs & Research Publications
+// Patient Education Blog
 $router->get('/admin/blogs', 'AdminBlogController@index');
 $router->get('/admin/blogs/create', 'AdminBlogController@create');
 $router->post('/admin/blogs/create', 'AdminBlogController@store');
@@ -97,6 +97,14 @@ $router->get('/admin/blogs/edit', 'AdminBlogController@edit');
 $router->post('/admin/blogs/edit', 'AdminBlogController@update');
 $router->any('/admin/blogs/delete', 'AdminBlogController@delete');
 $router->post('/admin/blogs/upload-image', 'AdminBlogController@uploadEditorImage');
+
+// Research & Scientific Publications
+$router->get('/admin/research', 'AdminResearchController@index');
+$router->get('/admin/research/create', 'AdminResearchController@create');
+$router->post('/admin/research/create', 'AdminResearchController@store');
+$router->get('/admin/research/edit', 'AdminResearchController@edit');
+$router->post('/admin/research/edit', 'AdminResearchController@update');
+$router->any('/admin/research/delete', 'AdminResearchController@delete');
 
 // Video Gallery
 $router->get('/admin/videos', 'AdminVideoController@index');
