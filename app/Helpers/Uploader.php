@@ -79,6 +79,48 @@ class Uploader {
         ];
     }
 
+    public static function uploadPdf(array $file, string $subfolder = 'documents'): array {
+        $config = require dirname(__DIR__, 2) . '/config/app.php';
+        $maxSize = 10485760; // 10MB
+
+        if ($file['error'] !== UPLOAD_ERR_OK) {
+            return ['success' => false, 'message' => self::getErrorMessage($file['error'])];
+        }
+
+        if ($file['size'] > $maxSize) {
+            return ['success' => false, 'message' => "Document exceeds maximum allowed size of 10MB."];
+        }
+
+        $origName = $file['name'];
+        $ext = strtolower(pathinfo($origName, PATHINFO_EXTENSION));
+        if ($ext !== 'pdf') {
+            return ['success' => false, 'message' => 'Only PDF files are allowed for publication documents.'];
+        }
+
+        $tmpPath = $file['tmp_name'];
+        $safeSubfolder = preg_replace('/[^a-zA-Z0-9_\-]/', '', $subfolder);
+        $targetDir = $config['public_dir'] . '/uploads/' . $safeSubfolder;
+
+        if (!is_dir($targetDir)) {
+            if (!@mkdir($targetDir, 0755, true)) {
+                return ['success' => false, 'message' => 'Failed to create upload destination directory.'];
+            }
+        }
+
+        $newFilename = bin2hex(random_bytes(16)) . '.pdf';
+        $destination = $targetDir . '/' . $newFilename;
+
+        if (!move_uploaded_file($tmpPath, $destination)) {
+            return ['success' => false, 'message' => 'Failed to save uploaded document.'];
+        }
+
+        return [
+            'success' => true,
+            'path' => 'uploads/' . $safeSubfolder . '/' . $newFilename,
+            'filename' => $newFilename
+        ];
+    }
+
     private static function getErrorMessage(int $code): string {
         return match ($code) {
             UPLOAD_ERR_INI_SIZE => 'File exceeds upload_max_filesize limit in php.ini.',

@@ -3,181 +3,223 @@
 /** @var array $qualifications */
 ?>
 
-<div class="admin-card">
-  <div class="admin-card-header">
-    <div>
-      <div class="admin-card-title">Doctor Bio & Professional Credentials</div>
-      <span style="font-size:0.85rem;color:var(--admin-text-muted);">Content directly synchronizes to public website</span>
+<form action="<?= $url('/admin/profile') ?>" method="POST" enctype="multipart/form-data">
+  <?= $csrf() ?>
+
+  <!-- 1. HERO SECTION CUSTOMIZER -->
+  <div class="admin-card" style="margin-bottom:1.5rem;">
+    <div class="admin-card-header">
+      <div>
+        <div class="admin-card-title">
+          <i data-lucide="sparkles" style="width:18px;height:18px;color:var(--admin-teal);display:inline-block;vertical-align:middle;margin-right:6px;"></i>
+          Homepage Hero Section
+        </div>
+        <span style="font-size:0.85rem;color:var(--admin-text-muted);">Manage the top banner of your public homepage</span>
+      </div>
+      <a href="<?= $url('/') ?>#home" target="_blank" class="btn btn-secondary btn-sm">
+        <i data-lucide="external-link" style="width:14px;height:14px;"></i> View Hero on Live Site
+      </a>
     </div>
-    <a href="<?= $url('/admin/account') ?>" class="btn btn-secondary btn-sm">
-      <i data-lucide="shield-check" style="width:14px;height:14px;"></i> Login & Password
-    </a>
-  </div>
 
-  <div class="admin-card-body">
-    <form action="<?= $url('/admin/profile') ?>" method="POST" enctype="multipart/form-data">
-      <?= $csrf() ?>
-
+    <div class="admin-card-body">
       <div class="form-grid">
         <div class="form-group">
-          <label class="form-label">Doctor Full Name <span style="color:#ef4444;">*</span></label>
-          <input type="text" name="doctor_name" class="form-control" value="<?= $e($doctor['doctor_name'] ?? '') ?>" required>
+          <label class="form-label">Doctor Display Name <span style="color:#ef4444;">*</span></label>
+          <input type="text" name="doctor_name" class="form-control" value="<?= $e($doctor['doctor_name'] ?? 'Dr. Amrit Jaishi') ?>" required>
+          <div class="form-help">Displayed in the main title, navigation bar, and footer.</div>
         </div>
 
         <div class="form-group">
-          <label class="form-label">Professional Title / Credentials <span style="color:#ef4444;">*</span></label>
-          <input type="text" name="professional_title" class="form-control" value="<?= $e($doctor['professional_title'] ?? '') ?>" placeholder="e.g. BDS, MDS - Dental Surgeon & Implantologist" required>
+          <label class="form-label">Badge Designation / Title <span style="color:#ef4444;">*</span></label>
+          <input type="text" name="professional_title" class="form-control" value="<?= $e($doctor['professional_title'] ?? 'General Dentist') ?>" placeholder="e.g. General Dentist" required>
+          <div class="form-help">Hero badgepill and header designation (e.g. General Dentist).</div>
         </div>
 
         <div class="form-group form-full">
-          <label class="form-label">Hero Introduction Tagline</label>
-          <input type="text" name="tagline" class="form-control" value="<?= $e($doctor['tagline'] ?? '') ?>">
+          <label class="form-label">Hero Lead Paragraph <span style="color:#ef4444;">*</span></label>
+          <textarea name="hero_lead" class="form-control" style="min-height:90px;" required><?= $e($doctor['hero_lead'] ?? 'Dedicated to providing patient-centered dental care with a focus on oral health, preventive dentistry, and comfortable treatment experiences. Committed to helping individuals maintain healthy smiles through professional care, clear communication, and evidence-based dental practices.') ?></textarea>
+          <div class="form-help">Primary introductory paragraph directly under the doctor name.</div>
         </div>
 
         <div class="form-group form-full">
-          <label class="form-label">Detailed Professional Biography</label>
-          <textarea name="biography" class="form-control" style="min-height:160px;"><?= $e($doctor['biography'] ?? '') ?></textarea>
+          <label class="form-label">Hero Clinical Approach Statement</label>
+          <textarea name="hero_approach" class="form-control" style="min-height:75px;"><?= $e($doctor['hero_approach'] ?? 'Every clinical procedure is guided by conservative tooth preservation, gentle pain-free techniques, and transparent guidance tailored to each patient\'s individual needs.') ?></textarea>
+          <div class="form-help">Secondary statement highlighting tooth preservation and gentle care.</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Primary Button Text</label>
+          <input type="text" name="hero_btn1_text" class="form-control" value="<?= $e($doctor['hero_btn1_text'] ?? 'Explore My Profile') ?>">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Primary Button Link</label>
+          <input type="text" name="hero_btn1_link" class="form-control" value="<?= $e($doctor['hero_btn1_link'] ?? '#about') ?>">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Secondary Button Text</label>
+          <input type="text" name="hero_btn2_text" class="form-control" value="<?= $e($doctor['hero_btn2_text'] ?? 'Contact Me') ?>">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Secondary Button Link</label>
+          <input type="text" name="hero_btn2_link" class="form-control" value="<?= $e($doctor['hero_btn2_link'] ?? '#contact') ?>">
+        </div>
+
+        <!-- Hero Cutout Image Upload -->
+        <div class="form-group form-full" style="background:#f8fafc;padding:1.25rem;border-radius:10px;border:1px solid #e2e8f0;">
+          <label class="form-label" style="font-weight:700;">Hero Transparent Cutout Photograph (Doctor Portrait)</label>
+          <input type="file" name="hero_image" class="form-control" accept="image/png,image/webp,image/jpeg" data-preview="heroPreview">
+          <div class="form-help">Recommended: High-resolution transparent PNG or WebP with cutout background (e.g. 560x680px).</div>
+
+          <div style="display:flex;align-items:center;gap:1.5rem;margin-top:1rem;">
+            <div class="img-preview-box" style="width:130px;height:160px;background:#f1f5f9;display:flex;align-items:center;justify-content:center;border-radius:8px;border:1px solid #cbd5e1;overflow:hidden;">
+              <?php 
+                $currentHeroPic = !empty($doctor['hero_image']) ? $asset($doctor['hero_image']) : $asset('img/doctor-cutout.png');
+              ?>
+              <img id="heroPreview" src="<?= $e($currentHeroPic) ?>" alt="Hero Cutout Preview" style="width:100%;height:100%;object-fit:contain;">
+            </div>
+            <div style="font-size:0.85rem;color:var(--admin-text-muted);">
+              Current hero cutout path: <code style="background:#e2e8f0;padding:2px 6px;border-radius:4px;"><?= $e($doctor['hero_image'] ?? 'img/doctor-cutout.png') ?></code><br>
+              Uploading a new file will automatically replace this image on the live website.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. ABOUT SECTION CUSTOMIZER -->
+  <div class="admin-card" style="margin-bottom:1.5rem;">
+    <div class="admin-card-header">
+      <div>
+        <div class="admin-card-title">
+          <i data-lucide="user" style="width:18px;height:18px;color:var(--admin-teal);display:inline-block;vertical-align:middle;margin-right:6px;"></i>
+          Homepage About & Bio Section
+        </div>
+        <span style="font-size:0.85rem;color:var(--admin-text-muted);">Manage your clinical background, philosophy, and clinical photo</span>
+      </div>
+      <a href="<?= $url('/') ?>#about" target="_blank" class="btn btn-secondary btn-sm">
+        <i data-lucide="external-link" style="width:14px;height:14px;"></i> View About on Live Site
+      </a>
+    </div>
+
+    <div class="admin-card-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Section Kicker</label>
+          <input type="text" name="about_kicker" class="form-control" value="<?= $e($doctor['about_kicker'] ?? 'Professional Background') ?>" placeholder="e.g. Professional Background">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">About Subheading</label>
+          <input type="text" name="about_subheading" class="form-control" value="<?= $e($doctor['about_subheading'] ?? 'Committed to Patient Comfort, Ethics & Clinical Precision') ?>" placeholder="e.g. Committed to Patient Comfort, Ethics & Clinical Precision">
+        </div>
+
+        <div class="form-group form-full">
+          <label class="form-label">About Bio Paragraphs (Detailed Background) <span style="color:#ef4444;">*</span></label>
+          <textarea name="biography" class="form-control" style="min-height:160px;" required><?= $e($doctor['biography'] ?? '') ?></textarea>
+          <div class="form-help">Separate paragraphs with a blank line. Each paragraph displays clearly in the About section.</div>
         </div>
 
         <div class="form-group">
           <label class="form-label">Clinical Experience (Years)</label>
-          <input type="number" name="experience_years" class="form-control" value="<?= (int)($doctor['experience_years'] ?? 10) ?>" min="0">
+          <input type="number" name="experience_years" class="form-control" value="<?= (int)($doctor['experience_years'] ?? 4) ?>" min="0">
         </div>
 
         <div class="form-group">
           <label class="form-label">Languages Spoken</label>
-          <input type="text" name="languages" class="form-control" value="<?= $e($doctor['languages'] ?? 'English') ?>">
+          <input type="text" name="languages" class="form-control" value="<?= $e($doctor['languages'] ?? 'Nepali, English, Hindi') ?>">
         </div>
 
-        <div class="form-group form-full">
-          <label class="form-label">Philosophy of Patient Care</label>
-          <textarea name="philosophy" class="form-control"><?= $e($doctor['philosophy'] ?? '') ?></textarea>
-        </div>
-
-        <div class="form-group form-full">
-          <label class="form-label">Clinical Focus & Procedures Summary</label>
-          <textarea name="experience_description" class="form-control"><?= $e($doctor['experience_description'] ?? '') ?></textarea>
-        </div>
-
-        <!-- Contact details -->
         <div class="form-group">
-          <label class="form-label">Primary Contact Email</label>
+          <label class="form-label">Floating Badge Title</label>
+          <input type="text" name="about_badge_title" class="form-control" value="<?= $e($doctor['about_badge_title'] ?? '4+ Years Clinical Care') ?>" placeholder="e.g. 4+ Years Clinical Care">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Floating Badge Subtitle</label>
+          <input type="text" name="about_badge_subtitle" class="form-control" value="<?= $e($doctor['about_badge_subtitle'] ?? 'Oral & Dental Surgery') ?>" placeholder="e.g. Oral & Dental Surgery">
+        </div>
+
+        <div class="form-group form-full">
+          <label class="form-label">Clinical Care Philosophy & Focus</label>
+          <textarea name="philosophy" class="form-control" style="min-height:80px;"><?= $e($doctor['philosophy'] ?? '') ?></textarea>
+        </div>
+
+        <!-- About Clinical Photo Upload -->
+        <div class="form-group form-full" style="background:#f8fafc;padding:1.25rem;border-radius:10px;border:1px solid #e2e8f0;">
+          <label class="form-label" style="font-weight:700;">About Clinical Practice Photo</label>
+          <input type="file" name="about_image" class="form-control" accept="image/jpeg,image/png,image/webp" data-preview="aboutPreview">
+          <div class="form-help">Recommended: High quality 4:5 vertical portrait in clinical or hospital attire (e.g. 480x600px).</div>
+
+          <div style="display:flex;align-items:center;gap:1.5rem;margin-top:1rem;">
+            <div class="img-preview-box" style="width:130px;height:160px;background:#f1f5f9;display:flex;align-items:center;justify-content:center;border-radius:8px;border:1px solid #cbd5e1;overflow:hidden;">
+              <?php 
+                $currentAboutPic = !empty($doctor['about_image']) ? $asset($doctor['about_image']) : $asset('img/doctor-clinic.jpg');
+              ?>
+              <img id="aboutPreview" src="<?= $e($currentAboutPic) ?>" alt="About Photo Preview" style="width:100%;height:100%;object-fit:cover;">
+            </div>
+            <div style="font-size:0.85rem;color:var(--admin-text-muted);">
+              Current about photo path: <code style="background:#e2e8f0;padding:2px 6px;border-radius:4px;"><?= $e($doctor['about_image'] ?? 'img/doctor-clinic.jpg') ?></code><br>
+              This is different from the hero cutout to give your site a rich, professional design.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. CONTACT SECTION & CLINICAL HOTLINES -->
+  <div class="admin-card" style="margin-bottom:1.5rem;">
+    <div class="admin-card-header">
+      <div>
+        <div class="admin-card-title">
+          <i data-lucide="phone-call" style="width:18px;height:18px;color:var(--admin-teal);display:inline-block;vertical-align:middle;margin-right:6px;"></i>
+          Contact Details & Patient Hotlines
+        </div>
+        <span style="font-size:0.85rem;color:var(--admin-text-muted);">Synchronized to the Contact section, direct action buttons, and footer</span>
+      </div>
+      <a href="<?= $url('/') ?>#contact" target="_blank" class="btn btn-secondary btn-sm">
+        <i data-lucide="external-link" style="width:14px;height:14px;"></i> View Contact on Live Site
+      </a>
+    </div>
+
+    <div class="admin-card-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Professional Email <span style="color:#ef4444;">*</span></label>
           <input type="email" name="contact_email" class="form-control" value="<?= $e($doctor['contact_email'] ?? '') ?>" required>
         </div>
 
         <div class="form-group">
-          <label class="form-label">Primary Telephone Number</label>
+          <label class="form-label">Primary Telephone / Mobile <span style="color:#ef4444;">*</span></label>
           <input type="text" name="phone" class="form-control" value="<?= $e($doctor['phone'] ?? '') ?>" required>
         </div>
 
         <div class="form-group">
-          <label class="form-label">WhatsApp Contact Number (With Country Code)</label>
-          <input type="text" name="whatsapp" class="form-control" value="<?= $e($doctor['whatsapp'] ?? '') ?>">
+          <label class="form-label">WhatsApp Contact Number (with country code)</label>
+          <input type="text" name="whatsapp" class="form-control" value="<?= $e($doctor['whatsapp'] ?? '') ?>" placeholder="e.g. +9779860644282">
+          <div class="form-help">Powers the "Message on WhatsApp" button in the contact section.</div>
         </div>
 
         <div class="form-group">
-          <label class="form-label">Emergency Dental Hotline Guidance</label>
-          <input type="text" name="emergency_contact" class="form-control" value="<?= $e($doctor['emergency_contact'] ?? '') ?>">
-        </div>
-
-        <!-- Portrait upload -->
-        <div class="form-group form-full">
-          <label class="form-label">Doctor Portrait Photograph</label>
-          <input type="file" name="profile_image" class="form-control" accept="image/jpeg,image/png,image/webp" data-preview="portraitPreview">
-          <div class="form-help">Accepted formats: JPG, PNG, WebP. Recommended dimensions: 800x1000px.</div>
-
-          <div class="img-preview-box" style="width:140px;height:160px;margin-top:0.75rem;">
-            <?php 
-              $currentPic = !empty($doctor['profile_image']) ? $asset($doctor['profile_image']) : 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=300&q=80';
-            ?>
-            <img id="portraitPreview" src="<?= $e($currentPic) ?>" alt="Doctor Portrait Preview">
-          </div>
+          <label class="form-label">Hospital Lines / Emergency Guidance</label>
+          <input type="text" name="emergency_contact" class="form-control" value="<?= $e($doctor['emergency_contact'] ?? '') ?>" placeholder="e.g. 091-590328 / 091-590348 (Hospital Lines)">
         </div>
       </div>
-
-      <div style="margin-top:2rem;display:flex;justify-content:flex-end;">
-        <button type="submit" class="btn btn-primary">
-          <i data-lucide="save" style="width:16px;height:16px;"></i> Save Doctor Profile
-        </button>
-      </div>
-    </form>
+    </div>
   </div>
-</div>
 
-<!-- Academic & Clinical Qualifications Management -->
-<div class="admin-card">
-  <div class="admin-card-header">
-    <div class="admin-card-title">Educational Background & Dental Qualifications</div>
-    <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('addQualModal').style.display='flex'">
-      <i data-lucide="plus" style="width:14px;height:14px;"></i> Add Qualification
+  <!-- Sticky Save Bar -->
+  <div style="position:sticky;bottom:1.5rem;z-index:100;background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);padding:1rem 1.5rem;border-radius:12px;box-shadow:0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);border:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;">
+    <div style="font-size:0.9rem;color:var(--admin-text-muted);">
+      <i data-lucide="info" style="width:16px;height:16px;vertical-align:middle;margin-right:4px;"></i>
+      All modifications will immediately synchronize across your public homepage.
+    </div>
+    <button type="submit" class="btn btn-primary" style="padding:0.65rem 1.75rem;font-size:0.95rem;font-weight:700;">
+      <i data-lucide="save" style="width:16px;height:16px;"></i> Save Homepage Content & Bio
     </button>
   </div>
-
-  <div class="table-responsive">
-    <table class="admin-table">
-      <thead>
-        <tr>
-          <th>Degree / Credential</th>
-          <th>Institution</th>
-          <th>Year</th>
-          <th>Description</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <?php if (empty($qualifications)): ?>
-          <tr><td colspan="5" style="text-align:center;padding:2rem;">No qualifications added yet.</td></tr>
-        <?php else: ?>
-          <?php foreach ($qualifications as $q): ?>
-            <tr>
-              <td><strong><?= $e($q['degree']) ?></strong></td>
-              <td><?= $e($q['institution']) ?></td>
-              <td><span class="status-badge badge-pending"><?= $e($q['completion_year']) ?></span></td>
-              <td style="max-width:300px;font-size:0.85rem;color:var(--admin-text-muted);"><?= $e($q['description']) ?></td>
-              <td>
-                <a href="<?= $url('/admin/profile/qualification/delete?id=' . $q['id'] . '&_csrf_token=' . $csrf_token()) ?>" class="btn btn-danger btn-sm" data-confirm="Remove this qualification?">
-                  <i data-lucide="trash-2" style="width:13px;height:13px;"></i>
-                </a>
-              </td>
-            </tr>
-          <?php endforeach; ?>
-        <?php endif; ?>
-      </tbody>
-    </table>
-  </div>
-</div>
-
-<!-- Add Qualification Modal -->
-<div id="addQualModal" class="modal-backdrop" style="display:none;">
-  <div class="modal-dialog">
-    <div class="modal-header">
-      <h3 class="modal-title">Add Dental Degree or Residency</h3>
-      <button type="button" class="modal-close" onclick="document.getElementById('addQualModal').style.display='none'">&times;</button>
-    </div>
-    <div class="modal-body">
-      <form action="<?= $url('/admin/profile/qualification/add') ?>" method="POST">
-        <?= $csrf() ?>
-        <div class="form-group">
-          <label class="form-label">Degree / Fellowship Title <span style="color:#ef4444;">*</span></label>
-          <input type="text" name="degree" class="form-control" placeholder="e.g. Master of Dental Surgery (MDS)" required>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Institution / University <span style="color:#ef4444;">*</span></label>
-          <input type="text" name="institution" class="form-control" placeholder="e.g. King's College London Dental Institute" required>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Completion Year <span style="color:#ef4444;">*</span></label>
-          <input type="text" name="completion_year" class="form-control" placeholder="e.g. 2015" required>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Description / Residency Specialization</label>
-          <textarea name="description" class="form-control" placeholder="Key focus areas, honors, or thesis topics..."></textarea>
-        </div>
-        <div style="display:flex;justify-content:flex-end;gap:0.75rem;margin-top:1.5rem;">
-          <button type="button" class="btn btn-secondary" onclick="document.getElementById('addQualModal').style.display='none'">Cancel</button>
-          <button type="submit" class="btn btn-primary">Save Qualification</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
+</form>

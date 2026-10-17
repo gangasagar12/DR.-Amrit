@@ -40,6 +40,17 @@ class AdminProfileController {
         $data = [
             'doctor_name' => Sanitizer::cleanString($request->post('doctor_name')),
             'professional_title' => Sanitizer::cleanString($request->post('professional_title')),
+            'hero_heading' => Sanitizer::cleanString($request->post('hero_heading')),
+            'hero_lead' => Sanitizer::cleanString($request->post('hero_lead')),
+            'hero_approach' => Sanitizer::cleanString($request->post('hero_approach')),
+            'hero_btn1_text' => Sanitizer::cleanString($request->post('hero_btn1_text')),
+            'hero_btn1_link' => Sanitizer::cleanString($request->post('hero_btn1_link')),
+            'hero_btn2_text' => Sanitizer::cleanString($request->post('hero_btn2_text')),
+            'hero_btn2_link' => Sanitizer::cleanString($request->post('hero_btn2_link')),
+            'about_kicker' => Sanitizer::cleanString($request->post('about_kicker')),
+            'about_subheading' => Sanitizer::cleanString($request->post('about_subheading')),
+            'about_badge_title' => Sanitizer::cleanString($request->post('about_badge_title')),
+            'about_badge_subtitle' => Sanitizer::cleanString($request->post('about_badge_subtitle')),
             'tagline' => Sanitizer::cleanString($request->post('tagline')),
             'biography' => Sanitizer::cleanString($request->post('biography')),
             'experience_years' => (int)$request->post('experience_years'),
@@ -65,8 +76,34 @@ class AdminProfileController {
             }
         }
 
+        // Handle hero cutout image upload
+        $heroFile = $request->file('hero_image');
+        if ($heroFile && $heroFile['error'] === UPLOAD_ERR_OK) {
+            $uploadHero = Uploader::uploadImage($heroFile, 'profile');
+            if ($uploadHero['success']) {
+                $data['hero_image'] = $uploadHero['path'];
+            } else {
+                Session::flash('error', $uploadHero['message']);
+                Response::redirect('/admin/profile');
+                return;
+            }
+        }
+
+        // Handle about clinic image upload
+        $aboutFile = $request->file('about_image');
+        if ($aboutFile && $aboutFile['error'] === UPLOAD_ERR_OK) {
+            $uploadAbout = Uploader::uploadImage($aboutFile, 'profile');
+            if ($uploadAbout['success']) {
+                $data['about_image'] = $uploadAbout['path'];
+            } else {
+                Session::flash('error', $uploadAbout['message']);
+                Response::redirect('/admin/profile');
+                return;
+            }
+        }
+
         DoctorProfile::update($data);
-        Session::flash('success', 'Doctor profile information updated successfully.');
+        Session::flash('success', 'Doctor profile, Hero section, and About section updated successfully.');
         Response::redirect('/admin/profile');
     }
 

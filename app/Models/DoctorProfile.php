@@ -43,68 +43,33 @@ class DoctorProfile {
         $pdo = Database::getConnection();
         $existing = self::get();
 
-        if (empty($existing['id'])) {
-            $stmt = $pdo->prepare("INSERT INTO doctor_profile (
-                doctor_name, professional_title, tagline, biography, experience_years,
-                experience_description, philosophy, languages, profile_image,
-                contact_email, phone, whatsapp, emergency_contact
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            $res = $stmt->execute([
-                $data['doctor_name'] ?? 'Dr. Amrit Jaishi',
-                $data['professional_title'] ?? '',
-                $data['tagline'] ?? '',
-                $data['biography'] ?? '',
-                (int)($data['experience_years'] ?? 10),
-                $data['experience_description'] ?? '',
-                $data['philosophy'] ?? '',
-                $data['languages'] ?? 'English',
-                $data['profile_image'] ?? '',
-                $data['contact_email'] ?? '',
-                $data['phone'] ?? '',
-                $data['whatsapp'] ?? '',
-                $data['emergency_contact'] ?? ''
-            ]);
-        } else {
-            $sql = "UPDATE doctor_profile SET 
-                doctor_name = ?,
-                professional_title = ?,
-                tagline = ?,
-                biography = ?,
-                experience_years = ?,
-                experience_description = ?,
-                philosophy = ?,
-                languages = ?,
-                contact_email = ?,
-                phone = ?,
-                whatsapp = ?,
-                emergency_contact = ?";
-            
-            $params = [
-                $data['doctor_name'] ?? '',
-                $data['professional_title'] ?? '',
-                $data['tagline'] ?? '',
-                $data['biography'] ?? '',
-                (int)($data['experience_years'] ?? 10),
-                $data['experience_description'] ?? '',
-                $data['philosophy'] ?? '',
-                $data['languages'] ?? '',
-                $data['contact_email'] ?? '',
-                $data['phone'] ?? '',
-                $data['whatsapp'] ?? '',
-                $data['emergency_contact'] ?? ''
-            ];
+        $allowedFields = [
+            'doctor_name', 'professional_title', 'tagline', 'hero_heading', 'hero_subheading',
+            'hero_lead', 'hero_approach', 'hero_btn1_text', 'hero_btn1_link', 'hero_btn2_text', 'hero_btn2_link',
+            'about_kicker', 'about_subheading', 'about_badge_title', 'about_badge_subtitle',
+            'biography', 'experience_years', 'experience_description', 'philosophy', 'languages',
+            'contact_email', 'phone', 'whatsapp', 'emergency_contact',
+            'profile_image', 'hero_image', 'about_image'
+        ];
 
-            if (!empty($data['profile_image'])) {
-                $sql .= ", profile_image = ?";
-                $params[] = $data['profile_image'];
+        $setParts = [];
+        $params = [];
+
+        foreach ($allowedFields as $field) {
+            if (array_key_exists($field, $data)) {
+                $setParts[] = "{$field} = ?";
+                $params[] = $data[$field];
             }
-
-            $sql .= " WHERE id = ?";
-            $params[] = $existing['id'];
-
-            $stmt = $pdo->prepare($sql);
-            $res = $stmt->execute($params);
         }
+
+        if (empty($setParts)) {
+            return false;
+        }
+
+        $params[] = $existing['id'] ?? 1;
+        $sql = "UPDATE doctor_profile SET " . implode(', ', $setParts) . ", updated_at = NOW() WHERE id = ?";
+        $stmt = $pdo->prepare($sql);
+        $res = $stmt->execute($params);
 
         self::$cached = null;
         return $res;
