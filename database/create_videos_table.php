@@ -127,6 +127,58 @@ $vids = [
         'display_order' => 6,
         'status' => 'published',
         'published_at' => '2026-10-12 12:00:00'
+    ],
+    [
+        'category_slug' => 'oral-health-education',
+        'title' => 'Cavity Prevention: How Sugar & Bacteria Cause Tooth Decay',
+        'slug' => 'cavity-prevention-sugar-bacteria-decay',
+        'description' => 'An educational guide on early enamel demineralization, acid attacks from carbohydrates, and how fluoride toothpaste remineralizes teeth.',
+        'video_type' => 'youtube',
+        'video_url' => 'https://www.youtube.com/watch?v=s0K_V3_7Jz4',
+        'thumbnail' => 'img/services/teeth_cleaning.jpg',
+        'duration' => '04:15',
+        'display_order' => 7,
+        'status' => 'published',
+        'published_at' => '2026-10-13 14:00:00'
+    ],
+    [
+        'category_slug' => 'dental-treatment-awareness',
+        'title' => 'Dental Implants vs. Bridges: Which Option is Right for You?',
+        'slug' => 'dental-implants-vs-bridges-guide',
+        'description' => 'Understanding titanium fixtures, osseointegration, aesthetic crown matching, and long-term bone preservation after tooth loss.',
+        'video_type' => 'youtube',
+        'video_url' => 'https://www.youtube.com/watch?v=5W_93uQe4-g',
+        'thumbnail' => 'img/services/dental_crown.jpg',
+        'duration' => '05:40',
+        'display_order' => 8,
+        'status' => 'published',
+        'published_at' => '2026-10-14 11:30:00'
+    ],
+    [
+        'category_slug' => 'clinical-practice',
+        'title' => 'Infection Control & Vacuum Autoclave Sterilization Standards',
+        'slug' => 'infection-control-autoclave-sterilization-standards',
+        'description' => 'A transparent look inside our Class-B vacuum autoclave protocols, pouch packaging, and sterile surgical operatory preparation.',
+        'video_type' => 'youtube',
+        'video_url' => 'https://www.youtube.com/watch?v=hG0hD0kPzW4',
+        'thumbnail' => 'img/services/gum_care.jpg',
+        'duration' => '03:50',
+        'display_order' => 9,
+        'status' => 'published',
+        'published_at' => '2026-10-15 09:15:00'
+    ],
+    [
+        'category_slug' => 'preventive-dentistry',
+        'title' => 'Fluoride Varnish & Pit Fissure Sealants in Pediatric Dental Care',
+        'slug' => 'fluoride-varnish-pit-fissure-sealants',
+        'description' => 'Why dental fissure sealants are the most effective preventive shield for permanent molars in growing children and teens.',
+        'video_type' => 'youtube',
+        'video_url' => 'https://www.youtube.com/watch?v=j3v7gM5Zk1o',
+        'thumbnail' => 'img/services/rct.jpg',
+        'duration' => '04:05',
+        'display_order' => 10,
+        'status' => 'published',
+        'published_at' => '2026-10-15 16:20:00'
     ]
 ];
 

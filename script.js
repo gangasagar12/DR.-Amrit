@@ -515,9 +515,10 @@ document.addEventListener('DOMContentLoaded', function () {
               `;
             }).join('');
 
-            // Re-bind video card interactions and category filter buttons
+            // Re-bind video card interactions, filters, and 2-row pagination
             bindVideoCards();
             bindVideoFilters();
+            updateVideoDisplay(false);
           }
         }
       })
@@ -646,6 +647,108 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
+  // ==========================================================================
+  // Video Pagination & Display (2 Rows / Max 6 Videos per page)
+  // ==========================================================================
+  const VIDEOS_PER_PAGE = 6; // 3 columns * 2 rows = 6 cards per view
+  let currentVideoPage = 1;
+  let currentVideoCategory = 'all';
+
+  function updateVideoDisplay(scrollToVideos) {
+    const allCards = document.querySelectorAll('#videosGrid .video-card');
+    const paginationEl = document.getElementById('videoPagination');
+    if (!allCards || allCards.length === 0) return;
+
+    // Filter cards matching active category
+    const matchingCards = [];
+    allCards.forEach(function (card) {
+      const cat = card.getAttribute('data-category') || '';
+      if (currentVideoCategory === 'all' || cat === currentVideoCategory) {
+        matchingCards.push(card);
+      } else {
+        card.style.display = 'none';
+      }
+    });
+
+    const totalMatching = matchingCards.length;
+    const totalPages = Math.ceil(totalMatching / VIDEOS_PER_PAGE) || 1;
+
+    if (currentVideoPage > totalPages) {
+      currentVideoPage = 1;
+    }
+
+    // Show only 6 cards for the active page
+    const startIndex = (currentVideoPage - 1) * VIDEOS_PER_PAGE;
+    const endIndex = startIndex + VIDEOS_PER_PAGE;
+
+    matchingCards.forEach(function (card, index) {
+      if (index >= startIndex && index < endIndex) {
+        card.style.display = '';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+
+    // Render pagination controls (Prev, 1, 2, 3..., Next)
+    if (!paginationEl) return;
+
+    if (totalPages <= 1) {
+      paginationEl.innerHTML = '';
+      return;
+    }
+
+    let paginationHtml = '';
+
+    // Previous Button
+    const isFirstPage = currentVideoPage === 1;
+    paginationHtml += `
+      <button type="button" class="video-page-btn" data-page="${currentVideoPage - 1}" ${isFirstPage ? 'disabled aria-disabled="true"' : ''} aria-label="Previous Page">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        <span>Prev</span>
+      </button>
+    `;
+
+    // Numbered Buttons: 1, 2, 3...
+    for (let p = 1; p <= totalPages; p++) {
+      const isActive = p === currentVideoPage;
+      paginationHtml += `
+        <button type="button" class="video-page-btn ${isActive ? 'active' : ''}" data-page="${p}" ${isActive ? 'aria-current="page"' : ''} aria-label="Page ${p}">
+          ${p}
+        </button>
+      `;
+    }
+
+    // Next Button
+    const isLastPage = currentVideoPage === totalPages;
+    paginationHtml += `
+      <button type="button" class="video-page-btn" data-page="${currentVideoPage + 1}" ${isLastPage ? 'disabled aria-disabled="true"' : ''} aria-label="Next Page">
+        <span>Next</span>
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </button>
+    `;
+
+    paginationEl.innerHTML = paginationHtml;
+
+    // Attach listeners to pagination buttons
+    paginationEl.querySelectorAll('.video-page-btn').forEach(function (btn) {
+      btn.onclick = function () {
+        if (btn.disabled || btn.classList.contains('active')) return;
+        const targetPage = parseInt(btn.getAttribute('data-page'), 10);
+        if (!isNaN(targetPage) && targetPage >= 1 && targetPage <= totalPages) {
+          currentVideoPage = targetPage;
+          updateVideoDisplay(true);
+        }
+      };
+    });
+
+    if (scrollToVideos) {
+      const videoSection = document.getElementById('videos');
+      if (videoSection) {
+        videoSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  }
+
   function bindVideoCards() {
     // Retained for backwards compatibility
     const cards = document.querySelectorAll('.video-card');
@@ -659,7 +762,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function bindVideoFilters() {
     const filterBtns = document.querySelectorAll('.video-filter-btn');
-    const cards = document.querySelectorAll('.video-card');
 
     filterBtns.forEach(function (btn) {
       btn.onclick = function () {
@@ -672,22 +774,17 @@ document.addEventListener('DOMContentLoaded', function () {
         btn.classList.add('active');
         btn.setAttribute('aria-selected', 'true');
 
-        const currentCards = document.querySelectorAll('.video-card');
-        currentCards.forEach(function (card) {
-          const cardCat = card.getAttribute('data-category') || '';
-          if (filterVal === 'all' || cardCat === filterVal) {
-            card.style.display = '';
-          } else {
-            card.style.display = 'none';
-          }
-        });
+        currentVideoCategory = filterVal;
+        currentVideoPage = 1; // Reset to first page when filtering
+        updateVideoDisplay(false);
       };
     });
   }
 
-  // Initial binding for pre-rendered video cards
+  // Initial binding and 2-row pagination display
   bindVideoCards();
   bindVideoFilters();
+  updateVideoDisplay(false);
 
   loadDynamicPortfolioData();
 
