@@ -15,7 +15,8 @@
   <meta property="og:image" content="img/doctor-cutout.png">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="img/logo.png">
+  <link rel="icon" type="image/png" href="img/doctor-favicon.png">
+  <link rel="apple-touch-icon" href="img/doctor-favicon.png">
 
   <!-- Google Fonts: Inter & Poppins -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,7 +24,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
 
   <!-- Main Stylesheet -->
-  <link rel="stylesheet" href="style.css?v=2.8">
+  <link rel="stylesheet" href="style.css?v=3.0">
 </head>
 <body>
 
@@ -33,6 +34,7 @@
   <header class="site-header" id="siteHeader">
     <div class="container nav-container">
       <a href="#home" class="brand-logo" aria-label="Dr. Amrit Jaishi - General Dentist">
+        <img src="img/doctor-favicon.png" alt="Dr. Amrit Jaishi" class="brand-avatar-img" width="44" height="44">
         <div class="brand-text">
           <span class="brand-name">Dr. Amrit Jaishi</span>
           <span class="brand-designation">General Dentist</span>
@@ -119,13 +121,22 @@
           <div class="about-image-column">
             <div class="about-photo-wrapper">
               <img 
-                src="img/doctor-portrait.jpg" 
-                alt="Dr. Amrit Jaishi - Oral and Dental Surgeon" 
+                src="img/doctor-clinic.jpg" 
+                alt="Dr. Amrit Jaishi in clinical practice" 
                 class="about-portrait"
                 loading="lazy"
                 width="480"
-                height="480"
+                height="600"
               >
+              <div class="about-photo-badge">
+                <div class="about-badge-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                </div>
+                <div class="about-badge-text">
+                  <strong>4+ Years Clinical Care</strong>
+                  <span>Oral &amp; Dental Surgery</span>
+                </div>
+              </div>
             </div>
           </div>
 
