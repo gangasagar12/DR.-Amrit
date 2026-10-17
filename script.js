@@ -796,7 +796,7 @@ document.addEventListener('DOMContentLoaded', function () {
               const catName = b.category_name || 'Oral Care';
               const dateStr = b.published_at ? new Date(b.published_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : 'Recent';
               const thumb = b.featured_image || 'img/services/teeth_cleaning.jpg';
-              const articleUrl = b.slug ? ('/blog/' + b.slug) : ('article.html?id=' + b.id);
+              const articleUrl = b.slug ? ('/blog/' + b.slug) : '/blog';
               return `
                 <article class="article-grid-card">
                   <div class="grid-card-media">

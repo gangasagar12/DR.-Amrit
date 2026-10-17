@@ -24,26 +24,11 @@ use App\Helpers\Mailer;
 
 class PublicController {
     public function home(Request $request): void {
-        $doctor = DoctorProfile::get();
-        $featuredServices = Service::featured(6);
-        $latestBlogs = Blog::latest(3);
-        $clinics = Clinic::allActive();
-        $achievements = Achievement::allActive();
-        $gallery = Gallery::allActive();
-        $testimonials = Testimonial::allApproved();
-
-        View::render('public/home', [
-            'title' => Setting::get('meta_title', 'Dr. Amrit Jaishi | Oral & Dental Surgeon (BDS BPKIHS)'),
-            'metaDescription' => Setting::get('meta_description', 'Official portfolio of Dr. Amrit Jaishi, BDS (BPKIHS Dharan). Oral and Dental Surgeon at Dhangadhi Sanjeevani Hospital, Farwest Nepal.'),
-            'doctor' => $doctor,
-            'featuredServices' => $featuredServices,
-            'latestBlogs' => $latestBlogs,
-            'clinics' => $clinics,
-            'achievements' => array_slice($achievements, 0, 4),
-            'gallery' => array_slice($gallery, 0, 6),
-            'testimonials' => $testimonials,
-            'activeNav' => 'home'
-        ]);
+        if (file_exists(ROOT_DIR . '/index.html')) {
+            header("Content-Type: text/html; charset=UTF-8");
+            readfile(ROOT_DIR . '/index.html');
+            return;
+        }
     }
 
     public function about(Request $request): void {
