@@ -10,6 +10,10 @@ class VideoCategory {
         return $stmt->fetchAll();
     }
 
+    public static function allActive(): array {
+        return self::all();
+    }
+
     public static function findById(int $id): ?array {
         $pdo = Database::getConnection();
         $stmt = $pdo->prepare("SELECT * FROM video_categories WHERE id = ? LIMIT 1");

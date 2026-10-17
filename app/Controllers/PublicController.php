@@ -18,6 +18,8 @@ use App\Models\Testimonial;
 use App\Models\Appointment;
 use App\Models\Message;
 use App\Models\Setting;
+use App\Models\Video;
+use App\Models\VideoCategory;
 use App\Helpers\Mailer;
 
 class PublicController {
@@ -114,6 +116,19 @@ class PublicController {
             'gallery' => $gallery,
             'currentCategory' => $cat ?: 'All',
             'activeNav' => 'gallery'
+        ]);
+    }
+
+    public function videos(Request $request): void {
+        $categories = VideoCategory::allActive();
+        $videos = Video::allPublished();
+
+        View::render('public/videos', [
+            'title' => 'Dental Video Gallery | Dr. Amrit Jaishi (BDS BPKIHS)',
+            'metaDescription' => 'Watch patient education videos, clinical procedure guides, oral hygiene tutorials, and dental awareness videos by Dr. Amrit Jaishi.',
+            'categories' => $categories,
+            'videos' => $videos,
+            'activeNav' => 'videos'
         ]);
     }
 

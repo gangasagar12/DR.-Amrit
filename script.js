@@ -259,41 +259,38 @@ document.addEventListener('DOMContentLoaded', function () {
           'X-Requested-With': 'XMLHttpRequest'
         }
       })
-      .then(function (res) {
-        return res.json().catch(function () {
-          return { success: res.ok };
-        });
-      })
-      .then(function (data) {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = originalBtnText;
+        .then(function (res) {
+          return res.json().catch(function () {
+            return { success: res.ok };
+          });
+        })
+        .then(function (data) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalBtnText;
 
-        if (data && (data.success || data.status === 'success')) {
+          if (data && (data.success || data.status === 'success')) {
+            formFeedback.className = 'form-feedback success';
+            formFeedback.textContent = 'Thank you! Your message has been sent successfully. Dr. Amrit Jaishi or our clinical team will get back to you shortly.';
+            contactForm.reset();
+          } else {
+            // If response indicates specific error or handled gracefully
+            formFeedback.className = 'form-feedback success';
+            formFeedback.textContent = 'Thank you! Your inquiry has been received. We will respond to your email at ' + emailVal + '.';
+            contactForm.reset();
+          }
+        })
+        .catch(function () {
+          // Fallback for static server mode
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalBtnText;
           formFeedback.className = 'form-feedback success';
-          formFeedback.textContent = 'Thank you! Your message has been sent successfully. Dr. Amrit Jaishi or our clinical team will get back to you shortly.';
+          formFeedback.textContent = 'Thank you, ' + nameVal + '! Your inquiry has been recorded. We will contact you at ' + emailVal + '.';
           contactForm.reset();
-        } else {
-          // If response indicates specific error or handled gracefully
-          formFeedback.className = 'form-feedback success';
-          formFeedback.textContent = 'Thank you! Your inquiry has been received. We will respond to your email at ' + emailVal + '.';
-          contactForm.reset();
-        }
-      })
-      .catch(function () {
-        // Fallback for static server mode
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = originalBtnText;
-        formFeedback.className = 'form-feedback success';
-        formFeedback.textContent = 'Thank you, ' + nameVal + '! Your inquiry has been recorded. We will contact you at ' + emailVal + '.';
-        contactForm.reset();
-      });
+        });
     });
   }
 
-  // ==========================================================================
-  // 6. Dynamic Content Synchronization from Backend Database
-  // Automatically loads clinics, doctor details, and dynamic content from MySQL
-  // ==========================================================================
+
   function loadDynamicPortfolioData() {
     fetch('/api/portfolio-data')
       .then(function (res) {
@@ -311,7 +308,7 @@ document.addEventListener('DOMContentLoaded', function () {
               const isPrimary = c.workplace_type === 'Permanent Workplace' || (c.display_order == 1);
               const badgeClass = isPrimary ? 'clinic-badge' : 'clinic-badge-secondary';
               const badgeText = isPrimary ? 'Primary Practice' : (c.workplace_type || 'Community Affiliation');
-              
+
               // Handle clean clinic image path
               let clinicImg = c.image || 'img/clinics/dhangadhi_sanjeevani_hospital.jpg';
               if (!clinicImg.startsWith('http') && !clinicImg.startsWith('/') && !clinicImg.startsWith('img/')) {
@@ -396,7 +393,7 @@ document.addEventListener('DOMContentLoaded', function () {
               const sideClass = isLeft ? 'timeline-left' : 'timeline-right';
               const stepNumber = String(idx + 1).padStart(2, '0');
               const dLower = (q.degree || '').toLowerCase();
-              
+
               let badgeClass = 'badge-degree';
               let badgeLabel = 'University Degree';
               let iconSvg = iconSvgGrad;
@@ -463,16 +460,220 @@ document.addEventListener('DOMContentLoaded', function () {
             timelineContainer.innerHTML = html;
           }
         }
+
+        // 4. Dynamic Video Gallery & Categories (loaded directly from MySQL database)
+        if (Array.isArray(data.video_categories) && data.video_categories.length > 0) {
+          const videoFiltersContainer = document.querySelector('.video-filters');
+          if (videoFiltersContainer) {
+            let filterHtml = '<button type="button" class="video-filter-btn active" data-filter="all" role="tab" aria-selected="true">All Videos</button>';
+            data.video_categories.forEach(function (cat) {
+              filterHtml += `<button type="button" class="video-filter-btn" data-filter="${cat.slug}" role="tab" aria-selected="false">${cat.name}</button>`;
+            });
+            videoFiltersContainer.innerHTML = filterHtml;
+          }
+        }
+
+        if (Array.isArray(data.videos) && data.videos.length > 0) {
+          const videosGrid = document.getElementById('videosGrid');
+          if (videosGrid) {
+            videosGrid.innerHTML = data.videos.map(function (v) {
+              const catSlug = v.category_slug || '';
+              const catName = v.category_name || 'Dental Video';
+              const duration = v.duration || '04:00';
+              const videoSrc = v.video_type === 'upload' ? (v.video_file || '') : (v.video_url || '');
+              const thumb = v.thumbnail || 'img/services/teeth_cleaning.jpg';
+              const pubDate = v.published_at ? new Date(v.published_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : '';
+
+              return `
+                <article class="video-card" 
+                         data-category="${catSlug}" 
+                         data-video-url="${videoSrc}" 
+                         data-video-type="${v.video_type || 'youtube'}" 
+                         data-title="${v.title}" 
+                         data-desc="${v.description || ''}" 
+                         data-category-name="${catName}" 
+                         data-duration="${duration}" 
+                         tabindex="0" 
+                         role="button" 
+                         aria-label="Watch video: ${v.title}">
+                  <div class="video-media">
+                    <img src="${thumb}" alt="${v.title} thumbnail" class="video-thumb" loading="lazy">
+                    <div class="video-play-btn" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                    </div>
+                    <span class="video-duration">${duration}</span>
+                  </div>
+                  <div class="video-body">
+                    <div class="video-meta">
+                      <span class="video-cat-badge">${catName}</span>
+                      ${pubDate ? `<span class="video-date">${pubDate}</span>` : ''}
+                    </div>
+                    <h3 class="video-title">${v.title}</h3>
+                    <p class="video-desc">${v.description || ''}</p>
+                  </div>
+                </article>
+              `;
+            }).join('');
+
+            // Re-bind video card interactions and category filter buttons
+            bindVideoCards();
+            bindVideoFilters();
+          }
+        }
       })
       .catch(function () {
         // Keeps graceful pre-rendered HTML without interruption
       });
   }
 
+  // ==========================================================================
+  // 7. Video Player Modal & Playback Control
+  // ==========================================================================
+  const videoModal = document.getElementById('videoModal');
+  const closeVideoModal = document.getElementById('closeVideoModal');
+  const videoModalPlayer = document.getElementById('videoModalPlayer');
+  const videoModalTitle = document.getElementById('videoModalTitle');
+  const videoModalDesc = document.getElementById('videoModalDesc');
+  const videoModalCategory = document.getElementById('videoModalCategory');
+  const videoModalDuration = document.getElementById('videoModalDuration');
+
+  function parseYouTubeId(url) {
+    if (!url) return null;
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+  }
+
+  function parseVimeoId(url) {
+    if (!url) return null;
+    const match = url.match(/(?:www\.|player\.)?vimeo.com\/(?:channels\/(?:\w+\/)?|groups\/(?:[^\/]*)\/videos\/|album\/(?:\d+)\/video\/|video\/|)(\d+)(?:[a-zA-Z0-9_\-]+)?/);
+    return match ? match[1] : null;
+  }
+
+  function openVideoModal(card) {
+    if (!videoModal || !videoModalPlayer) return;
+
+    const videoUrl = card.getAttribute('data-video-url') || '';
+    const videoType = card.getAttribute('data-video-type') || 'youtube';
+    const title = card.getAttribute('data-title') || card.querySelector('.video-title')?.textContent || '';
+    const desc = card.getAttribute('data-desc') || card.querySelector('.video-desc')?.textContent || '';
+    const cat = card.getAttribute('data-category-name') || card.querySelector('.video-cat-badge')?.textContent || '';
+    const duration = card.getAttribute('data-duration') || card.querySelector('.video-duration')?.textContent || '';
+
+    let playerHtml = '';
+
+    if (videoType === 'upload' || videoUrl.match(/\.(mp4|webm|ogg)$/i)) {
+      playerHtml = `
+        <video controls autoplay playsinline style="width:100%;height:100%;background:#000;">
+          <source src="${videoUrl}" type="video/mp4">
+          Your browser does not support HTML5 video.
+        </video>
+      `;
+    } else {
+      const ytId = parseYouTubeId(videoUrl);
+      const vmId = parseVimeoId(videoUrl);
+
+      if (ytId) {
+        playerHtml = `<iframe src="https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&rel=0&modestbranding=1" title="${title}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width:100%;height:100%;border:0;"></iframe>`;
+      } else if (vmId) {
+        playerHtml = `<iframe src="https://player.vimeo.com/video/${vmId}?autoplay=1" title="${title}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="width:100%;height:100%;border:0;"></iframe>`;
+      } else if (videoUrl) {
+        playerHtml = `<iframe src="${videoUrl}" title="${title}" allow="autoplay; fullscreen" allowfullscreen style="width:100%;height:100%;border:0;"></iframe>`;
+      } else {
+        playerHtml = `<div style="color:#fff;display:flex;align-items:center;justify-content:center;height:100%;">Video source unavailable.</div>`;
+      }
+    }
+
+    videoModalPlayer.innerHTML = playerHtml;
+    if (videoModalTitle) videoModalTitle.textContent = title;
+    if (videoModalDesc) videoModalDesc.textContent = desc;
+    if (videoModalCategory) videoModalCategory.textContent = cat;
+    if (videoModalDuration) videoModalDuration.textContent = duration ? `Duration: ${duration}` : '';
+
+    videoModal.classList.add('open');
+    videoModal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeVideo() {
+    if (!videoModal) return;
+    videoModal.classList.remove('open');
+    videoModal.setAttribute('aria-hidden', 'true');
+    if (videoModalPlayer) {
+      videoModalPlayer.innerHTML = ''; // Immediately stops video and sound
+    }
+    document.body.style.overflow = '';
+  }
+
+  if (closeVideoModal) {
+    closeVideoModal.addEventListener('click', closeVideo);
+  }
+
+  if (videoModal) {
+    videoModal.addEventListener('click', function (e) {
+      if (e.target === videoModal) {
+        closeVideo();
+      }
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && videoModal.classList.contains('open')) {
+        closeVideo();
+      }
+    });
+  }
+
+  function bindVideoCards() {
+    const cards = document.querySelectorAll('.video-card');
+    cards.forEach(function (card) {
+      // Avoid duplicate event listener
+      card.onclick = function () {
+        openVideoModal(card);
+      };
+      card.onkeydown = function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openVideoModal(card);
+        }
+      };
+    });
+  }
+
+  function bindVideoFilters() {
+    const filterBtns = document.querySelectorAll('.video-filter-btn');
+    const cards = document.querySelectorAll('.video-card');
+
+    filterBtns.forEach(function (btn) {
+      btn.onclick = function () {
+        const filterVal = btn.getAttribute('data-filter') || 'all';
+
+        filterBtns.forEach(function (b) {
+          b.classList.remove('active');
+          b.setAttribute('aria-selected', 'false');
+        });
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected', 'true');
+
+        cards.forEach(function (card) {
+          const cardCat = card.getAttribute('data-category') || '';
+          if (filterVal === 'all' || cardCat === filterVal) {
+            card.style.display = '';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      };
+    });
+  }
+
+  // Initial binding for pre-rendered video cards
+  bindVideoCards();
+  bindVideoFilters();
+
   loadDynamicPortfolioData();
 
   // ==========================================================================
-  // 7. Dynamic Year in Footer
+  // 8. Dynamic Year in Footer
   // ==========================================================================
   const currentYearSpan = document.getElementById('currentYear');
   if (currentYearSpan) {

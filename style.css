@@ -2016,6 +2016,10 @@ a.entry-val:hover {
     flex-direction: column;
   }
 
+  .contact-quick-buttons .btn {
+    width: 100%;
+  }
+}
 
 /* ==========================================================================
    Dental Video Gallery

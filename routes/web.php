@@ -11,6 +11,7 @@ $router->get('/services', 'PublicController@services');
 $router->get('/services/{slug}', 'PublicController@serviceDetail');
 $router->get('/achievements', 'PublicController@achievements');
 $router->get('/gallery', 'PublicController@gallery');
+$router->get('/videos', 'PublicController@videos');
 $router->get('/clinics', 'PublicController@clinics');
 $router->get('/blog', 'BlogController@index');
 $router->get('/blog/{slug}', 'BlogController@show');

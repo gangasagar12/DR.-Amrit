@@ -85,6 +85,7 @@
           <li><a href="<?= $url('/about') ?>" class="nav-link <?= ($activeNav ?? '') === 'about' ? 'active' : '' ?>">About Dr. Amrit</a></li>
           <li><a href="<?= $url('/services') ?>" class="nav-link <?= ($activeNav ?? '') === 'services' ? 'active' : '' ?>">Services</a></li>
           <li><a href="<?= $url('/clinics') ?>" class="nav-link <?= ($activeNav ?? '') === 'clinics' ? 'active' : '' ?>">Hospital & Clinic</a></li>
+          <li><a href="<?= $url('/videos') ?>" class="nav-link <?= ($activeNav ?? '') === 'videos' ? 'active' : '' ?>">Videos</a></li>
           <li><a href="<?= $url('/blog') ?>" class="nav-link <?= ($activeNav ?? '') === 'blog' ? 'active' : '' ?>">Articles</a></li>
           <li><a href="<?= $url('/contact') ?>" class="nav-link <?= ($activeNav ?? '') === 'contact' ? 'active' : '' ?>">Contact</a></li>
         </ul>
