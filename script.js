@@ -539,9 +539,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function parseYouTubeId(url) {
     if (!url) return null;
-    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    url = url.trim();
+    // Direct 11-char ID
+    if (/^[a-zA-Z0-9_-]{11}$/.test(url)) {
+      return url;
+    }
+    const regExp = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([^"&?\/ ]{11})/i;
     const match = url.match(regExp);
-    return (match && match[2].length === 11) ? match[2] : null;
+    return match ? match[1] : null;
   }
 
   function parseVimeoId(url) {
@@ -555,33 +560,32 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const videoUrl = card.getAttribute('data-video-url') || '';
     const videoType = card.getAttribute('data-video-type') || 'youtube';
-    const title = card.getAttribute('data-title') || card.querySelector('.video-title')?.textContent || '';
+    const title = card.getAttribute('data-title') || card.querySelector('.video-title')?.textContent || 'Dental Video';
     const desc = card.getAttribute('data-desc') || card.querySelector('.video-desc')?.textContent || '';
     const cat = card.getAttribute('data-category-name') || card.querySelector('.video-cat-badge')?.textContent || '';
     const duration = card.getAttribute('data-duration') || card.querySelector('.video-duration')?.textContent || '';
 
     let playerHtml = '';
 
-    if (videoType === 'upload' || videoUrl.match(/\.(mp4|webm|ogg)$/i)) {
+    const ytId = parseYouTubeId(videoUrl);
+    const vmId = parseVimeoId(videoUrl);
+
+    if (ytId) {
+      // YouTube embed with autoplay and controls
+      playerHtml = `<iframe src="https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&rel=0&modestbranding=1" title="${title}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen style="width:100%;height:100%;border:0;"></iframe>`;
+    } else if (vmId) {
+      playerHtml = `<iframe src="https://player.vimeo.com/video/${vmId}?autoplay=1" title="${title}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="width:100%;height:100%;border:0;"></iframe>`;
+    } else if (videoType === 'upload' || videoUrl.match(/\.(mp4|webm|ogg)$/i)) {
       playerHtml = `
         <video controls autoplay playsinline style="width:100%;height:100%;background:#000;">
           <source src="${videoUrl}" type="video/mp4">
           Your browser does not support HTML5 video.
         </video>
       `;
+    } else if (videoUrl && videoUrl.startsWith('http')) {
+      playerHtml = `<iframe src="${videoUrl}" title="${title}" allow="autoplay; fullscreen" allowfullscreen style="width:100%;height:100%;border:0;"></iframe>`;
     } else {
-      const ytId = parseYouTubeId(videoUrl);
-      const vmId = parseVimeoId(videoUrl);
-
-      if (ytId) {
-        playerHtml = `<iframe src="https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&rel=0&modestbranding=1" title="${title}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width:100%;height:100%;border:0;"></iframe>`;
-      } else if (vmId) {
-        playerHtml = `<iframe src="https://player.vimeo.com/video/${vmId}?autoplay=1" title="${title}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="width:100%;height:100%;border:0;"></iframe>`;
-      } else if (videoUrl) {
-        playerHtml = `<iframe src="${videoUrl}" title="${title}" allow="autoplay; fullscreen" allowfullscreen style="width:100%;height:100%;border:0;"></iframe>`;
-      } else {
-        playerHtml = `<div style="color:#fff;display:flex;align-items:center;justify-content:center;height:100%;">Video source unavailable.</div>`;
-      }
+      playerHtml = `<div style="color:#fff;display:flex;align-items:center;justify-content:center;height:100%;font-size:1rem;">Video URL not available.</div>`;
     }
 
     videoModalPlayer.innerHTML = playerHtml;
@@ -623,18 +627,32 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
+  // Event delegation: reliable clicking on any video card (even dynamically created)
+  document.addEventListener('click', function (e) {
+    const card = e.target.closest('.video-card');
+    if (card) {
+      e.preventDefault();
+      openVideoModal(card);
+    }
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      const card = e.target.closest('.video-card');
+      if (card && document.activeElement === card) {
+        e.preventDefault();
+        openVideoModal(card);
+      }
+    }
+  });
+
   function bindVideoCards() {
+    // Retained for backwards compatibility
     const cards = document.querySelectorAll('.video-card');
     cards.forEach(function (card) {
-      // Avoid duplicate event listener
-      card.onclick = function () {
+      card.onclick = function (e) {
+        e.preventDefault();
         openVideoModal(card);
-      };
-      card.onkeydown = function (e) {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          openVideoModal(card);
-        }
       };
     });
   }
@@ -654,7 +672,8 @@ document.addEventListener('DOMContentLoaded', function () {
         btn.classList.add('active');
         btn.setAttribute('aria-selected', 'true');
 
-        cards.forEach(function (card) {
+        const currentCards = document.querySelectorAll('.video-card');
+        currentCards.forEach(function (card) {
           const cardCat = card.getAttribute('data-category') || '';
           if (filterVal === 'all' || cardCat === filterVal) {
             card.style.display = '';
