@@ -18,13 +18,16 @@
   <link rel="icon" type="image/png" href="<?= $asset('img/doctor-favicon.png') ?>">
   <link rel="apple-touch-icon" href="<?= $asset('img/doctor-favicon.png') ?>">
 
-  <!-- Google Fonts: Plus Jakarta Sans -->
+  <!-- Google Fonts: Inter & Poppins -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Main Stylesheet -->
-  <link rel="stylesheet" href="<?= $asset('assets/css/style.css') ?>?v=<?= @filemtime(ROOT_DIR . '/public/assets/css/style.css') ?: time() ?>">
+  <!-- Sub-page specific styles (article body, comments, etc.) -->
+  <link rel="stylesheet" href="/assets/css/style.css?v=<?= @filemtime(ROOT_DIR . '/public/assets/css/style.css') ?: time() ?>">
+
+  <!-- Master Portfolio Stylesheet (Guarantees 100% identical navbar & footer) -->
+  <link rel="stylesheet" href="/style.css?v=<?= @filemtime(ROOT_DIR . '/style.css') ?: time() ?>">
 
   <!-- Font Awesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -39,75 +42,43 @@
 </head>
 <body>
 
-  <!-- Top Contact & Social Bar (Theme Style) -->
-  <div class="top-bar">
-    <div class="container top-bar-inner">
-      <div class="top-bar-socials">
-        <?php if (!empty($setting('facebook_url', $setting('social_facebook', '')))): ?>
-        <a href="<?= $e($setting('facebook_url', $setting('social_facebook', 'https://facebook.com/amrit.jaishi'))) ?>" target="_blank" rel="noopener" aria-label="Facebook">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-        </a>
-        <?php endif; ?>
-        <?php if (!empty($setting('instagram_url', $setting('social_instagram', '')))): ?>
-        <a href="<?= $e($setting('instagram_url', $setting('social_instagram', ''))) ?>" target="_blank" rel="noopener" aria-label="Instagram">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
-        </a>
-        <?php endif; ?>
-        <?php if (!empty($setting('linkedin_url', $setting('social_linkedin', '')))): ?>
-        <a href="<?= $e($setting('linkedin_url', $setting('social_linkedin', 'https://linkedin.com/in/amrit-jaishi'))) ?>" target="_blank" rel="noopener" aria-label="LinkedIn">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-        </a>
-        <?php endif; ?>
-        <?php if (!empty($setting('youtube_url', $setting('social_youtube', '')))): ?>
-        <a href="<?= $e($setting('youtube_url', $setting('social_youtube', 'https://youtube.com/@amritjaishi'))) ?>" target="_blank" rel="noopener" aria-label="YouTube">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-        </a>
-        <?php endif; ?>
-        <?php if (!empty($setting('twitter_url', $setting('social_twitter', '')))): ?>
-        <a href="<?= $e($setting('twitter_url', $setting('social_twitter', 'https://twitter.com/'))) ?>" target="_blank" rel="noopener" aria-label="X (Twitter)">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-        </a>
-        <?php endif; ?>
-      </div>
-      <div class="top-bar-contacts">
-        <a href="tel:<?= $e($setting('hospital_phone', '091-590328')) ?>" class="top-bar-phone">
-          <i data-lucide="phone" style="width:12px;height:12px;"></i>
-          <span><?= $e($setting('hospital_phone', '(091) 590328')) ?></span><span class="phone-secondary"> / <?= $e($setting('contact_phone', '+977-9860644282')) ?></span>
-        </a>
-        <span class="top-bar-divider">|</span>
-        <a href="mailto:<?= $e($setting('contact_email', 'amritjaishi0@gmail.com')) ?>" class="top-bar-email"><i data-lucide="mail" style="width:12px;height:12px;"></i> <?= $e($setting('contact_email', 'amritjaishi0@gmail.com')) ?></a>
-      </div>
-    </div>
-  </div>
-
-  <!-- Main Sticky Header -->
-  <header class="site-header">
-    <div class="container header-main">
-      <a href="<?= $url('/') ?>" class="site-logo">
-        <img src="<?= $asset('img/doctor-favicon.png') ?>" alt="<?= $e($doctor_profile()['doctor_name'] ?? 'Dr. Amrit Jaishi') ?> Logo" class="site-logo-img">
-        <div class="logo-text">
-          <span class="logo-name"><?= $e($doctor_profile()['doctor_name'] ?? 'Dr. Amrit Jaishi') ?></span>
-          <span class="logo-sub"><?= $e($doctor_profile()['professional_title'] ?? 'BDS (BPKIHS) - Oral & Dental Surgeon') ?></span>
+  <!-- ======================================================================
+       1. Header and Navigation (Identical to Homepage)
+       ====================================================================== -->
+  <header class="site-header" id="siteHeader">
+    <div class="container nav-container">
+      <a href="/#home" class="brand-logo" aria-label="<?= $e($doctor_profile()['doctor_name'] ?? 'Dr. Amrit Jaishi') ?> - <?= $e($doctor_profile()['professional_title'] ?? 'General Dentist') ?>">
+        <img src="/img/doctor-favicon.png" alt="<?= $e($doctor_profile()['doctor_name'] ?? 'Dr. Amrit Jaishi') ?>" class="brand-avatar-img" width="44" height="44">
+        <div class="brand-text">
+          <span class="brand-name"><?= $e($doctor_profile()['doctor_name'] ?? 'Dr. Amrit Jaishi') ?></span>
+          <span class="brand-designation"><?= $e($doctor_profile()['professional_title'] ?? 'General Dentist') ?></span>
         </div>
       </a>
 
-      <!-- Navigation -->
-      <nav>
-        <ul class="main-nav">
-          <li><a href="<?= $url('/') ?>" class="nav-link <?= ($activeNav ?? '') === 'home' ? 'active' : '' ?>">Home</a></li>
-          <li><a href="<?= $url('/about') ?>" class="nav-link <?= ($activeNav ?? '') === 'about' ? 'active' : '' ?>">About Dr. Amrit</a></li>
-          <li><a href="<?= $url('/services') ?>" class="nav-link <?= ($activeNav ?? '') === 'services' ? 'active' : '' ?>">Services</a></li>
-          <li><a href="<?= $url('/clinics') ?>" class="nav-link <?= ($activeNav ?? '') === 'clinics' ? 'active' : '' ?>">Hospital & Clinic</a></li>
-          <li><a href="<?= $url('/videos') ?>" class="nav-link <?= ($activeNav ?? '') === 'videos' ? 'active' : '' ?>">Videos</a></li>
-          <li><a href="<?= $url('/blog') ?>" class="nav-link <?= ($activeNav ?? '') === 'blog' ? 'active' : '' ?>">Articles</a></li>
-          <li><a href="<?= $url('/contact') ?>" class="nav-link <?= ($activeNav ?? '') === 'contact' ? 'active' : '' ?>">Contact</a></li>
-        </ul>
+      <!-- Mobile Menu Toggle Button -->
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="navMenu">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+
+      <!-- Navigation Links -->
+      <nav class="nav-menu" id="navMenu" aria-label="Main navigation">
+        <a href="/#home" class="nav-link <?= ($activeNav ?? '') === 'home' ? 'active' : '' ?>">Home</a>
+        <a href="/#about" class="nav-link <?= ($activeNav ?? '') === 'about' ? 'active' : '' ?>">About</a>
+        <a href="/#services" class="nav-link <?= ($activeNav ?? '') === 'services' ? 'active' : '' ?>">Services</a>
+        <a href="/#education" class="nav-link">Education</a>
+        <a href="/#gallery" class="nav-link">Gallery</a>
+        <a href="/#videos" class="nav-link">Videos</a>
+        <a href="/#blog" class="nav-link <?= ($activeNav ?? '') === 'blog' ? 'active' : '' ?>">Blog</a>
+        <a href="/#research" class="nav-link">Research</a>
+        <a href="/#clinics" class="nav-link">Clinics</a>
       </nav>
 
-      <!-- Mobile Hamburger Button -->
-      <button type="button" class="mobile-toggle" aria-label="Toggle navigation">
-        <i class="fa-thin fa-bars"></i>
-      </button>
+      <!-- Small Contact Header CTA -->
+      <div class="header-action">
+        <a href="/#contact" class="btn btn-outline-nav">Contact</a>
+      </div>
     </div>
   </header>
 
@@ -236,102 +207,109 @@
     </div>
   </div>
 
-  <!-- Professional Footer -->
+  <!-- ======================================================================
+       10. Footer (Identical to Homepage)
+       ====================================================================== -->
   <footer class="site-footer">
-    <div class="container footer-grid">
-      <!-- Col 1: Identity & Bio -->
-      <div class="footer-col">
-        <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;">
-          <img src="<?= $asset('img/doctor-favicon.png') ?>" alt="<?= $e($doctor_profile()['doctor_name'] ?? 'Dr. Amrit Jaishi') ?> Logo" style="width:40px;height:40px;object-fit:cover;border-radius:50%;background:#ffffff;padding:2px;border:2px solid var(--primary-teal);box-shadow:0 2px 8px rgba(0,0,0,0.2);">
-          <div>
-            <h3 style="margin:0;font-size:1.2rem;color:#ffffff;"><?= $e($doctor_profile()['doctor_name'] ?? 'Dr. Amrit Jaishi') ?></h3>
-            <span style="color:#93d5dc;font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;display:block;margin-top:2px;"><?= $e($doctor_profile()['professional_title'] ?? 'BDS (BPKIHS) - Oral & Dental Surgeon') ?></span>
+    <div class="container footer-container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <div class="footer-name"><?= $e($doctor_profile()['doctor_name'] ?? 'Dr. Amrit Jaishi') ?></div>
+          <div class="footer-designation"><?= $e($doctor_profile()['designation'] ?? $doctor_profile()['professional_title'] ?? 'General Dentist') ?></div>
+          <p class="footer-tagline">
+            <?= $e($doctor_profile()['tagline'] ?? 'Dedicated to providing patient-centered dental care with a focus on oral health, preventive dentistry, and comfortable treatment experiences.') ?>
+          </p>
+          <div class="footer-social" id="footerSocial" aria-label="Social Media Profiles">
+            <?php
+            $fb = $setting('social_facebook', $setting('facebook_url', ''));
+            $ig = $setting('social_instagram', $setting('instagram_url', ''));
+            $li = $setting('social_linkedin', $setting('linkedin_url', ''));
+            $yt = $setting('social_youtube', $setting('youtube_url', ''));
+            $tw = $setting('social_twitter', $setting('twitter_url', ''));
+            $wa = $setting('whatsapp_number', $doctor_profile()['whatsapp'] ?? '');
+            if (!empty($fb)): ?>
+              <a href="<?= $e($fb) ?>" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+            <?php endif; ?>
+            <?php if (!empty($ig)): ?>
+              <a href="<?= $e($ig) ?>" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a>
+            <?php endif; ?>
+            <?php if (!empty($li)): ?>
+              <a href="<?= $e($li) ?>" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
+            <?php endif; ?>
+            <?php if (!empty($yt)): ?>
+              <a href="<?= $e($yt) ?>" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="YouTube"><svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>
+            <?php endif; ?>
+            <?php if (!empty($tw)): ?>
+              <a href="<?= $e($tw) ?>" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="X (Twitter)"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+            <?php endif; ?>
+            <?php if (!empty($wa)): 
+              $cleanWa = preg_replace('/[^0-9]/', '', $wa);
+            ?>
+              <a href="https://wa.me/<?= $cleanWa ?>" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="WhatsApp"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.301-.15-1.782-.879-2.058-.979-.276-.1-.477-.15-.678.15-.201.3-.777.979-.953 1.18-.176.201-.351.226-.652.075-.301-.15-1.272-.469-2.423-1.496-.896-.799-1.501-1.786-1.677-2.087-.176-.301-.019-.464.132-.614.136-.135.301-.351.452-.527.15-.176.201-.301.301-.502.101-.201.05-.377-.025-.527-.075-.15-.678-1.634-.929-2.238-.244-.589-.493-.509-.678-.518-.176-.009-.377-.009-.578-.009s-.527.075-.803.377c-.276.301-1.054 1.03-1.054 2.511 0 1.481 1.079 2.911 1.23 3.112.15.201 2.123 3.242 5.143 4.547.718.311 1.279.497 1.716.636.721.23 1.377.197 1.896.12.578-.087 1.782-.728 2.033-1.431.251-.703.251-1.305.176-1.431-.076-.126-.277-.201-.578-.351zM12 21.82a9.77 9.77 0 0 1-4.99-1.365l-.358-.213-3.708.973.99-3.615-.233-.371A9.8 9.8 0 1 1 21.8 12c0 5.414-4.404 9.82-9.8 9.82z"/></svg></a>
+            <?php endif; ?>
           </div>
         </div>
-        <p><?= $e($doctor_profile()['tagline'] ?? 'Dedicated to providing patient-centered dental care with a focus on oral health, preventive dentistry, and comfortable treatment experiences.') ?></p>
-        <div class="social-icons-row">
-          <?php if (!empty($setting('facebook_url', $setting('social_facebook', '')))): ?>
-          <a href="<?= $e($setting('facebook_url', $setting('social_facebook', 'https://facebook.com/amrit.jaishi'))) ?>" class="social-icon-btn" target="_blank" rel="noopener" aria-label="Facebook">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-          </a>
-          <?php endif; ?>
-          <?php if (!empty($setting('instagram_url', $setting('social_instagram', '')))): ?>
-          <a href="<?= $e($setting('instagram_url', $setting('social_instagram', ''))) ?>" class="social-icon-btn" target="_blank" rel="noopener" aria-label="Instagram">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
-          </a>
-          <?php endif; ?>
-          <?php if (!empty($setting('linkedin_url', $setting('social_linkedin', '')))): ?>
-          <a href="<?= $e($setting('linkedin_url', $setting('social_linkedin', 'https://linkedin.com/in/amrit-jaishi'))) ?>" class="social-icon-btn" target="_blank" rel="noopener" aria-label="LinkedIn">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-          </a>
-          <?php endif; ?>
-          <?php if (!empty($setting('youtube_url', $setting('social_youtube', '')))): ?>
-          <a href="<?= $e($setting('youtube_url', $setting('social_youtube', 'https://youtube.com/@amritjaishi'))) ?>" class="social-icon-btn" target="_blank" rel="noopener" aria-label="YouTube">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-          </a>
-          <?php endif; ?>
-          <?php if (!empty($setting('twitter_url', $setting('social_twitter', '')))): ?>
-          <a href="<?= $e($setting('twitter_url', $setting('social_twitter', 'https://twitter.com/'))) ?>" class="social-icon-btn" target="_blank" rel="noopener" aria-label="X (Twitter)">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-          </a>
-          <?php endif; ?>
+
+        <div class="footer-nav">
+          <span class="footer-heading">Navigation</span>
+          <div class="footer-links-grid">
+            <a href="/#home">Home</a>
+            <a href="/#about">About</a>
+            <a href="/#services">Services</a>
+            <a href="/#education">Education</a>
+            <a href="/#gallery">Gallery</a>
+            <a href="/#blog">Blog</a>
+            <a href="/#research">Research</a>
+            <a href="/#clinics">Clinics</a>
+            <a href="/#contact">Contact</a>
+          </div>
+        </div>
+
+        <div class="footer-contact">
+          <span class="footer-heading">Contact Details</span>
+          <div class="footer-contact-list">
+            <div>Email: <a href="mailto:<?= $e($setting('contact_email', 'amritjaishi0@gmail.com')) ?>" class="footer-email-link"><?= $e($setting('contact_email', 'amritjaishi0@gmail.com')) ?></a></div>
+            <div>Phone: <a href="tel:<?= $e(preg_replace('/[^0-9+]/', '', $setting('contact_phone', '+9779860644282'))) ?>" class="footer-phone-link"><?= $e($setting('contact_phone', '+977-9860644282')) ?></a></div>
+            <div>Location: <span id="footerLocationVal"><?= $e($setting('clinic_address', 'Dhangadhi Sanjeevani Hospital, Kailali, Nepal')) ?></span></div>
+          </div>
         </div>
       </div>
 
-      <!-- Col 2: Quick Links -->
-      <div class="footer-col">
-        <h4>Professional Portfolio</h4>
-        <ul class="footer-links">
-          <li><a href="<?= $url('/about') ?>"><i data-lucide="chevron-right" style="width:14px;height:14px;display:inline;"></i> About Dr. Amrit</a></li>
-          <li><a href="<?= $url('/services') ?>"><i data-lucide="chevron-right" style="width:14px;height:14px;display:inline;"></i> Treatments & Specialties</a></li>
-          <li><a href="<?= $url('/clinics') ?>"><i data-lucide="chevron-right" style="width:14px;height:14px;display:inline;"></i> Hospital & Clinic Location</a></li>
-          <li><a href="<?= $url('/blog') ?>"><i data-lucide="chevron-right" style="width:14px;height:14px;display:inline;"></i> Dental Health Education</a></li>
-          <li><a href="<?= $url('/contact') ?>"><i data-lucide="chevron-right" style="width:14px;height:14px;display:inline;"></i> Contact & Location</a></li>
-        </ul>
-      </div>
-
-      <!-- Col 3: Key Procedures -->
-      <div class="footer-col">
-        <h4>Key Dental Treatments</h4>
-        <ul class="footer-links">
-          <li><a href="<?= $url('/services/emergency-dental-care') ?>"><i data-lucide="chevron-right" style="width:14px;height:14px;display:inline;"></i> Emergency Dental Care</a></li>
-          <li><a href="<?= $url('/services/dental-crown-and-bridge') ?>"><i data-lucide="chevron-right" style="width:14px;height:14px;display:inline;"></i> Dental Crown & Bridge</a></li>
-          <li><a href="<?= $url('/services/root-canal-treatment-rct') ?>"><i data-lucide="chevron-right" style="width:14px;height:14px;display:inline;"></i> Root Canal Treatment (RCT)</a></li>
-          <li><a href="<?= $url('/services/periodontal-gum-care') ?>"><i data-lucide="chevron-right" style="width:14px;height:14px;display:inline;"></i> Periodontal & Gum Care</a></li>
-          <li><a href="<?= $url('/services/wisdom-tooth-removal') ?>"><i data-lucide="chevron-right" style="width:14px;height:14px;display:inline;"></i> Wisdom Tooth Removal</a></li>
-        </ul>
-      </div>
-
-      <!-- Col 4: Primary Clinic Contact -->
-      <div class="footer-col">
-        <h4>Hospital Consultation</h4>
-        <p style="display:flex;gap:0.5rem;align-items:flex-start;margin-bottom:0.75rem;">
-          <i data-lucide="map-pin" style="width:18px;height:18px;color:var(--primary-teal);flex-shrink:0;margin-top:3px;"></i>
-          <span><?= $e($setting('clinic_address', 'Dhangadhi Sanjeevani Hospital, Hospital Road, Dhangadhi, Kailali, Nepal')) ?></span>
+      <div class="footer-bottom">
+        <p class="copyright-text">
+          &copy; <span id="currentYear"><?= date('Y') ?></span> <span class="footer-copy-name"><?= $e($doctor_profile()['doctor_name'] ?? 'Dr. Amrit Jaishi') ?></span>. All rights reserved.
         </p>
-        <p style="display:flex;gap:0.5rem;align-items:center;margin-bottom:0.75rem;">
-          <i data-lucide="phone" style="width:18px;height:18px;color:var(--primary-teal);flex-shrink:0;"></i>
-          <span>(091) 590328 / <?= $e($setting('contact_phone', '+977-9860644282')) ?></span>
+        <p class="footer-subtext">
+          Developed by <a href="https://stra.com" target="_blank" rel="noopener">Stratraflow Technologies</a>.
         </p>
-        <p style="display:flex;gap:0.5rem;align-items:center;margin-bottom:1.25rem;">
-          <i data-lucide="mail" style="width:18px;height:18px;color:var(--primary-teal);flex-shrink:0;"></i>
-          <span><?= $e($setting('contact_email', 'amritjaishi0@gmail.com')) ?></span>
-        </p>
-      </div>
-    </div>
-
-    <!-- Bottom Bar -->
-    <div class="container footer-bottom">
-      <div>
-        &copy; <?= date('Y') ?> Dr. Amrit Jaishi. All rights reserved.
-      </div>
-      <div style="display:flex;gap:1.5rem;align-items:center;">
-        <a href="https://stra.com" style="color:#94a3b8;font-size:0.8rem;">Developed by Stratraflow Technologies</a>
       </div>
     </div>
   </footer>
 
   <!-- Scripts -->
   <script src="<?= $asset('assets/js/main.js') ?>?v=<?= @filemtime(ROOT_DIR . '/public/assets/js/main.js') ?: time() ?>"></script>
+  <script>
+    // Header & Mobile Nav handler for subpages matching homepage
+    document.addEventListener('DOMContentLoaded', function () {
+      const menuToggle = document.getElementById('menuToggle');
+      const navMenu = document.getElementById('navMenu');
+      if (menuToggle && navMenu) {
+        menuToggle.addEventListener('click', function () {
+          const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+          menuToggle.setAttribute('aria-expanded', !isExpanded);
+          navMenu.classList.toggle('is-open');
+        });
+        document.addEventListener('click', function (event) {
+          if (!navMenu.contains(event.target) && !menuToggle.contains(event.target)) {
+            navMenu.classList.remove('is-open');
+            menuToggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+      }
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+    });
+  </script>
 </body>
 </html>
