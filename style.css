@@ -2354,8 +2354,9 @@ a.entry-val:hover {
   }
 }
 
-/* Video Pagination (2 Rows / 6 Cards Per Page) */
-.video-pagination {
+/* Pagination (2 Rows / Grid Sections) */
+.video-pagination,
+.section-pagination {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2364,11 +2365,13 @@ a.entry-val:hover {
   user-select: none;
 }
 
-.video-pagination:empty {
+.video-pagination:empty,
+.section-pagination:empty {
   display: none;
 }
 
-.video-page-btn {
+.video-page-btn,
+.section-page-btn {
   min-width: 42px;
   height: 42px;
   padding: 0 0.85rem;
@@ -2388,14 +2391,16 @@ a.entry-val:hover {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
-.video-page-btn:hover:not(:disabled):not(.active) {
+.video-page-btn:hover:not(:disabled):not(.active),
+.section-page-btn:hover:not(:disabled):not(.active) {
   border-color: var(--accent-primary, #0d9488);
   color: var(--accent-primary, #0d9488);
   background: var(--bg-surface, #f8fafc);
   transform: translateY(-1px);
 }
 
-.video-page-btn.active {
+.video-page-btn.active,
+.section-page-btn.active {
   background: var(--accent-primary, #0d9488);
   border-color: var(--accent-primary, #0d9488);
   color: #ffffff;
@@ -2403,7 +2408,8 @@ a.entry-val:hover {
   cursor: default;
 }
 
-.video-page-btn:disabled {
+.video-page-btn:disabled,
+.section-page-btn:disabled {
   opacity: 0.45;
   cursor: not-allowed;
   background: var(--bg-surface, #f8fafc);
@@ -2411,7 +2417,8 @@ a.entry-val:hover {
   border-color: var(--border-light, #e2e8f0);
 }
 
-.video-page-btn svg {
+.video-page-btn svg,
+.section-page-btn svg {
   width: 16px;
   height: 16px;
   stroke-width: 2.2;

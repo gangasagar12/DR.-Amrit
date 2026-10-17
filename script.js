@@ -74,33 +74,155 @@ document.addEventListener('DOMContentLoaded', function () {
   window.addEventListener('scroll', onScrollSpy, { passive: true });
 
   // ==========================================================================
-  // 2. Professional Career Gallery Filtering
+  // 2. Section Pagination Controller (2 Rows per View for Gallery, Blog, Research)
   // ==========================================================================
-  const filterBtns = document.querySelectorAll('.filter-btn');
-  const galleryCards = document.querySelectorAll('.gallery-card');
+  function setupSectionPagination(config) {
+    const grid = document.querySelector(config.gridSelector);
+    const paginationEl = document.getElementById(config.paginationId);
+    if (!grid) return { update: function () {} };
 
-  filterBtns.forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      const filterValue = btn.getAttribute('data-filter');
+    let currentPage = 1;
+    let currentCategory = 'all';
 
-      // Update active button state
-      filterBtns.forEach(function (b) {
-        b.classList.remove('active');
-        b.setAttribute('aria-selected', 'false');
-      });
-      btn.classList.add('active');
-      btn.setAttribute('aria-selected', 'true');
+    function update(scrollToTop) {
+      const allCards = grid.querySelectorAll(config.cardSelector);
+      if (!allCards || allCards.length === 0) return;
 
-      // Filter gallery cards
-      galleryCards.forEach(function (card) {
-        const cardCategory = card.getAttribute('data-category');
-        if (filterValue === 'all' || cardCategory === filterValue) {
-          card.style.display = 'block';
+      const matchingCards = [];
+      allCards.forEach(function (card) {
+        const cat = config.categoryAttr ? (card.getAttribute(config.categoryAttr) || '') : 'all';
+        if (currentCategory === 'all' || cat === currentCategory) {
+          matchingCards.push(card);
         } else {
           card.style.display = 'none';
         }
       });
-    });
+
+      const totalMatching = matchingCards.length;
+      const totalPages = Math.ceil(totalMatching / config.perPage) || 1;
+
+      if (currentPage > totalPages) {
+        currentPage = 1;
+      }
+
+      const startIndex = (currentPage - 1) * config.perPage;
+      const endIndex = startIndex + config.perPage;
+
+      matchingCards.forEach(function (card, idx) {
+        if (idx >= startIndex && idx < endIndex) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      if (!paginationEl) return;
+
+      if (totalPages <= 1) {
+        paginationEl.innerHTML = '';
+        return;
+      }
+
+      let html = '';
+      const isFirst = currentPage === 1;
+      html += `
+        <button type="button" class="section-page-btn" data-page="${currentPage - 1}" ${isFirst ? 'disabled aria-disabled="true"' : ''} aria-label="Previous Page">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          <span>Prev</span>
+        </button>
+      `;
+
+      for (let p = 1; p <= totalPages; p++) {
+        const active = p === currentPage;
+        html += `
+          <button type="button" class="section-page-btn ${active ? 'active' : ''}" data-page="${p}" ${active ? 'aria-current="page"' : ''} aria-label="Page ${p}">
+            ${p}
+          </button>
+        `;
+      }
+
+      const isLast = currentPage === totalPages;
+      html += `
+        <button type="button" class="section-page-btn" data-page="${currentPage + 1}" ${isLast ? 'disabled aria-disabled="true"' : ''} aria-label="Next Page">
+          <span>Next</span>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+      `;
+
+      paginationEl.innerHTML = html;
+
+      paginationEl.querySelectorAll('.section-page-btn').forEach(function (btn) {
+        btn.onclick = function () {
+          if (btn.disabled || btn.classList.contains('active')) return;
+          const target = parseInt(btn.getAttribute('data-page'), 10);
+          if (!isNaN(target) && target >= 1 && target <= totalPages) {
+            currentPage = target;
+            update(true);
+          }
+        };
+      });
+
+      if (scrollToTop && config.sectionId) {
+        const sec = document.getElementById(config.sectionId);
+        if (sec) {
+          sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+    }
+
+    if (config.filterSelector) {
+      const filterBtns = document.querySelectorAll(config.filterSelector);
+      filterBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          const filterVal = btn.getAttribute('data-filter') || 'all';
+          filterBtns.forEach(function (b) {
+            b.classList.remove('active');
+            b.setAttribute('aria-selected', 'false');
+          });
+          btn.classList.add('active');
+          btn.setAttribute('aria-selected', 'true');
+
+          currentCategory = filterVal;
+          currentPage = 1;
+          update(false);
+        });
+      });
+    }
+
+    update(false);
+
+    return {
+      update: update
+    };
+  }
+
+  // Gallery: 3 columns x 2 rows = 6 items per page
+  const galleryPagination = setupSectionPagination({
+    gridSelector: '#galleryGrid',
+    cardSelector: '.gallery-card',
+    paginationId: 'galleryPagination',
+    perPage: 6,
+    sectionId: 'gallery',
+    filterSelector: '.gallery-filters .filter-btn',
+    categoryAttr: 'data-category'
+  });
+
+  // Blog: 3 columns x 2 rows = 6 articles per page
+  const blogPagination = setupSectionPagination({
+    gridSelector: '#blog .articles-grid',
+    cardSelector: '.article-grid-card',
+    paginationId: 'blogPagination',
+    perPage: 6,
+    sectionId: 'blog'
+  });
+
+  // Research: 2 columns x 2 rows = 4 research papers per page
+  const researchPagination = setupSectionPagination({
+    gridSelector: '#research .research-grid',
+    cardSelector: '.research-wide-card',
+    paginationId: 'researchPagination',
+    perPage: 4,
+    sectionId: 'research'
   });
 
   // ==========================================================================
