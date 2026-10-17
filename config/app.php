@@ -25,9 +25,9 @@ return [
     // Timezone
     'timezone' => 'UTC',
     
-    // Session configuration
+    // Session configuration (persistent login)
     'session_name' => 'dental_doctor_sess',
-    'session_lifetime' => 7200, // 2 hours
+    'session_lifetime' => 31536000, // 1 year (remain logged in until explicit logout)
     
     // Upload settings
     'upload_max_size' => 5 * 1024 * 1024, // 5MB

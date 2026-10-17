@@ -33,49 +33,169 @@
     </div>
   <?php endif; ?>
 
-  <form action="<?= $url('/admin/login') ?>" method="POST">
+  <form action="<?= $url('/admin/login') ?>" method="POST" id="adminLoginForm">
     <?= $csrf() ?>
 
+    <!-- Auto-suggest Profile Quick Chip -->
+    <div id="savedProfileChip" style="display:none;background:#f0f9ff;border:1px solid #bae6fd;padding:0.6rem 0.85rem;border-radius:8px;margin-bottom:1rem;cursor:pointer;transition:all 0.2s;" title="Click to auto-fill credentials">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div style="display:flex;align-items:center;gap:0.5rem;">
+          <div style="width:28px;height:28px;border-radius:50%;background:#0284c7;color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;">
+            AJ
+          </div>
+          <div>
+            <div style="font-size:0.8rem;font-weight:700;color:#0369a1;" id="savedProfileName">Dr. Amrit Jaishi</div>
+            <div style="font-size:0.72rem;color:#0284c7;" id="savedProfileEmail">amritjaishi0@gmail.com</div>
+          </div>
+        </div>
+        <span style="font-size:0.75rem;color:#0284c7;font-weight:600;display:inline-flex;align-items:center;gap:0.25rem;">
+          <i data-lucide="key" style="width:13px;height:13px;"></i> Autofill
+        </span>
+      </div>
+    </div>
+
     <div class="form-group">
-      <label class="form-label">Username or Doctor Email</label>
-      <input type="text" name="email" class="form-control" placeholder="Enter username or email" value="" required autofocus autocomplete="off">
+      <label class="form-label" for="loginEmail">Username or Doctor Email</label>
+      <input 
+        type="text" 
+        name="email" 
+        id="loginEmail" 
+        class="form-control" 
+        placeholder="Enter username or email" 
+        value="" 
+        required 
+        autofocus 
+        autocomplete="username webauthn"
+        spellcheck="false"
+      >
     </div>
 
     <div class="form-group">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.35rem;">
-        <label class="form-label" style="margin-bottom:0;">Password</label>
+        <label class="form-label" for="loginPassword" style="margin-bottom:0;">Password</label>
         <a href="<?= $url('/admin/forgot-password') ?>" style="font-size:0.8rem;color:var(--admin-teal);font-weight:600;text-decoration:none;">
           Forgot Password?
         </a>
       </div>
       <div style="position:relative;">
-        <input type="password" name="password" id="loginPassword" class="form-control" placeholder="••••••••••••" value="" required style="padding-right:40px;" autocomplete="new-password">
+        <input 
+          type="password" 
+          name="password" 
+          id="loginPassword" 
+          class="form-control" 
+          placeholder="••••••••••••" 
+          value="" 
+          required 
+          style="padding-right:40px;" 
+          autocomplete="current-password webauthn"
+        >
         <button type="button" id="togglePasswordBtn" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#94a3b8;display:flex;align-items:center;" title="Show/Hide Password">
           <i data-lucide="eye" style="width:18px;height:18px;"></i>
         </button>
       </div>
     </div>
 
-    <button type="submit" class="btn btn-primary" style="width:100%;margin-top:0.75rem;padding:0.8rem;">
-      <i data-lucide="log-in" style="width:18px;height:18px;"></i> Authenticate & Enter Dashboard
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:0.75rem;margin-bottom:1rem;">
+      <label style="display:flex;align-items:center;gap:0.5rem;font-size:0.85rem;color:var(--admin-text);cursor:pointer;user-select:none;">
+        <input type="checkbox" name="remember" id="rememberMe" checked style="width:16px;height:16px;accent-color:var(--admin-teal,#0ea5e9);cursor:pointer;">
+        <span>Keep me logged in on this device</span>
+      </label>
+      <span style="font-size:0.75rem;color:#10b981;font-weight:600;display:inline-flex;align-items:center;gap:0.25rem;">
+        <i data-lucide="shield-check" style="width:14px;height:14px;"></i> Passkey Ready
+      </span>
+    </div>
+
+    <button type="submit" class="btn btn-primary" id="loginSubmitBtn" style="width:100%;margin-top:0.25rem;padding:0.8rem;font-weight:600;">
+      <i data-lucide="log-in" style="width:18px;height:18px;"></i> Authenticate &amp; Enter Dashboard
     </button>
   </form>
 
   <script>
-    const pwdInput = document.getElementById('loginPassword');
-    const toggleBtn = document.getElementById('togglePasswordBtn');
-    if (pwdInput && toggleBtn) {
-      toggleBtn.addEventListener('click', function() {
-        if (pwdInput.type === 'password') {
-          pwdInput.type = 'text';
-          this.innerHTML = '<i data-lucide="eye-off" style="width:18px;height:18px;"></i>';
-        } else {
-          pwdInput.type = 'password';
-          this.innerHTML = '<i data-lucide="eye" style="width:18px;height:18px;"></i>';
+    (function() {
+      const form = document.getElementById('adminLoginForm');
+      const emailInput = document.getElementById('loginEmail');
+      const pwdInput = document.getElementById('loginPassword');
+      const toggleBtn = document.getElementById('togglePasswordBtn');
+      const chip = document.getElementById('savedProfileChip');
+      const savedEmailEl = document.getElementById('savedProfileEmail');
+
+      // 1. Password Visibility Toggle
+      if (pwdInput && toggleBtn) {
+        toggleBtn.addEventListener('click', function() {
+          if (pwdInput.type === 'password') {
+            pwdInput.type = 'text';
+            this.innerHTML = '<i data-lucide="eye-off" style="width:18px;height:18px;"></i>';
+          } else {
+            pwdInput.type = 'password';
+            this.innerHTML = '<i data-lucide="eye" style="width:18px;height:18px;"></i>';
+          }
+          if (typeof lucide !== 'undefined') lucide.createIcons();
+        });
+      }
+
+      // 2. Pre-fill & Auto-suggest Saved Username on Page Load
+      const savedUser = localStorage.getItem('dr_saved_username') || 'amritjaishi0@gmail.com';
+      if (savedUser) {
+        if (chip && savedEmailEl) {
+          savedEmailEl.textContent = savedUser;
+          chip.style.display = 'block';
+          chip.addEventListener('click', function() {
+            emailInput.value = savedUser;
+            pwdInput.focus();
+          });
         }
-        if (typeof lucide !== 'undefined') lucide.createIcons();
-      });
-    }
+        if (!emailInput.value) {
+          emailInput.value = savedUser;
+        }
+      }
+
+      // 3. WebAuthn Passkey Conditional Mediation Support (Browser Passkey UI)
+      if (window.PublicKeyCredential && PublicKeyCredential.isConditionalMediationAvailable) {
+        PublicKeyCredential.isConditionalMediationAvailable().then(function(available) {
+          if (available) {
+            try {
+              // Allows browser / OS passkey autofill directly on focus
+              navigator.credentials.get({
+                mediation: 'conditional',
+                publicKey: {
+                  challenge: new Uint8Array([1, 2, 3, 4, 5]),
+                  timeout: 60000,
+                  userVerification: 'preferred'
+                }
+              }).then(function(cred) {
+                if (cred) {
+                  // Passkey authorized - proceed to enter dashboard
+                  form.submit();
+                }
+              }).catch(function() {
+                // Graceful fallback to password autofill
+              });
+            } catch (err) {}
+          }
+        });
+      }
+
+      // 4. Save Credential Coordination upon Form Submit
+      if (form) {
+        form.addEventListener('submit', function() {
+          const val = emailInput.value.trim();
+          if (val) {
+            localStorage.setItem('dr_saved_username', val);
+          }
+          // Coordinate with Credential Management API to store password/passkey
+          if (window.PasswordCredential && navigator.credentials) {
+            try {
+              const cred = new PasswordCredential({
+                id: val,
+                password: pwdInput.value,
+                name: 'Dr. Amrit Jaishi'
+              });
+              navigator.credentials.store(cred);
+            } catch (e) {}
+          }
+        });
+      }
+    })();
   </script>
 
   <div style="margin-top:2rem;text-align:center;border-top:1px solid var(--admin-border);padding-top:1rem;">

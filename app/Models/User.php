@@ -65,6 +65,23 @@ class User {
         $stmt->execute([$id]);
     }
 
+    public static function findByRememberToken(string $token): ?array {
+        if (empty($token) || strlen($token) < 20) {
+            return null;
+        }
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("SELECT * FROM admin_users WHERE remember_token = ? AND is_active = 1 LIMIT 1");
+        $stmt->execute([$token]);
+        $user = $stmt->fetch();
+        return $user ?: null;
+    }
+
+    public static function updateRememberToken(int $id, ?string $token): bool {
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("UPDATE admin_users SET remember_token = ? WHERE id = ?");
+        return $stmt->execute([$token, $id]);
+    }
+
     public static function updatePassword(int $id, string $newPassword): bool {
         $pdo = Database::getConnection();
         $hash = password_hash($newPassword, PASSWORD_DEFAULT);

@@ -9,7 +9,24 @@ class Auth {
 
     public static function check(): bool {
         Session::start();
-        return Session::has('admin_user_id') && Session::get('admin_user_id') > 0;
+        if (Session::has('admin_user_id') && Session::get('admin_user_id') > 0) {
+            return true;
+        }
+
+        // Automatic restoration from 1-year remember token cookie
+        $cookieToken = $_COOKIE['dental_remember_token'] ?? null;
+        if (!empty($cookieToken) && is_string($cookieToken) && strlen($cookieToken) >= 32) {
+            $user = User::findByRememberToken($cookieToken);
+            if ($user && !empty($user['is_active'])) {
+                Session::set('admin_user_id', (int)$user['id']);
+                Session::set('admin_user_name', $user['name']);
+                Session::set('admin_user_email', $user['email']);
+                User::updateLastLogin((int)$user['id']);
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public static function user(): ?array {
@@ -86,6 +103,20 @@ class Auth {
         // Update last login timestamp
         User::updateLastLogin((int)$user['id']);
 
+        // Generate and set persistent 1-year remember token
+        $token = bin2hex(random_bytes(32));
+        User::updateRememberToken((int)$user['id'], $token);
+
+        $isSecure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
+        setcookie('dental_remember_token', $token, [
+            'expires' => time() + 31536000, // 1 year
+            'path' => '/',
+            'domain' => '',
+            'secure' => $isSecure,
+            'httponly' => true,
+            'samesite' => 'Lax'
+        ]);
+
         return [
             'success' => true,
             'user' => $user
@@ -94,6 +125,24 @@ class Auth {
 
     public static function logout(): void {
         Session::start();
+        $userId = Session::get('admin_user_id');
+        if ($userId) {
+            User::updateRememberToken((int)$userId, null);
+        }
+
+        if (isset($_COOKIE['dental_remember_token'])) {
+            $isSecure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
+            setcookie('dental_remember_token', '', [
+                'expires' => time() - 3600,
+                'path' => '/',
+                'domain' => '',
+                'secure' => $isSecure,
+                'httponly' => true,
+                'samesite' => 'Lax'
+            ]);
+            unset($_COOKIE['dental_remember_token']);
+        }
+
         Session::remove('admin_user_id');
         Session::remove('admin_user_name');
         Session::remove('admin_user_email');

@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const vmId = parseVimeoId(videoUrl);
 
     if (ytId) {
-      playerHtml = `<iframe src="https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&rel=0&modestbranding=1" title="${title}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen style="width:100%;height:100%;border:0;"></iframe>`;
+      playerHtml = `<iframe src="https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0&modestbranding=1&enablejsapi=1" title="${title}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen style="width:100%;height:100%;border:0;"></iframe>`;
     } else if (vmId) {
       playerHtml = `<iframe src="https://player.vimeo.com/video/${vmId}?autoplay=1" title="${title}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="width:100%;height:100%;border:0;"></iframe>`;
     } else if (videoType === 'upload' || videoUrl.match(/\.(mp4|webm|ogg)$/i)) {

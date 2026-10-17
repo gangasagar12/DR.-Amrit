@@ -262,6 +262,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.body.style.overflow = '';
   }
 
+  const galleryCards = document.querySelectorAll('.gallery-card');
   galleryCards.forEach(function (card) {
     card.addEventListener('click', function () {
       openGalleryModal(card);
@@ -272,6 +273,15 @@ document.addEventListener('DOMContentLoaded', function () {
         openGalleryModal(card);
       }
     });
+  });
+
+  // Global event delegation for gallery lightbox
+  document.addEventListener('click', function (e) {
+    const card = e.target.closest('.gallery-card');
+    if (card) {
+      e.preventDefault();
+      openGalleryModal(card);
+    }
   });
 
   if (galleryCloseBtn) {
@@ -694,8 +704,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const vmId = parseVimeoId(videoUrl);
 
     if (ytId) {
-      // YouTube embed with autoplay and controls
-      playerHtml = `<iframe src="https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&rel=0&modestbranding=1" title="${title}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen style="width:100%;height:100%;border:0;"></iframe>`;
+      // YouTube embed with autoplay and controls (universal youtube.com domain for Brave/Shields compatibility)
+      playerHtml = `<iframe src="https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0&modestbranding=1&enablejsapi=1" title="${title}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen style="width:100%;height:100%;border:0;"></iframe>`;
     } else if (vmId) {
       playerHtml = `<iframe src="https://player.vimeo.com/video/${vmId}?autoplay=1" title="${title}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="width:100%;height:100%;border:0;"></iframe>`;
     } else if (videoType === 'upload' || videoUrl.match(/\.(mp4|webm|ogg)$/i)) {

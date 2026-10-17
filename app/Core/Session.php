@@ -11,30 +11,29 @@ class Session {
         }
 
         $config = require dirname(__DIR__, 2) . '/config/app.php';
-        $lifetime = $config['session_lifetime'] ?? 7200;
+        $lifetime = (int)($config['session_lifetime'] ?? 31536000); // 1 year
         $isSecure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
 
-        session_name($config['session_name'] ?? 'dental_doctor_sess');
+        if (!headers_sent()) {
+            ini_set('session.gc_maxlifetime', (string)$lifetime);
+            ini_set('session.cookie_lifetime', (string)$lifetime);
 
-        session_set_cookie_params([
-            'lifetime' => $lifetime,
-            'path' => '/',
-            'domain' => '',
-            'secure' => $isSecure,
-            'httponly' => true,
-            'samesite' => 'Lax'
-        ]);
+            session_name($config['session_name'] ?? 'dental_doctor_sess');
 
-        session_start();
-        self::$started = true;
-
-        // Check for idle timeout
-        if (isset($_SESSION['__last_activity'])) {
-            if (time() - $_SESSION['__last_activity'] > $lifetime) {
-                self::destroy();
-                session_start();
-            }
+            session_set_cookie_params([
+                'lifetime' => $lifetime,
+                'path' => '/',
+                'domain' => '',
+                'secure' => $isSecure,
+                'httponly' => true,
+                'samesite' => 'Lax'
+            ]);
         }
+
+        if (!headers_sent() && session_status() !== PHP_SESSION_ACTIVE) {
+            @session_start();
+        }
+        self::$started = true;
         $_SESSION['__last_activity'] = time();
     }
 
