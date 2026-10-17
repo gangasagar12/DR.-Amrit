@@ -493,18 +493,77 @@ document.addEventListener('DOMContentLoaded', function () {
           }
         }
 
-        // 2. Dynamic Doctor Details
+        // 2. Dynamic Doctor Details: Hero & About Section Controls
         if (data.doctor) {
           const doc = data.doctor;
           if (doc.doctor_name) {
             document.querySelectorAll('.brand-name, .hero-name, .footer-name').forEach(function (el) {
               el.textContent = doc.doctor_name;
             });
+            const aboutHead = document.querySelector('.section-about .section-heading');
+            if (aboutHead) aboutHead.textContent = 'About ' + doc.doctor_name;
           }
           if (doc.professional_title) {
             document.querySelectorAll('.brand-designation, .badge-designation, .footer-designation').forEach(function (el) {
               el.textContent = doc.professional_title;
             });
+          }
+          if (doc.hero_lead) {
+            const leadEl = document.querySelector('.hero-lead');
+            if (leadEl) leadEl.textContent = doc.hero_lead;
+          }
+          if (doc.hero_approach) {
+            const appEl = document.querySelector('.hero-approach');
+            if (appEl) appEl.textContent = doc.hero_approach;
+          }
+          if (doc.hero_image) {
+            const heroImg = document.querySelector('.hero-portrait');
+            if (heroImg) heroImg.src = doc.hero_image;
+          }
+          if (doc.hero_btn1_text) {
+            const b1 = document.querySelector('.hero-actions .btn-primary');
+            if (b1) {
+              b1.textContent = doc.hero_btn1_text;
+              if (doc.hero_btn1_link) b1.setAttribute('href', doc.hero_btn1_link);
+            }
+          }
+          if (doc.hero_btn2_text) {
+            const b2 = document.querySelector('.hero-actions .btn-secondary');
+            if (b2) {
+              b2.textContent = doc.hero_btn2_text;
+              if (doc.hero_btn2_link) b2.setAttribute('href', doc.hero_btn2_link);
+            }
+          }
+
+          // About Section
+          if (doc.about_kicker) {
+            const kickEl = document.querySelector('#about .section-kicker');
+            if (kickEl) kickEl.textContent = doc.about_kicker;
+          }
+          if (doc.about_subheading) {
+            const subEl = document.querySelector('.about-subheading');
+            if (subEl) subEl.textContent = doc.about_subheading;
+          }
+          if (doc.about_image) {
+            const aboutImg = document.querySelector('.about-portrait');
+            if (aboutImg) aboutImg.src = doc.about_image;
+          }
+          if (doc.biography) {
+            const bioCol = document.querySelector('.about-content-column');
+            if (bioCol) {
+              const paras = doc.biography.split(/\r?\n\r?\n/).map(function (p) { return p.trim(); }).filter(function (p) { return p.length > 0; });
+              if (paras.length > 0) {
+                const existingParas = bioCol.querySelectorAll('.about-text');
+                existingParas.forEach(function (p) { p.remove(); });
+                const subHead = bioCol.querySelector('.about-subheading');
+                for (let i = paras.length - 1; i >= 0; i--) {
+                  const pEl = document.createElement('p');
+                  pEl.className = 'about-text';
+                  pEl.textContent = paras[i];
+                  subHead.insertAdjacentElement('afterend', pEl);
+                }
+              }
+            }
           }
         }
 
@@ -651,6 +710,177 @@ document.addEventListener('DOMContentLoaded', function () {
             bindVideoCards();
             bindVideoFilters();
             updateVideoDisplay(false);
+          }
+        }
+
+        // 5. Dynamic Dental Services (loaded directly from MySQL database)
+        if (Array.isArray(data.services) && data.services.length > 0) {
+          const servicesGrid = document.querySelector('.services-grid');
+          if (servicesGrid) {
+            servicesGrid.innerHTML = data.services.map(function (s) {
+              const sImg = s.image || 'img/services/teeth_cleaning.jpg';
+              return `
+                <article class="service-card">
+                  <div class="service-media">
+                    <img src="${sImg}" alt="${s.name}" class="service-thumb" loading="lazy">
+                  </div>
+                  <div class="service-content">
+                    <h3 class="service-name">${s.name}</h3>
+                    <p class="service-summary">${s.short_description || ''}</p>
+                  </div>
+                </article>
+              `;
+            }).join('');
+          }
+        }
+
+        // 6. Dynamic Career Photo Gallery (loaded directly from MySQL database)
+        if (Array.isArray(data.gallery) && data.gallery.length > 0) {
+          const galleryGrid = document.getElementById('galleryGrid');
+          if (galleryGrid) {
+            galleryGrid.innerHTML = data.gallery.map(function (g) {
+              const catRaw = g.category || 'clinical-practice';
+              const catSlug = catRaw.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+              return `
+                <figure class="gallery-card" data-category="${catSlug}" tabindex="0" role="button" aria-label="View ${g.image_title || 'Gallery image'}">
+                  <img src="${g.image_path}" alt="${g.image_title || 'Gallery image'}" class="gallery-thumb" loading="lazy">
+                  <figcaption class="gallery-overlay">
+                    <span class="gallery-title">${g.image_title || 'Gallery'}</span>
+                    <span class="gallery-desc-hidden">${g.caption || ''}</span>
+                  </figcaption>
+                </figure>
+              `;
+            }).join('');
+
+            // Re-render gallery pagination
+            if (galleryPagination && typeof galleryPagination.update === 'function') {
+              galleryPagination.update(false);
+            }
+          }
+        }
+
+        // 7. Dynamic Dental Health Blog (loaded directly from MySQL database)
+        if (Array.isArray(data.blogs) && data.blogs.length > 0) {
+          const articlesGrid = document.querySelector('#blog .articles-grid');
+          if (articlesGrid) {
+            articlesGrid.innerHTML = data.blogs.map(function (b) {
+              const catName = b.category_name || 'Oral Care';
+              const dateStr = b.published_at ? new Date(b.published_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : 'Recent';
+              const thumb = b.featured_image || 'img/services/teeth_cleaning.jpg';
+              const articleUrl = b.slug ? ('/blog/' + b.slug) : ('article.html?id=' + b.id);
+              return `
+                <article class="article-grid-card">
+                  <div class="grid-card-media">
+                    <a href="${articleUrl}" aria-label="Read article: ${b.title}">
+                      <img src="${thumb}" alt="${b.title}" class="grid-card-img" loading="lazy">
+                    </a>
+                  </div>
+                  <div class="grid-card-body">
+                    <div class="grid-card-meta">
+                      <span class="meta-tag">${catName}</span>
+                      <span class="meta-date">${dateStr}</span>
+                    </div>
+                    <h3 class="grid-card-title">
+                      <a href="${articleUrl}" class="article-title-link">${b.title}</a>
+                    </h3>
+                    <p class="grid-card-desc">${b.excerpt || ''}</p>
+                    <div class="grid-card-footer">
+                      <a href="${articleUrl}" class="read-link-btn">Read Article &rarr;</a>
+                    </div>
+                  </div>
+                </article>
+              `;
+            }).join('');
+
+            // Re-render blog pagination
+            if (blogPagination && typeof blogPagination.update === 'function') {
+              blogPagination.update(false);
+            }
+          }
+        }
+
+        // 8. Dynamic Research & Publications (loaded directly from MySQL database)
+        if (Array.isArray(data.researches) && data.researches.length > 0) {
+          const researchGrid = document.querySelector('#research .research-grid');
+          if (researchGrid) {
+            researchGrid.innerHTML = data.researches.map(function (r) {
+              const thumb = r.cover_image || 'img/services/rct.jpg';
+              let readUrl = '#research';
+              let linkLabel = 'Read Complete Research &rarr;';
+              let isExt = false;
+
+              if (r.pdf_file) {
+                readUrl = r.pdf_file;
+                linkLabel = 'Read PDF Document &rarr;';
+                isExt = true;
+              } else if (r.publication_url) {
+                readUrl = r.publication_url;
+                isExt = true;
+              }
+
+              const targetAttr = isExt ? 'target="_blank" rel="noopener noreferrer"' : '';
+
+              return `
+                <article class="research-wide-card">
+                  <div class="research-media-wrap">
+                    <a href="${readUrl}" ${targetAttr} aria-label="Read research on ${r.title}">
+                      <img src="${thumb}" alt="${r.title}" class="research-card-img" loading="lazy">
+                    </a>
+                  </div>
+                  <div class="research-body">
+                    <div class="research-meta">
+                      <span class="research-badge">${r.authors || 'Peer-Reviewed Paper'}</span>
+                      <span class="research-year">${r.publication_year || '2023'}</span>
+                    </div>
+                    <div class="research-journal">${r.journal_name || 'Academic Dental Journal'}</div>
+                    <h3 class="research-title">
+                      <a href="${readUrl}" ${targetAttr} class="article-title-link">${r.title}</a>
+                    </h3>
+                    <p class="research-excerpt">${r.summary || r.abstract || ''}</p>
+                    <div class="research-footer">
+                      <a href="${readUrl}" ${targetAttr} class="read-link-btn">${linkLabel}</a>
+                    </div>
+                  </div>
+                </article>
+              `;
+            }).join('');
+
+            // Re-render research pagination
+            if (researchPagination && typeof researchPagination.update === 'function') {
+              researchPagination.update(false);
+            }
+          }
+        }
+
+        // 9. Dynamic Contact & Footer Details
+        if (data.contact) {
+          const c = data.contact;
+          if (c.email) {
+            document.querySelectorAll('a[href^="mailto:"]').forEach(function (a) {
+              a.href = 'mailto:' + c.email;
+              a.textContent = c.email;
+            });
+          }
+          if (c.phone) {
+            const cleanPhone = c.phone.replace(/[^0-9+]/g, '');
+            document.querySelectorAll('a[href^="tel:"], .btn-call-clinic').forEach(function (a) {
+              a.href = 'tel:' + cleanPhone;
+              if (!a.classList.contains('btn')) {
+                a.textContent = c.phone;
+              }
+            });
+          }
+          if (c.whatsapp) {
+            const cleanWa = c.whatsapp.replace(/[^0-9]/g, '');
+            document.querySelectorAll('a[href*="wa.me"]').forEach(function (a) {
+              a.href = 'https://wa.me/' + cleanWa;
+            });
+          }
+          if (c.emergency_contact) {
+            const subEl = document.querySelector('.contact-entry .entry-sub');
+            if (subEl) {
+              subEl.textContent = 'Hospital Lines: ' + c.emergency_contact;
+            }
           }
         }
       })

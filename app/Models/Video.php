@@ -126,10 +126,11 @@ class Video {
                 return 'https://www.youtube-nocookie.com/embed/' . $m[1] . '?autoplay=1&rel=0';
             }
         } elseif ($type === 'vimeo') {
-            if (preg_match('/vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|video\/|)(\d+)/i', $url, $m)) {
-                return 'https://player.vimeo.com/video/' . $m[3] . '?autoplay=1';
-            }
-        }
         return $url;
+    }
+
+    public static function count(): int {
+        $pdo = Database::getConnection();
+        return (int)$pdo->query("SELECT COUNT(*) FROM videos")->fetchColumn();
     }
 }

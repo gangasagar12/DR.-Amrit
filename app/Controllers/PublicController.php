@@ -377,9 +377,12 @@ class PublicController {
         $doctor = DoctorProfile::get();
         $clinics = Clinic::allActive();
         $services = Service::allActive();
-        $qualifications = Qualification::all();
+        $qualifications = Qualification::allActive();
+        if (empty($qualifications)) {
+            $qualifications = Qualification::all();
+        }
         $gallery = Gallery::allActive();
-        $blogs = Blog::latest(6);
+        $blogs = Blog::latest(24);
 
         $pdo = \App\Core\Database::getConnection();
         $researches = [];
@@ -387,7 +390,7 @@ class PublicController {
         $videos = [];
         $videoCategories = [];
         try {
-            $researches = $pdo->query("SELECT * FROM researches WHERE status = 'published' ORDER BY display_order ASC, publication_year DESC")->fetchAll();
+            $researches = \App\Models\Research::allPublished();
             $galleryCategories = $pdo->query("SELECT * FROM gallery_categories ORDER BY display_order ASC, id ASC")->fetchAll();
             $videos = \App\Models\Video::allPublished();
             $videoCategories = \App\Models\VideoCategory::all();
@@ -406,7 +409,13 @@ class PublicController {
             'blogs' => $blogs,
             'researches' => $researches,
             'videos' => $videos,
-            'video_categories' => $videoCategories
+            'video_categories' => $videoCategories,
+            'contact' => [
+                'email' => $doctor['contact_email'] ?? 'amritjaishi0@gmail.com',
+                'phone' => $doctor['phone'] ?? '+977-9860644282',
+                'whatsapp' => $doctor['whatsapp'] ?? '+9779860644282',
+                'emergency_contact' => $doctor['emergency_contact'] ?? '091-590328 / 091-590348 (Hospital Lines)'
+            ]
         ]);
     }
 }
