@@ -15,11 +15,32 @@ $scriptDir = str_replace('\\', '/', $scriptDir);
 // Trim /public if running through public/index.php or root rewrite
 $basePath = preg_replace('#/public$#', '', rtrim($scriptDir, '/'));
 
+// Load .env if exists
+$envFile = dirname(__DIR__) . '/.env';
+if (file_exists($envFile)) {
+    $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        if (strpos(trim($line), '#') === 0) continue;
+        if (strpos($line, '=') !== false) {
+            list($key, $val) = explode('=', $line, 2);
+            $key = trim($key);
+            $val = trim($val, " \t\n\r\0\x0B\"'");
+            if (!isset($_ENV[$key])) {
+                $_ENV[$key] = $val;
+                putenv("$key=$val");
+            }
+        }
+    }
+}
+
+$appEnv = getenv('APP_ENV') ?: ($_ENV['APP_ENV'] ?? 'development');
+$appDebug = filter_var(getenv('APP_DEBUG') !== false ? getenv('APP_DEBUG') : ($_ENV['APP_DEBUG'] ?? ($appEnv === 'development')), FILTER_VALIDATE_BOOLEAN);
+
 return [
-    'app_name' => 'Dr. Dental Portfolio',
-    'app_env' => 'development', // 'development' or 'production'
-    'debug' => true,
-    'base_url' => $protocol . $host . $basePath,
+    'app_name' => getenv('APP_NAME') ?: 'Dr. Dental Portfolio',
+    'app_env' => $appEnv, // 'development' or 'production'
+    'debug' => $appDebug,
+    'base_url' => (getenv('APP_URL') ?: ($protocol . $host . $basePath)),
     'base_path' => $basePath,
     
     // Timezone

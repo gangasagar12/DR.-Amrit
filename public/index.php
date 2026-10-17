@@ -3,12 +3,20 @@
  * Dental Doctor Portfolio - Front Controller
  */
 
-// Error reporting settings
-error_reporting(E_ALL);
-ini_set('display_errors', '1');
-
 // Root directory
 define('ROOT_DIR', dirname(__DIR__));
+
+// Application Configuration
+$appConfig = require ROOT_DIR . '/config/app.php';
+
+// Error reporting settings (safe for production)
+if (!empty($appConfig['debug'])) {
+    error_reporting(E_ALL);
+    ini_set('display_errors', '1');
+} else {
+    error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
+    ini_set('display_errors', '0');
+}
 
 // PSR-4 Autoloader for App namespace
 spl_autoload_register(function ($class) {

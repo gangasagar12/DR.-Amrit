@@ -8,4 +8,3 @@
         Deny from all
     </IfModule>
 </FilesMatch>
-https://127.0.0.1:64995/static/artifacts/936c9c5e-0ee3-46cb-8704-ed472e268060/.user_uploaded/media_1792040274168.png?csrf=41c79f3d-7bbd-4119-b3b1-9b6df152a5bb
