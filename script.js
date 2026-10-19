@@ -442,9 +442,9 @@ document.addEventListener('DOMContentLoaded', function () {
               const badgeText = isPrimary ? 'Primary Practice' : (c.workplace_type || 'Community Affiliation');
 
               // Handle clean clinic image path
-              let clinicImg = c.image || 'img/clinics/dhangadhi_sanjeevani_hospital.jpg';
-              if (!clinicImg.startsWith('http') && !clinicImg.startsWith('/') && !clinicImg.startsWith('img/')) {
-                clinicImg = clinicImg; // e.g. uploads/clinics/...
+              let clinicImg = c.image || '/img/clinics/dhangadhi_sanjeevani_hospital.jpg';
+              if (clinicImg && !clinicImg.startsWith('http') && !clinicImg.startsWith('/')) {
+                clinicImg = '/' + clinicImg;
               }
 
               const mapUrl = c.map_url || ('https://maps.google.com/?q=' + encodeURIComponent(c.clinic_name + ' ' + (c.city || '')));
@@ -701,7 +701,7 @@ document.addEventListener('DOMContentLoaded', function () {
               const catName = v.category_name || 'Dental Video';
               const duration = v.duration || '04:00';
               const videoSrc = v.video_type === 'upload' ? (v.video_file || '') : (v.video_url || '');
-              const thumb = v.thumbnail || 'img/services/teeth_cleaning.jpg';
+              const thumb = v.thumbnail ? (v.thumbnail.startsWith('http') || v.thumbnail.startsWith('/') ? v.thumbnail : '/' + v.thumbnail) : '/img/services/teeth_cleaning.jpg';
               const pubDate = v.published_at ? new Date(v.published_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : '';
 
               return `
@@ -747,7 +747,7 @@ document.addEventListener('DOMContentLoaded', function () {
           const servicesGrid = document.querySelector('.services-grid');
           if (servicesGrid) {
             servicesGrid.innerHTML = data.services.map(function (s) {
-              const sImg = s.image || 'img/services/teeth_cleaning.jpg';
+              const sImg = s.image ? (s.image.startsWith('http') || s.image.startsWith('/') ? s.image : '/' + s.image) : '/img/services/teeth_cleaning.jpg';
               return `
                 <article class="service-card">
                   <div class="service-media">
@@ -795,7 +795,7 @@ document.addEventListener('DOMContentLoaded', function () {
             articlesGrid.innerHTML = data.blogs.map(function (b) {
               const catName = b.category_name || 'Oral Care';
               const dateStr = b.published_at ? new Date(b.published_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : 'Recent';
-              const thumb = b.featured_image || 'img/services/teeth_cleaning.jpg';
+              const thumb = b.featured_image ? (b.featured_image.startsWith('http') || b.featured_image.startsWith('/') ? b.featured_image : '/' + b.featured_image) : '/img/services/teeth_cleaning.jpg';
               const articleUrl = b.slug ? ('/blog/' + b.slug) : '/blog';
               return `
                 <article class="article-grid-card">
@@ -833,7 +833,7 @@ document.addEventListener('DOMContentLoaded', function () {
           const researchGrid = document.querySelector('#research .research-grid');
           if (researchGrid) {
             researchGrid.innerHTML = data.researches.map(function (r) {
-              const thumb = r.cover_image || 'img/services/rct.jpg';
+              const thumb = r.cover_image ? (r.cover_image.startsWith('http') || r.cover_image.startsWith('/') ? r.cover_image : '/' + r.cover_image) : '/img/services/rct.jpg';
               let readUrl = '#research';
               let linkLabel = 'Read Complete Research &rarr;';
               let isExt = false;

@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="/assets/css/style.css?v=<?= @filemtime(ROOT_DIR . '/public/assets/css/style.css') ?: time() ?>">
 
   <!-- Master Portfolio Stylesheet (Guarantees 100% identical navbar & footer) -->
-  <link rel="stylesheet" href="/style.css?v=<?= @filemtime(ROOT_DIR . '/style.css') ?: time() ?>">
+  <link rel="stylesheet" href="/css/style.css?v=<?= @filemtime(ROOT_DIR . '/public/css/style.css') ?: time() ?>">
 
   <!-- Font Awesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">

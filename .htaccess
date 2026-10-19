@@ -28,8 +28,8 @@
     RewriteCond %{REQUEST_FILENAME} -f
     RewriteRule ^ - [L]
 
-    # 7. Map static folders (assets, uploads, img) directly to public directory
-    RewriteRule ^(assets|uploads|img)(/.*)?$ public/$1$2 [L]
+    # 7. Map static folders (assets, uploads, img, css, js) directly to public directory
+    RewriteRule ^(assets|uploads|img|css|js)(/.*)?$ public/$1$2 [L]
 
     # 8. Forward all other application routes to public/index.php
     RewriteCond %{REQUEST_FILENAME} !-f
