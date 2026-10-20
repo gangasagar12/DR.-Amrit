@@ -56,7 +56,7 @@
       </a>
 
       <!-- Mobile Menu Toggle Button -->
-      <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="navMenu">
+      <button class="menu-toggle" id="menuToggle" type="button" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="navMenu" onclick="toggleMobileMenu(event)">
         <span class="hamburger-line"></span>
         <span class="hamburger-line"></span>
         <span class="hamburger-line"></span>
@@ -290,23 +290,43 @@
   <script src="<?= $asset('assets/js/main.js') ?>?v=<?= @filemtime(ROOT_DIR . '/public/assets/js/main.js') ?: time() ?>"></script>
   <script src="<?= $asset('js/script.js') ?>?v=<?= @filemtime(ROOT_DIR . '/public/js/script.js') ?: time() ?>"></script>
   <script>
-    // Header & Mobile Nav handler for subpages matching homepage
+    function toggleMobileMenu(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      var toggle = document.getElementById('menuToggle');
+      var menu = document.getElementById('navMenu');
+      if (!toggle || !menu) return;
+      var isOpen = menu.classList.toggle('is-open');
+      toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    }
+
+    // Close menu when clicking outside
+    document.addEventListener('click', function(e) {
+      var toggle = document.getElementById('menuToggle');
+      var menu = document.getElementById('navMenu');
+      if (menu && menu.classList.contains('is-open')) {
+        if (!menu.contains(e.target) && !toggle.contains(e.target)) {
+          menu.classList.remove('is-open');
+          if (toggle) toggle.setAttribute('aria-expanded', 'false');
+        }
+      }
+    });
+
+    // Close menu on link clicks
     document.addEventListener('DOMContentLoaded', function () {
-      const menuToggle = document.getElementById('menuToggle');
-      const navMenu = document.getElementById('navMenu');
-      if (menuToggle && navMenu) {
-        menuToggle.addEventListener('click', function () {
-          const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
-          menuToggle.setAttribute('aria-expanded', !isExpanded);
-          navMenu.classList.toggle('is-open');
-        });
-        document.addEventListener('click', function (event) {
-          if (!navMenu.contains(event.target) && !menuToggle.contains(event.target)) {
-            navMenu.classList.remove('is-open');
-            menuToggle.setAttribute('aria-expanded', 'false');
+      var navLinks = document.querySelectorAll('.nav-menu .nav-link');
+      var toggle = document.getElementById('menuToggle');
+      var menu = document.getElementById('navMenu');
+      navLinks.forEach(function (link) {
+        link.addEventListener('click', function () {
+          if (menu && menu.classList.contains('is-open')) {
+            menu.classList.remove('is-open');
+            if (toggle) toggle.setAttribute('aria-expanded', 'false');
           }
         });
-      }
+      });
       if (typeof lucide !== 'undefined') {
         lucide.createIcons();
       }

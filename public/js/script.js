@@ -16,11 +16,15 @@ document.addEventListener('DOMContentLoaded', function () {
   const sections = document.querySelectorAll('section[id]');
 
   if (menuToggle && navMenu) {
-    menuToggle.addEventListener('click', function () {
-      const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
-      menuToggle.setAttribute('aria-expanded', !isExpanded);
-      navMenu.classList.toggle('is-open');
-    });
+    if (!menuToggle.hasAttribute('onclick')) {
+      menuToggle.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+        menuToggle.setAttribute('aria-expanded', !isExpanded);
+        navMenu.classList.toggle('is-open');
+      });
+    }
 
     // Close menu when clicking outside
     document.addEventListener('click', function (event) {

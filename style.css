@@ -1,13 +1,6 @@
-/* ==========================================================================
-   Dr. Amrit Jaishi - General Dentist Portfolio
-   Clean, Minimal, Modern, Professional Single-Page Portfolio Design System
-   No unnecessary animations, parallax, carousels, or decorative effects.
-   ========================================================================== */
-
-/* --------------------------------------------------------------------------
-   1. Design Tokens & Reset
-   -------------------------------------------------------------------------- */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -25,16 +18,23 @@
   --border-medium: #cbd5e1;
 
   /* Typography Colors */
-  --text-dark: #0f172a;        /* Deep Charcoal / Dark Navy */
-  --text-body: #334155;        /* Readable Slate Body Text */
-  --text-muted: #64748b;       /* Secondary Muted Text */
+  --text-dark: #0f172a;
+  /* Deep Charcoal / Dark Navy */
+  --text-body: #334155;
+  /* Readable Slate Body Text */
+  --text-muted: #64748b;
+  /* Secondary Muted Text */
   --text-subtle: #94a3b8;
 
   /* Healthcare Accent Colors */
-  --accent-primary: #0284c7;   /* Muted Professional Blue */
-  --accent-hover: #0369a1;     /* Darker Blue Hover */
-  --accent-light: #e0f2fe;     /* Very Soft Blue Tint */
-  --accent-navy: #0f172a;      /* Navy */
+  --accent-primary: #0284c7;
+  /* Muted Professional Blue */
+  --accent-hover: #0369a1;
+  /* Darker Blue Hover */
+  --accent-light: #e0f2fe;
+  /* Very Soft Blue Tint */
+  --accent-navy: #0f172a;
+  /* Navy */
 
   /* Fonts */
   --font-heading: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -290,18 +290,36 @@ button {
   display: none;
   flex-direction: column;
   justify-content: space-between;
-  width: 24px;
-  height: 18px;
+  width: 32px;
+  height: 24px;
   background: transparent;
-  padding: 0;
+  padding: 3px 2px;
+  border: none;
+  cursor: pointer;
+  z-index: 100000;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .hamburger-line {
   display: block;
   width: 100%;
-  height: 2px;
-  background-color: var(--text-dark);
-  border-radius: 1px;
+  height: 2.5px;
+  background-color: var(--text-dark, #0f172a);
+  border-radius: 2px;
+  pointer-events: none;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.menu-toggle[aria-expanded="true"] .hamburger-line:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.menu-toggle[aria-expanded="true"] .hamburger-line:nth-child(2) {
+  opacity: 0;
+}
+
+.menu-toggle[aria-expanded="true"] .hamburger-line:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
 }
 
 /* --------------------------------------------------------------------------
@@ -651,12 +669,11 @@ button {
   left: 50%;
   width: 3px;
   transform: translateX(-50%);
-  background: linear-gradient(180deg, 
-    rgba(2, 132, 199, 0.2) 0%, 
-    #0284c7 12%, 
-    #0284c7 88%, 
-    rgba(2, 132, 199, 0.2) 100%
-  );
+  background: linear-gradient(180deg,
+      rgba(2, 132, 199, 0.2) 0%,
+      #0284c7 12%,
+      #0284c7 88%,
+      rgba(2, 132, 199, 0.2) 100%);
   border-radius: 999px;
   z-index: 1;
 }
@@ -2067,20 +2084,23 @@ a.entry-val:hover {
 
   .nav-menu {
     position: fixed;
-    top: var(--header-height);
+    top: var(--header-height, 72px);
     left: 0;
     right: 0;
-    background-color: var(--bg-white);
-    border-bottom: 1px solid var(--border-light);
+    background-color: #ffffff;
+    border-bottom: 2px solid var(--accent-light, #e0f2fe);
     flex-direction: column;
     padding: 1.5rem;
     gap: 1.25rem;
-    box-shadow: var(--shadow-card);
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.18);
     display: none;
+    z-index: 99999;
   }
 
   .nav-menu.is-open {
-    display: flex;
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
   }
 
   .nav-link {
@@ -2459,12 +2479,15 @@ a.entry-val:hover {
     grid-template-columns: 1fr;
     gap: 1.25rem;
   }
+
   .video-modal-overlay {
     padding: 0.75rem;
   }
+
   .video-modal-content {
     padding: 1rem 1.25rem;
   }
+
   .video-modal-title {
     font-size: 1.1rem;
   }
@@ -2539,4 +2562,3 @@ a.entry-val:hover {
   height: 16px;
   stroke-width: 2.2;
 }
-
