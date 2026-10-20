@@ -20,15 +20,40 @@ use App\Models\Message;
 use App\Models\Setting;
 use App\Models\Video;
 use App\Models\VideoCategory;
+use App\Models\Research;
 use App\Helpers\Mailer;
 
 class PublicController {
     public function home(Request $request): void {
-        if (file_exists(ROOT_DIR . '/index.html')) {
-            header("Content-Type: text/html; charset=UTF-8");
-            readfile(ROOT_DIR . '/index.html');
-            return;
+        $doctor = DoctorProfile::get();
+        $services = Service::allActive();
+        $qualifications = Qualification::allActive();
+        if (empty($qualifications)) {
+            $qualifications = Qualification::all();
         }
+        $gallery = Gallery::allActive();
+        $blogs = Blog::latest(12);
+        $researches = Research::allPublished();
+        $videos = Video::allPublished();
+        $videoCategories = VideoCategory::all();
+        $clinics = Clinic::allActive();
+        $settings = Setting::all();
+
+        View::render('public/home', [
+            'title' => $settings['site_title'] ?? (($doctor['doctor_name'] ?? 'Dr. Amrit Jaishi') . ' | ' . ($doctor['professional_title'] ?? 'General Dentist')),
+            'metaDescription' => $settings['meta_default_description'] ?? 'Personal professional portfolio of Dr. Amrit Jaishi, BDS (BPKIHS Dharan). Oral and Dental Surgeon at Dhangadhi Sanjeevani Hospital.',
+            'doctor' => $doctor,
+            'services' => $services,
+            'qualifications' => $qualifications,
+            'gallery' => $gallery,
+            'blogs' => $blogs,
+            'researches' => $researches,
+            'videos' => $videos,
+            'videoCategories' => $videoCategories,
+            'clinics' => $clinics,
+            'settings' => $settings,
+            'activeNav' => 'home'
+        ]);
     }
 
     public function about(Request $request): void {
