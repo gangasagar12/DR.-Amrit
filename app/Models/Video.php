@@ -134,7 +134,11 @@ class Video {
     }
 
     public static function count(): int {
-        $pdo = Database::getConnection();
-        return (int)$pdo->query("SELECT COUNT(*) FROM videos")->fetchColumn();
+        try {
+            $pdo = Database::getConnection();
+            return (int)$pdo->query("SELECT COUNT(*) FROM videos")->fetchColumn();
+        } catch (\Throwable $e) {
+            return 0;
+        }
     }
 }

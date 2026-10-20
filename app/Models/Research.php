@@ -150,7 +150,11 @@ class Research {
     }
 
     public static function countPublished(): int {
-        $pdo = Database::getConnection();
-        return (int)$pdo->query("SELECT COUNT(*) FROM researches WHERE status = 'published'")->fetchColumn();
+        try {
+            $pdo = Database::getConnection();
+            return (int)$pdo->query("SELECT COUNT(*) FROM researches WHERE status = 'published'")->fetchColumn();
+        } catch (\Throwable $e) {
+            return 0;
+        }
     }
 }

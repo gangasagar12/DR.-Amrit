@@ -87,9 +87,10 @@ class Database {
                         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
                     ]);
                     $pdo->exec('PRAGMA foreign_keys = ON;');
-                    if ($isNew) {
-                        self::autoImportSchema($pdo, 'sqlite');
+                    if (method_exists($pdo, 'sqliteCreateFunction')) {
+                        @$pdo->sqliteCreateFunction('NOW', function() { return date('Y-m-d H:i:s'); });
                     }
+                    self::ensureSqliteTables($pdo);
                     self::$instance = $pdo;
                     self::$activeDriver = 'sqlite';
                     return self::$instance;
@@ -98,15 +99,19 @@ class Database {
             }
         } elseif ($driver === 'sqlite') {
             $sqlitePath = self::$config['sqlite_path'] ?? (dirname(__DIR__, 2) . '/storage/database.sqlite');
-            $isNew = !file_exists($sqlitePath);
+            $sqliteDir = dirname($sqlitePath);
+            if (!is_dir($sqliteDir)) {
+                @mkdir($sqliteDir, 0755, true);
+            }
             $pdo = new PDO('sqlite:' . $sqlitePath, null, null, [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
             ]);
             $pdo->exec('PRAGMA foreign_keys = ON;');
-            if ($isNew) {
-                self::autoImportSchema($pdo, 'sqlite');
+            if (method_exists($pdo, 'sqliteCreateFunction')) {
+                @$pdo->sqliteCreateFunction('NOW', function() { return date('Y-m-d H:i:s'); });
             }
+            self::ensureSqliteTables($pdo);
             self::$instance = $pdo;
             self::$activeDriver = 'sqlite';
             return self::$instance;
@@ -135,18 +140,19 @@ class Database {
                 $pdo->exec($seedSql);
             }
         } elseif ($driver === 'sqlite') {
-            // Create essential tables in SQLite if running fallback
-            self::initSqliteTables($pdo);
+            // Create and verify all tables in SQLite
+            self::ensureSqliteTables($pdo);
         }
     }
 
-    private static function initSqliteTables(PDO $pdo): void {
+    public static function ensureSqliteTables(PDO $pdo): void {
         $pdo->exec("
             CREATE TABLE IF NOT EXISTS admin_users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL,
                 email TEXT NOT NULL UNIQUE,
                 password_hash TEXT NOT NULL,
+                remember_token TEXT NULL,
                 is_active INTEGER NOT NULL DEFAULT 1,
                 last_login_at TEXT NULL,
                 created_at TEXT DEFAULT CURRENT_TIMESTAMP,
@@ -154,19 +160,30 @@ class Database {
             );
             CREATE TABLE IF NOT EXISTS doctor_profile (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                doctor_name TEXT NOT NULL DEFAULT 'Dr. Jane Doe',
-                professional_title TEXT NOT NULL DEFAULT 'BDS, MDS - Dental Surgeon',
-                tagline TEXT NOT NULL DEFAULT 'Crafting Confident, Healthy Smiles',
+                doctor_name TEXT NOT NULL DEFAULT 'Dr. Amrit Jaishi',
+                professional_title TEXT NOT NULL DEFAULT 'BDS (BPKIHS) - Oral & Dental Surgeon',
+                nmc_number TEXT NULL,
+                tagline TEXT NOT NULL DEFAULT 'Dedicated to patient-centered dental care',
                 biography TEXT NOT NULL,
-                experience_years INTEGER NOT NULL DEFAULT 12,
-                experience_description TEXT NULL,
                 philosophy TEXT NULL,
-                languages TEXT NOT NULL DEFAULT 'English',
+                core_principles TEXT NULL,
+                experience_summary TEXT NULL,
+                clinical_focus TEXT NULL,
+                experience_years INTEGER NOT NULL DEFAULT 4,
+                consultation_fees TEXT NULL,
+                patient_care_approach TEXT NULL,
+                languages TEXT NOT NULL DEFAULT 'Nepali, English, Hindi',
                 profile_image TEXT NULL,
+                hero_banner_image TEXT NULL,
+                clinic_cover_image TEXT NULL,
                 contact_email TEXT NOT NULL,
                 phone TEXT NOT NULL,
                 whatsapp TEXT NOT NULL,
                 emergency_contact TEXT NULL,
+                cta_primary_label TEXT NULL,
+                cta_primary_link TEXT NULL,
+                cta_secondary_label TEXT NULL,
+                cta_secondary_link TEXT NULL,
                 updated_at TEXT DEFAULT CURRENT_TIMESTAMP
             );
             CREATE TABLE IF NOT EXISTS qualifications (
@@ -210,12 +227,22 @@ class Database {
                 is_active INTEGER NOT NULL DEFAULT 1,
                 created_at TEXT DEFAULT CURRENT_TIMESTAMP
             );
+            CREATE TABLE IF NOT EXISTS gallery_categories (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                slug TEXT NOT NULL UNIQUE,
+                description TEXT NULL,
+                display_order INTEGER DEFAULT 0,
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP
+            );
             CREATE TABLE IF NOT EXISTS gallery_images (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
+                category_id INTEGER NULL,
                 image_path TEXT NOT NULL,
+                image_title TEXT NULL,
                 caption TEXT NOT NULL,
                 alt_text TEXT NOT NULL,
-                category TEXT NOT NULL DEFAULT 'Clinic & Facilities',
+                category TEXT NOT NULL DEFAULT 'Clinic Facility',
                 display_order INTEGER NOT NULL DEFAULT 0,
                 is_active INTEGER NOT NULL DEFAULT 1,
                 created_at TEXT DEFAULT CURRENT_TIMESTAMP
@@ -238,7 +265,7 @@ class Database {
                 content_html TEXT NOT NULL,
                 featured_image TEXT NULL,
                 image_alt TEXT NULL,
-                author_name TEXT NOT NULL DEFAULT 'Dr. Sarah Jenkins',
+                author_name TEXT NOT NULL DEFAULT 'Dr. Amrit Jaishi',
                 journal_name TEXT NULL,
                 publication_year TEXT NULL,
                 doi TEXT NULL,
@@ -279,10 +306,13 @@ class Database {
             );
             CREATE TABLE IF NOT EXISTS testimonials (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                patient_display_name TEXT NOT NULL,
+                patient_name TEXT NULL,
+                patient_display_name TEXT NULL,
                 treatment_type TEXT NOT NULL DEFAULT 'Dental Care',
-                testimonial_text TEXT NOT NULL,
+                quote TEXT NULL,
+                testimonial_text TEXT NULL,
                 rating INTEGER NOT NULL DEFAULT 5,
+                is_verified INTEGER NOT NULL DEFAULT 1,
                 consent_status INTEGER NOT NULL DEFAULT 1,
                 is_approved INTEGER NOT NULL DEFAULT 1,
                 display_order INTEGER NOT NULL DEFAULT 0,
@@ -319,11 +349,115 @@ class Database {
                 setting_value TEXT NULL,
                 updated_at TEXT DEFAULT CURRENT_TIMESTAMP
             );
+            CREATE TABLE IF NOT EXISTS video_categories (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                slug TEXT NOT NULL UNIQUE,
+                display_order INTEGER DEFAULT 0,
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP
+            );
+            CREATE TABLE IF NOT EXISTS videos (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                category_id INTEGER NULL,
+                title TEXT NOT NULL,
+                slug TEXT NOT NULL UNIQUE,
+                description TEXT NULL,
+                video_type TEXT DEFAULT 'youtube',
+                video_url TEXT NULL,
+                video_file TEXT NULL,
+                thumbnail TEXT NULL,
+                duration TEXT NULL,
+                display_order INTEGER DEFAULT 0,
+                status TEXT DEFAULT 'published',
+                published_at TEXT NULL,
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+            );
+            CREATE TABLE IF NOT EXISTS researches (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                title TEXT NOT NULL,
+                slug TEXT NOT NULL UNIQUE,
+                summary TEXT NULL,
+                abstract TEXT NULL,
+                full_text TEXT NULL,
+                authors TEXT NOT NULL DEFAULT 'Dr. Amrit Jaishi',
+                journal_name TEXT NULL,
+                publication_year TEXT NULL,
+                doi TEXT NULL,
+                publication_url TEXT NULL,
+                cover_image TEXT NULL,
+                pdf_file TEXT NULL,
+                display_order INTEGER NOT NULL DEFAULT 0,
+                status TEXT NOT NULL DEFAULT 'published',
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+            );
+            CREATE TABLE IF NOT EXISTS password_resets (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                email TEXT NOT NULL,
+                token TEXT NOT NULL,
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                expires_at TEXT NOT NULL
+            );
         ");
 
-        // Seed basic admin into sqlite
-        $passHash = password_hash('Admin@12345', PASSWORD_DEFAULT);
-        $stmt = $pdo->prepare("INSERT OR IGNORE INTO admin_users (id, name, email, password_hash, is_active) VALUES (1, 'Dr. Sarah Jenkins', 'admin@dentaldoctor.com', ?, 1)");
-        $stmt->execute([$passHash]);
+        // Seed basic admin user if empty
+        $adminCount = (int)$pdo->query("SELECT COUNT(*) FROM admin_users")->fetchColumn();
+        if ($adminCount === 0) {
+            $passHash = password_hash('Admin@12345', PASSWORD_DEFAULT);
+            $stmt = $pdo->prepare("INSERT INTO admin_users (id, name, email, password_hash, is_active) VALUES (1, 'Dr. Amrit Jaishi', 'admin@dentaldoctor.com', ?, 1)");
+            $stmt->execute([$passHash]);
+        }
+
+        // Seed video categories if empty
+        $vCatCount = (int)$pdo->query("SELECT COUNT(*) FROM video_categories")->fetchColumn();
+        if ($vCatCount === 0) {
+            $pdo->exec("
+                INSERT INTO video_categories (id, name, slug, display_order) VALUES
+                (1, 'Oral Health Education', 'oral-health-education', 1),
+                (2, 'Dental Treatment Awareness', 'dental-treatment-awareness', 2),
+                (3, 'Preventive Dentistry', 'preventive-dentistry', 3),
+                (4, 'Clinical Practice & Surgery', 'clinical-practice', 4),
+                (5, 'Patient Care & FAQs', 'patient-faqs', 5);
+            ");
+        }
+
+        // Seed sample educational videos if empty
+        $videoCount = (int)$pdo->query("SELECT COUNT(*) FROM videos")->fetchColumn();
+        if ($videoCount === 0) {
+            $pdo->exec("
+                INSERT INTO videos (id, category_id, title, slug, description, video_type, video_url, thumbnail, duration, display_order, status, published_at) VALUES
+                (1, 1, 'Proper Tooth Brushing & Flossing Technique for Healthy Gums', 'proper-tooth-brushing-and-flossing-technique', 'Dr. Amrit Jaishi demonstrates the modified Bass brushing method and correct flossing habits to prevent plaque accumulation and gingivitis.', 'youtube', 'https://www.youtube.com/watch?v=xm9c5HAUBpY', 'img/services/teeth_cleaning.jpg', '03:45', 1, 'published', datetime('now')),
+                (2, 2, 'What to Expect During a Single-Visit Root Canal Treatment', 'what-to-expect-during-root-canal-treatment', 'A step-by-step patient walkthrough explaining modern painless rotary endodontic therapy, rubber dam isolation, and crown restoration.', 'youtube', 'https://www.youtube.com/watch?v=PDFHQKVIJpo', 'img/services/rct.jpg', '05:20', 2, 'published', datetime('now')),
+                (3, 3, 'Understanding Ultrasonic Scaling & Tartar Removal', 'understanding-ultrasonic-scaling-tartar-removal', 'Learn why routine professional scaling does not weaken your enamel, and how it protects supportive bone from periodontitis.', 'youtube', 'https://www.youtube.com/watch?v=sMoi6laLS8A', 'img/services/gum_care.jpg', '04:12', 3, 'published', datetime('now')),
+                (4, 4, 'Atraumatic Wisdom Tooth Management & Surgical Care', 'atraumatic-wisdom-tooth-management', 'Clinical insights into diagnostic evaluation of impacted third molars, gentle surgical sectioning, and post-operative healing instructions.', 'youtube', 'https://www.youtube.com/watch?v=wRpHeXVn_Nw', 'img/services/wisdom_tooth.jpg', '06:05', 4, 'published', datetime('now'));
+            ");
+        }
+
+        // Seed sample research papers if empty
+        $resCount = (int)$pdo->query("SELECT COUNT(*) FROM researches")->fetchColumn();
+        if ($resCount === 0) {
+            $pdo->exec("
+                INSERT INTO researches (id, title, slug, summary, abstract, authors, journal_name, publication_year, doi, display_order, status) VALUES
+                (1, 'Clinical Evaluation of Single-Visit Rotary Endodontics in Symptomatic Irreversible Pulpitis', 'single-visit-rotary-endodontics-evaluation', 'A comparative observational study examining post-operative pain and clinical success in single-visit versus multiple-visit endodontic therapy using NiTi rotary files.', 'Introduction: Rotary endodontic instrumentation has revolutionized modern endodontics. This observational study evaluates postoperative pain incidence and 12-month radiographic healing rates in 85 patients presenting with irreversible pulpitis in Farwest Nepal.', 'Dr. Amrit Jaishi, BDS (BPKIHS)', 'Journal of Nepalese Dental Association (JNDA)', '2023', '10.3126/jnda.v23i1.48201', 1, 'published'),
+                (2, 'Prevalence of Periodontal Disease and Oral Health Awareness in Rural Communities of Kailali District', 'periodontal-disease-prevalence-kailali', 'Community dental epidemiological survey assessing CPITN scores, oral hygiene index, and dietary habits across rural municipalities.', 'Abstract: A cross-sectional field study of 420 adults screened during regional mobile health camps. Results revealed high calculus accumulation and low fluoride toothpaste adoption.', 'Dr. Amrit Jaishi, BDS (BPKIHS)', 'Farwest Medical & Health Sciences Review', '2022', NULL, 2, 'published');
+            ");
+        }
+
+        // Seed doctor profile if empty
+        $profCount = (int)$pdo->query("SELECT COUNT(*) FROM doctor_profile")->fetchColumn();
+        if ($profCount === 0) {
+            $pdo->exec("
+                INSERT INTO doctor_profile (
+                    id, doctor_name, professional_title, biography, philosophy,
+                    experience_years, languages, contact_email, phone, whatsapp, emergency_contact
+                ) VALUES (
+                    1, 'Dr. Amrit Jaishi', 'BDS (BPKIHS) - Oral & Dental Surgeon',
+                    'Dr. Amrit Jaishi provides dedicated, gentle, and modern dental treatments at Dhangadhi Sanjeevani Hospital.',
+                    'Every clinical procedure is guided by conservative tooth preservation, gentle pain-free techniques, and transparent guidance.',
+                    4, 'Nepali, English, Hindi', 'amritjaishi0@gmail.com', '+977-9860644282', '+9779860644282', '091-590328 / 091-590348'
+                );
+            ");
+        }
     }
 }
