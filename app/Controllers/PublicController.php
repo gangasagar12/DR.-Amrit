@@ -359,31 +359,37 @@ class PublicController {
     }
 
     public function apiPortfolioData(Request $request): void {
-        $doctor = DoctorProfile::get();
-        $clinics = Clinic::allActive();
-        $services = Service::allActive();
-        $qualifications = Qualification::allActive();
-        if (empty($qualifications)) {
-            $qualifications = Qualification::all();
-        }
-        $gallery = Gallery::allActive();
-        $blogs = Blog::latest(24);
-
-        $pdo = \App\Core\Database::getConnection();
+        $doctor = [];
+        $clinics = [];
+        $services = [];
+        $qualifications = [];
+        $gallery = [];
+        $blogs = [];
         $researches = [];
         $galleryCategories = [];
         $videos = [];
         $videoCategories = [];
-        try {
-            $researches = \App\Models\Research::allPublished();
-            $galleryCategories = $pdo->query("SELECT * FROM gallery_categories ORDER BY display_order ASC, id ASC")->fetchAll();
-            $videos = \App\Models\Video::allPublished();
-            $videoCategories = \App\Models\VideoCategory::all();
-        } catch (\Exception $e) {
-            // gracefully fallback
-        }
+        $settings = [];
 
-        $settings = Setting::all();
+        try { $doctor = DoctorProfile::get(); } catch (\Throwable $e) {}
+        try { $clinics = Clinic::allActive(); } catch (\Throwable $e) {}
+        try { $services = Service::allActive(); } catch (\Throwable $e) {}
+        try {
+            $qualifications = Qualification::allActive();
+            if (empty($qualifications)) {
+                $qualifications = Qualification::all();
+            }
+        } catch (\Throwable $e) {}
+        try { $gallery = Gallery::allActive(); } catch (\Throwable $e) {}
+        try { $blogs = Blog::latest(24); } catch (\Throwable $e) {}
+        try { $researches = \App\Models\Research::allPublished(); } catch (\Throwable $e) {}
+        try {
+            $pdo = \App\Core\Database::getConnection();
+            $galleryCategories = $pdo->query("SELECT * FROM gallery_categories ORDER BY display_order ASC, id ASC")->fetchAll();
+        } catch (\Throwable $e) {}
+        try { $videos = \App\Models\Video::allPublished(); } catch (\Throwable $e) {}
+        try { $videoCategories = \App\Models\VideoCategory::all(); } catch (\Throwable $e) {}
+        try { $settings = Setting::all(); } catch (\Throwable $e) {}
 
         Response::json([
             'success' => true,

@@ -471,6 +471,30 @@ class Database {
             'cta_secondary_link' => 'TEXT NULL'
         ]);
 
+        self::ensureColumnsExist($pdo, 'qualifications', [
+            'start_year' => 'TEXT NULL',
+            'location' => 'TEXT NULL',
+            'certificate_image' => 'TEXT NULL',
+            'is_published' => 'INTEGER NOT NULL DEFAULT 1'
+        ]);
+
+        self::ensureColumnsExist($pdo, 'clinics', [
+            'city' => 'TEXT NULL DEFAULT "Dhangadhi"',
+            'working_days' => 'TEXT NULL DEFAULT "Sunday - Friday"',
+            'working_hours' => 'TEXT NULL DEFAULT "10:00 AM - 5:00 PM"',
+            'appointment_type' => 'TEXT NULL DEFAULT "online_form"',
+            'appointment_url' => 'TEXT NULL'
+        ]);
+
+        self::ensureColumnsExist($pdo, 'services', [
+            'alt_text' => 'TEXT NULL'
+        ]);
+
+        self::ensureColumnsExist($pdo, 'blogs', [
+            'co_authors' => 'TEXT NULL',
+            'views_count' => 'INTEGER NOT NULL DEFAULT 0'
+        ]);
+
         self::ensureColumnsExist($pdo, 'gallery_images', [
             'category_id' => 'INTEGER NULL',
             'image_title' => 'TEXT NULL'
