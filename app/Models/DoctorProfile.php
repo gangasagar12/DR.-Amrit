@@ -52,6 +52,18 @@ class DoctorProfile {
             'profile_image', 'hero_image', 'about_image'
         ];
 
+        // Auto-ensure columns exist in SQLite if needed
+        if (Database::getDriver() === 'sqlite') {
+            try {
+                $existingCols = $pdo->query("PRAGMA table_info(doctor_profile)")->fetchAll(\PDO::FETCH_COLUMN, 1);
+                foreach ($allowedFields as $field) {
+                    if (!in_array($field, $existingCols, true)) {
+                        @$pdo->exec("ALTER TABLE doctor_profile ADD COLUMN {$field} TEXT NULL");
+                    }
+                }
+            } catch (\Throwable $e) {}
+        }
+
         $setParts = [];
         $params = [];
 

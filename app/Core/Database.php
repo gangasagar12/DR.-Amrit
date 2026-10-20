@@ -444,20 +444,57 @@ class Database {
             ");
         }
 
-        // Seed doctor profile if empty
-        $profCount = (int)$pdo->query("SELECT COUNT(*) FROM doctor_profile")->fetchColumn();
-        if ($profCount === 0) {
-            $pdo->exec("
-                INSERT INTO doctor_profile (
-                    id, doctor_name, professional_title, biography, philosophy,
-                    experience_years, languages, contact_email, phone, whatsapp, emergency_contact
-                ) VALUES (
-                    1, 'Dr. Amrit Jaishi', 'BDS (BPKIHS) - Oral & Dental Surgeon',
-                    'Dr. Amrit Jaishi provides dedicated, gentle, and modern dental treatments at Dhangadhi Sanjeevani Hospital.',
-                    'Every clinical procedure is guided by conservative tooth preservation, gentle pain-free techniques, and transparent guidance.',
-                    4, 'Nepali, English, Hindi', 'amritjaishi0@gmail.com', '+977-9860644282', '+9779860644282', '091-590328 / 091-590348'
-                );
-            ");
-        }
+        // Auto-migrate missing columns for existing SQLite tables
+        self::ensureColumnsExist($pdo, 'doctor_profile', [
+            'hero_heading' => 'TEXT NULL',
+            'hero_subheading' => 'TEXT NULL',
+            'hero_lead' => 'TEXT NULL',
+            'hero_approach' => 'TEXT NULL',
+            'about_kicker' => 'TEXT NULL',
+            'about_subheading' => 'TEXT NULL',
+            'about_badge_title' => 'TEXT NULL',
+            'about_badge_subtitle' => 'TEXT NULL',
+            'hero_image' => 'TEXT NULL',
+            'about_image' => 'TEXT NULL',
+            'hero_btn1_text' => 'TEXT NULL DEFAULT "View Dental Services"',
+            'hero_btn1_link' => 'TEXT NULL DEFAULT "#services"',
+            'hero_btn2_text' => 'TEXT NULL DEFAULT "Contact Doctor"',
+            'hero_btn2_link' => 'TEXT NULL DEFAULT "#contact"',
+            'nmc_number' => 'TEXT NULL',
+            'consultation_fees' => 'TEXT NULL',
+            'patient_care_approach' => 'TEXT NULL',
+            'hero_banner_image' => 'TEXT NULL',
+            'clinic_cover_image' => 'TEXT NULL',
+            'cta_primary_label' => 'TEXT NULL',
+            'cta_primary_link' => 'TEXT NULL',
+            'cta_secondary_label' => 'TEXT NULL',
+            'cta_secondary_link' => 'TEXT NULL'
+        ]);
+
+        self::ensureColumnsExist($pdo, 'gallery_images', [
+            'category_id' => 'INTEGER NULL',
+            'image_title' => 'TEXT NULL'
+        ]);
+
+        self::ensureColumnsExist($pdo, 'testimonials', [
+            'patient_name' => 'TEXT NULL',
+            'quote' => 'TEXT NULL',
+            'is_verified' => 'INTEGER NOT NULL DEFAULT 1'
+        ]);
+
+        self::ensureColumnsExist($pdo, 'admin_users', [
+            'remember_token' => 'TEXT NULL'
+        ]);
+    }
+
+    private static function ensureColumnsExist(PDO $pdo, string $table, array $columns): void {
+        try {
+            $existing = $pdo->query("PRAGMA table_info({$table})")->fetchAll(PDO::FETCH_COLUMN, 1);
+            foreach ($columns as $col => $definition) {
+                if (!in_array($col, $existing, true)) {
+                    @$pdo->exec("ALTER TABLE {$table} ADD COLUMN {$col} {$definition}");
+                }
+            }
+        } catch (\Throwable $e) {}
     }
 }
