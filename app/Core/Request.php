@@ -75,6 +75,10 @@ class Request {
         return $this->post[$key] ?? ($this->get[$key] ?? $default);
     }
 
+    public function param(string $key, mixed $default = null): mixed {
+        return $this->get[$key] ?? ($this->post[$key] ?? $default);
+    }
+
     public function all(): array {
         return array_merge($this->get, $this->post);
     }

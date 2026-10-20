@@ -116,10 +116,10 @@ class AdminResearchController {
         Response::redirect('/admin/research');
     }
 
-    public function edit(Request $request): void {
+    public function edit(Request $request, array $params = []): void {
         Auth::requireAdmin();
 
-        $id = (int)$request->get('id', $request->param('id'));
+        $id = (int)($params['id'] ?? $request->get('id', $request->post('id')));
         $paper = Research::findById($id);
 
         if (!$paper) {
@@ -210,10 +210,10 @@ class AdminResearchController {
         Response::redirect('/admin/research');
     }
 
-    public function delete(Request $request): void {
+    public function delete(Request $request, array $params = []): void {
         Auth::requireAdmin();
 
-        $id = (int)$request->post('id', $request->get('id', $request->param('id')));
+        $id = (int)($params['id'] ?? $request->post('id', $request->get('id')));
         $token = $request->post('_csrf_token', $request->get('_csrf_token'));
 
         if (!Csrf::validate($token)) {
