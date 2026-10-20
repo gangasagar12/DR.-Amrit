@@ -699,3 +699,207 @@
     </div>
   </div>
 </div>
+
+<script>
+(function() {
+  function parseYouTubeId(url) {
+    if (!url) return null;
+    url = url.trim();
+    if (/^[a-zA-Z0-9_-]{11}$/.test(url)) return url;
+    const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))([a-zA-Z0-9_-]{11})/i);
+    return match ? match[1] : null;
+  }
+
+  function parseVimeoId(url) {
+    if (!url) return null;
+    const match = url.match(/(?:vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/(?:[^\/]*)\/videos\/|album\/(?:\d+)\/video\/|video\/|))(\d+)/i);
+    return match ? match[1] : null;
+  }
+
+  function openVideoModal(card) {
+    const modal = document.getElementById('videoModal');
+    const player = document.getElementById('videoModalPlayer');
+    if (!modal || !player) return;
+
+    const videoUrl = (card.getAttribute('data-video-url') || '').trim();
+    const videoType = (card.getAttribute('data-video-type') || 'youtube').toLowerCase();
+    const title = card.getAttribute('data-title') || card.querySelector('.video-title')?.textContent?.trim() || 'Dental Video';
+    const desc = card.getAttribute('data-desc') || card.querySelector('.video-desc')?.textContent?.trim() || '';
+    const cat = card.getAttribute('data-category-name') || card.querySelector('.video-cat-badge')?.textContent?.trim() || '';
+    const duration = card.getAttribute('data-duration') || card.querySelector('.video-duration')?.textContent?.trim() || '';
+
+    const ytId = parseYouTubeId(videoUrl);
+    const vmId = parseVimeoId(videoUrl);
+
+    let playerHtml = '';
+    if (ytId) {
+      playerHtml = '<iframe src="https://www.youtube.com/embed/' + ytId + '?autoplay=1&rel=0&modestbranding=1" title="' + title.replace(/"/g, '&quot;') + '" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen style="width:100%;height:100%;border:0;"></iframe>';
+    } else if (vmId) {
+      playerHtml = '<iframe src="https://player.vimeo.com/video/' + vmId + '?autoplay=1" title="' + title.replace(/"/g, '&quot;') + '" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="width:100%;height:100%;border:0;"></iframe>';
+    } else if (videoType === 'upload' || /\.(mp4|webm|ogg)$/i.test(videoUrl)) {
+      playerHtml = '<video controls autoplay playsinline style="width:100%;height:100%;background:#000;"><source src="' + videoUrl + '" type="video/mp4">Your browser does not support HTML5 video.</video>';
+    } else if (videoUrl.startsWith('http')) {
+      playerHtml = '<iframe src="' + videoUrl + '" title="' + title.replace(/"/g, '&quot;') + '" allow="autoplay; fullscreen" allowfullscreen style="width:100%;height:100%;border:0;"></iframe>';
+    } else {
+      playerHtml = '<div style="color:#fff;display:flex;align-items:center;justify-content:center;height:100%;font-size:1.1rem;padding:2rem;">Video source is currently unavailable.</div>';
+    }
+
+    player.innerHTML = playerHtml;
+
+    const titleEl = document.getElementById('videoModalTitle');
+    if (titleEl) titleEl.textContent = title;
+    const descEl = document.getElementById('videoModalDesc');
+    if (descEl) descEl.textContent = desc;
+    const catEl = document.getElementById('videoModalCategory');
+    if (catEl) catEl.textContent = cat;
+    const durEl = document.getElementById('videoModalDuration');
+    if (durEl) durEl.textContent = duration ? ('Duration: ' + duration) : '';
+
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeVideoModal() {
+    const modal = document.getElementById('videoModal');
+    const player = document.getElementById('videoModalPlayer');
+    if (!modal) return;
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
+    if (player) {
+      player.innerHTML = '';
+    }
+    document.body.style.overflow = '';
+  }
+
+  function closeGalleryModal() {
+    const gModal = document.getElementById('galleryModal');
+    if (!gModal) return;
+    gModal.classList.remove('open');
+    gModal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  // Global click delegate for video cards, gallery cards, and modal close buttons
+  document.addEventListener('click', function(e) {
+    // 1. Video Card Click
+    const videoCard = e.target.closest('.video-card');
+    if (videoCard) {
+      e.preventDefault();
+      openVideoModal(videoCard);
+      return;
+    }
+
+    // 2. Video Modal Close
+    if (e.target.closest('#closeVideoModal') || e.target.id === 'videoModal') {
+      e.preventDefault();
+      closeVideoModal();
+      return;
+    }
+
+    // 3. Video Category Filter Buttons
+    const videoFilterBtn = e.target.closest('.video-filter-btn');
+    if (videoFilterBtn) {
+      e.preventDefault();
+      const filterVal = videoFilterBtn.getAttribute('data-filter') || 'all';
+      document.querySelectorAll('.video-filter-btn').forEach(function(b) {
+        b.classList.remove('active');
+        b.setAttribute('aria-selected', 'false');
+      });
+      videoFilterBtn.classList.add('active');
+      videoFilterBtn.setAttribute('aria-selected', 'true');
+
+      const cards = document.querySelectorAll('#videosGrid .video-card');
+      cards.forEach(function(card) {
+        const cardCat = card.getAttribute('data-category') || '';
+        if (filterVal === 'all' || cardCat === filterVal) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+      return;
+    }
+
+    // 4. Gallery Card Lightbox Click
+    const galleryCard = e.target.closest('.gallery-card');
+    if (galleryCard) {
+      e.preventDefault();
+      const gModal = document.getElementById('galleryModal');
+      if (!gModal) return;
+      const img = galleryCard.querySelector('.gallery-thumb');
+      const title = galleryCard.querySelector('.gallery-title');
+      const desc = galleryCard.querySelector('.gallery-desc-hidden');
+      const cat = galleryCard.getAttribute('data-category') || 'Gallery';
+
+      const modalImg = document.getElementById('galleryModalImg');
+      if (modalImg && img) {
+        modalImg.src = img.src;
+        modalImg.alt = img.alt || '';
+      }
+      const catEl = document.getElementById('galleryModalCategory');
+      if (catEl) catEl.textContent = cat.replace(/-/g, ' ');
+      const titleEl = document.getElementById('galleryModalTitle');
+      if (titleEl && title) titleEl.textContent = title.textContent;
+      const descEl = document.getElementById('galleryModalDesc');
+      if (descEl && desc) descEl.textContent = desc.textContent;
+
+      gModal.classList.add('open');
+      gModal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      return;
+    }
+
+    // 5. Gallery Modal Close
+    if (e.target.closest('#galleryCloseBtn') || e.target.id === 'galleryModal') {
+      e.preventDefault();
+      closeGalleryModal();
+      return;
+    }
+
+    // 6. Gallery Category Filters
+    const gFilterBtn = e.target.closest('.gallery-filters .filter-btn');
+    if (gFilterBtn) {
+      e.preventDefault();
+      const filterVal = gFilterBtn.getAttribute('data-filter') || 'all';
+      document.querySelectorAll('.gallery-filters .filter-btn').forEach(function(b) {
+        b.classList.remove('active');
+        b.setAttribute('aria-selected', 'false');
+      });
+      gFilterBtn.classList.add('active');
+      gFilterBtn.setAttribute('aria-selected', 'true');
+
+      const gCards = document.querySelectorAll('#galleryGrid .gallery-card');
+      gCards.forEach(function(card) {
+        const cCat = card.getAttribute('data-category') || '';
+        if (filterVal === 'all' || cCat === filterVal) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+      return;
+    }
+  });
+
+  // Keyboard navigation: Escape key closes active modals
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      closeVideoModal();
+      closeGalleryModal();
+    }
+    if (e.key === 'Enter' || e.key === ' ') {
+      const activeEl = document.activeElement;
+      if (activeEl && activeEl.classList.contains('video-card')) {
+        e.preventDefault();
+        openVideoModal(activeEl);
+      }
+      if (activeEl && activeEl.classList.contains('gallery-card')) {
+        e.preventDefault();
+        const clickEvent = new MouseEvent('click', { bubbles: true });
+        activeEl.dispatchEvent(clickEvent);
+      }
+    }
+  });
+})();
+</script>

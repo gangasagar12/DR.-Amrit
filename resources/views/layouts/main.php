@@ -288,6 +288,7 @@
 
   <!-- Scripts -->
   <script src="<?= $asset('assets/js/main.js') ?>?v=<?= @filemtime(ROOT_DIR . '/public/assets/js/main.js') ?: time() ?>"></script>
+  <script src="<?= $asset('js/script.js') ?>?v=<?= @filemtime(ROOT_DIR . '/public/js/script.js') ?: time() ?>"></script>
   <script>
     // Header & Mobile Nav handler for subpages matching homepage
     document.addEventListener('DOMContentLoaded', function () {
